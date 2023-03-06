@@ -10,12 +10,12 @@ const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
-  <ChakraProvider theme={theme}>
+  <React.StrictMode>
     <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-    <React.StrictMode>
+    <ChakraProvider theme={theme}>
       <App />
-    </React.StrictMode>
-  </ChakraProvider>
+    </ChakraProvider>
+  </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function
