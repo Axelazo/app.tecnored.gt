@@ -15,12 +15,13 @@ import {
   InputGroup,
   InputRightElement,
   useToast,
-  Toast,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useContext, useState } from "react";
 import { FaEyeSlash, FaEye } from "react-icons/fa";
 import ApiClient from "../api/api";
 import { Logo } from "../components/Logo";
+import { AuthProvider, useAuth, User } from "../providers/AuthProvider";
 
 const api = new ApiClient();
 
@@ -29,16 +30,9 @@ interface LoginErrors {
   password: string;
 }
 
-interface UserLoginDataResponse {
-  id: number;
-  firstNames: string;
-  lastNames: string;
-  email: string;
-}
-
 interface LoginApiResponse {
   status: number;
-  data: UserLoginDataResponse;
+  data: User;
 }
 
 export default function Login() {
@@ -54,8 +48,14 @@ export default function Login() {
     password: "",
   });
 
+  const { setUser, login, user } = useAuth();
+
+  const navigate = useNavigate();
+
   const resetLoginWarnings = () => {
     setTimeout(() => {
+      setIsLoading(false);
+
       setIsEmailError(false);
       setIsPasswordError(false);
     }, 3000);
@@ -102,7 +102,11 @@ export default function Login() {
             password: password,
           })
           .then((response) => {
-            console.log(response.data);
+            setIsLoading(true);
+            const userResponse = response.data;
+            setUser?.(userResponse);
+            login(userResponse);
+            console.log(user);
             toast({
               description: `Bienvenido ${
                 response.data.firstNames.split(" ")[0]
@@ -111,8 +115,13 @@ export default function Login() {
               duration: 3000,
               isClosable: true,
             });
+            setTimeout(() => {
+              navigate({ pathname: "/dashboard" });
+              console.log(user);
+            }, 3000);
           })
           .catch((error) => {
+            setIsLoading(false);
             toast({
               description: "Nombre de usuario o contraseña incorrectos.",
               status: "error",
@@ -122,7 +131,6 @@ export default function Login() {
           });
       }
 
-      setIsLoading(false);
       resetLoginWarnings();
     }, Math.random() * 1000);
   };
