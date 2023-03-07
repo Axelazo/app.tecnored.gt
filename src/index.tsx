@@ -5,16 +5,19 @@ import theme from "./theme/theme";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
+import AuthProvider from "./providers/AuthProvider";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-    <ChakraProvider theme={theme}>
-      <App />
-    </ChakraProvider>
+    <AuthProvider>
+      <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+      <ChakraProvider theme={theme}>
+        <App />
+      </ChakraProvider>
+    </AuthProvider>
   </React.StrictMode>
 );
 
