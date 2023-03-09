@@ -1,4 +1,3 @@
-import { ReactNode } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import {
   IconButton,
@@ -49,14 +48,12 @@ interface LinkItemProps {
   icon: IconType;
 }
 const LinkItems: Array<LinkItemProps> = [
-  { name: "Portal", icon: FaUserTag, path: "/portal" },
-  { name: "Inicio", icon: FaHome, path: "/" },
   { name: "Clientes", icon: FaUserTag, path: "/clients" },
   { name: "Soporte Técnico", icon: FaToolbox },
-  { name: "Establecimientos", icon: FaBuilding },
   { name: "Empleados", icon: FaUserTie },
   { name: "Planilla", icon: FaMoneyBillWave },
   { name: "Monitoreo", icon: TbHeartRateMonitor },
+  { name: "Establecimientos", icon: FaBuilding },
   { name: "Inventario", icon: MdInventory },
   { name: "Configuracion", icon: FaCog },
 ];
@@ -98,7 +95,6 @@ interface SidebarProps extends BoxProps {
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
   return (
     <Box
-      transition="3s ease"
       bg={useColorModeValue("white", "gray.900")}
       borderRight="1px"
       borderRightColor={useColorModeValue("gray.200", "gray.700")}
@@ -210,13 +206,13 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
         />
         <Flex alignItems={"center"}>
           <Menu>
-            <MenuButton
-              py={2}
-              transition="all 0.3s"
-              _focus={{ boxShadow: "none" }}
-            >
+            <MenuButton py={2} _focus={{ boxShadow: "none" }}>
               <HStack>
-                <Avatar size={"sm"} src={"https://i.imgur.com/aqj00c2.png"} />
+                <Avatar
+                  size={"sm"}
+                  name={"Axel Aguilar"}
+                  src="https://bit.ly/broken-link"
+                />
                 <VStack
                   display={{ base: "none", md: "flex" }}
                   alignItems="flex-start"
@@ -236,11 +232,10 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
                 </Box>
               </HStack>
             </MenuButton>
-            <MenuList
-              bg={useColorModeValue("white", "gray.900")}
-              borderColor={useColorModeValue("gray.200", "gray.700")}
-            >
-              <MenuItem>Perfil</MenuItem>
+            <MenuList>
+              <MenuItem as={NavLink} to={"/profile"}>
+                Perfil
+              </MenuItem>
               <MenuItem>Configuración</MenuItem>
               <MenuItem closeOnSelect={false}>
                 <DarkModeSwitcher />
