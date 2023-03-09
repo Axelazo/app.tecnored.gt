@@ -53,7 +53,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } else {
       localStorage.removeItem("user");
     }
-    console.log(user);
   }, [user]);
 
   const login = (user: User) => {
