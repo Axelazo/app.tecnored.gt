@@ -17,11 +17,11 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { FaEyeSlash, FaEye } from "react-icons/fa";
 import ApiClient from "../api/api";
 import { Logo } from "../components/Logo";
-import { AuthProvider, useAuth, User } from "../providers/AuthProvider";
+import { useAuth, User } from "../providers/AuthProvider";
 
 const api = new ApiClient();
 
@@ -48,7 +48,7 @@ export default function Login() {
     password: "",
   });
 
-  const { setUser, login, user } = useAuth();
+  const { setUser } = useAuth();
 
   const navigate = useNavigate();
 
@@ -105,20 +105,15 @@ export default function Login() {
             setIsLoading(true);
             const userResponse = response.data;
             setUser?.(userResponse);
-            login(userResponse);
-            console.log(user);
             toast({
               description: `Bienvenido ${
                 response.data.firstNames.split(" ")[0]
-              }, en un momento serás redirigido...`,
+              }`,
               status: "success",
               duration: 3000,
               isClosable: true,
             });
-            setTimeout(() => {
-              navigate({ pathname: "/dashboard" });
-              console.log(user);
-            }, 3000);
+            navigate({ pathname: "/dashboard" });
           })
           .catch((error) => {
             setIsLoading(false);
