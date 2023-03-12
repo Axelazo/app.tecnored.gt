@@ -82,7 +82,9 @@ export default function Sidebar(/* { children }: { children: ReactNode } */) {
       {/* mobilenav */}
       <MobileNav onOpen={onOpen} />
       <Box ml={{ base: 0, md: 60 }} p="4">
-        <Outlet />
+        <Box mt={20}>
+          <Outlet />
+        </Box>
       </Box>
     </Box>
   );
@@ -95,8 +97,9 @@ interface SidebarProps extends BoxProps {
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
   return (
     <Box
+      zIndex={6}
       bg={useColorModeValue("white", "gray.900")}
-      borderRight="1px"
+      borderRight="2px"
       borderRightColor={useColorModeValue("gray.200", "gray.700")}
       w={{ base: "full", md: 60 }}
       pos="fixed"
@@ -129,12 +132,7 @@ interface NavItemProps extends FlexProps {
 }
 const NavItem = ({ icon, path, children, ...rest }: NavItemProps) => {
   return (
-    <Link
-      as={NavLink}
-      to={path ?? "/"}
-      style={{ textDecoration: "none" }}
-      _focus={{ boxShadow: "none" }}
-    >
+    <NavLink to={path ?? "/"} style={{ textDecoration: "none" }}>
       <Flex
         align="center"
         p="4"
@@ -160,7 +158,7 @@ const NavItem = ({ icon, path, children, ...rest }: NavItemProps) => {
         )}
         {children}
       </Flex>
-    </Link>
+    </NavLink>
   );
 };
 
@@ -175,8 +173,10 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
   };
   return (
     <Flex
-      ml={{ base: 0, md: 60 }}
-      px={{ base: 4, md: 4 }}
+      w={"full"}
+      px={5}
+      zIndex={5}
+      position={"fixed"}
       height="20"
       alignItems="center"
       bg={useColorModeValue("white", "gray.900")}
@@ -210,7 +210,9 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
               <HStack>
                 <Avatar
                   size={"sm"}
-                  name={"Axel Aguilar"}
+                  name={`${user?.firstNames.split(" ")[0]} ${
+                    user?.lastNames.split(" ")[0]
+                  }`}
                   src="https://bit.ly/broken-link"
                 />
                 <VStack
