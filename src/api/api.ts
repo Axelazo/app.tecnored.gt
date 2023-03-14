@@ -1,85 +1,99 @@
-import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
+import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from "axios";
+import { useToast } from "@chakra-ui/react";
 
-class ApiClient {
-  private static baseUrl = "http://localhost:4000/";
-  private axiosInstance: AxiosInstance;
+const ApiClient = () => {
+  const baseUrl = "http://localhost:4000/";
+  const axiosInstance: AxiosInstance = axios.create({
+    baseURL: baseUrl,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 
-  constructor() {
-    this.axiosInstance = axios.create({
-      baseURL: ApiClient.baseUrl,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    const token = localStorage.getItem("token");
-    if (token) {
-      this.setToken(token);
-    }
-  }
-
-  public setToken(token: string): void {
-    this.axiosInstance.defaults.headers.common[
-      "Authorization"
-    ] = `Bearer ${token}`;
+  const setToken = (token: string): void => {
+    axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     localStorage.setItem("token", token);
-  }
+  };
 
-  public clearToken(): void {
-    delete this.axiosInstance.defaults.headers.common["Authorization"];
+  const clearToken = (): void => {
+    delete axiosInstance.defaults.headers.common["Authorization"];
     localStorage.removeItem("token");
+  };
+
+  const token = localStorage.getItem("token");
+  if (token) {
+    setToken(token);
   }
 
-  private async request<T>(config: AxiosRequestConfig): Promise<T> {
+  const request = async <T>(config: AxiosRequestConfig): Promise<T> => {
     try {
-      const response = await this.axiosInstance.request<T>(config);
+      const response = await axiosInstance.request<T>(config);
       return response.data;
-    } catch (error) {
+    } catch (err: any) {
+      const error = err as AxiosError;
+      if (error.code === "ERR_NETWORK") {
+        console.log({
+          title: "Conexión rechazada",
+          description:
+            "No se ha podido contactar al servidor, por favor intente de nuevo más tarde",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      }
       throw error;
     }
-  }
+  };
 
-  public async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
-    return this.request<T>({
+  const get = async <T>(
+    url: string,
+    config?: AxiosRequestConfig
+  ): Promise<T> => {
+    return request<T>({
       method: "get",
       url,
       ...config,
     });
-  }
+  };
 
-  public async post<T>(
+  const post = async <T>(
     url: string,
     data?: any,
     config?: AxiosRequestConfig
-  ): Promise<T> {
-    return this.request<T>({
+  ): Promise<T> => {
+    return request<T>({
       method: "post",
       url,
       data,
       ...config,
     });
-  }
+  };
 
-  public async put<T>(
+  const put = async <T>(
     url: string,
     data?: any,
     config?: AxiosRequestConfig
-  ): Promise<T> {
-    return this.request<T>({
+  ): Promise<T> => {
+    return request<T>({
       method: "put",
       url,
       data,
       ...config,
     });
-  }
+  };
 
-  public async delete<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
-    return this.request<T>({
+  const remove = async <T>(
+    url: string,
+    config?: AxiosRequestConfig
+  ): Promise<T> => {
+    return request<T>({
       method: "delete",
       url,
       ...config,
     });
-  }
-}
+  };
+
+  return { get, post, put, remove, setToken, clearToken };
+};
 
 export default ApiClient;
