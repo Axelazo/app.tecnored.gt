@@ -26,7 +26,7 @@ export const useAuth = () => {
   return useContext(AuthContext);
 };
 
-const isTokenExpired = (token: string) => {
+export const isTokenExpired = (token: string) => {
   const decodedToken = jwtDecode(token) as { exp: number };
   return decodedToken.exp < Date.now() / 1000;
 };
@@ -45,7 +45,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   });
 
   useEffect(() => {
-    console.log(user);
     if (user) {
       localStorage.setItem("user", JSON.stringify(user));
     } else {
