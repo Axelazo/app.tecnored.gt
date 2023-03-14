@@ -48,6 +48,7 @@ interface LinkItemProps {
   icon: IconType;
 }
 const LinkItems: Array<LinkItemProps> = [
+  { name: "Dashboard", icon: FaHome, path: "/" },
   { name: "Clientes", icon: FaUserTag, path: "/clients" },
   { name: "Soporte Técnico", icon: FaToolbox },
   { name: "Empleados", icon: FaUserTie },
