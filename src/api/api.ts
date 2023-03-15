@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from "axios";
-import { useToast } from "@chakra-ui/react";
+import { User } from "interfaces/User";
 
 const ApiClient = () => {
   const baseUrl = "http://localhost:4000/";
@@ -20,9 +20,13 @@ const ApiClient = () => {
     localStorage.removeItem("token");
   };
 
-  const token = localStorage.getItem("token");
-  if (token) {
-    setToken(token);
+  const storedUser = localStorage.getItem("user");
+  if (storedUser) {
+    const parsedUser = JSON.parse(storedUser) as User;
+    const token = parsedUser.token;
+    if (token) {
+      setToken(token);
+    }
   }
 
   const request = async <T>(config: AxiosRequestConfig): Promise<T> => {
