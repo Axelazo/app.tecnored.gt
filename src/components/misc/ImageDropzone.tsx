@@ -8,6 +8,7 @@ import {
   Box,
   Text,
   Image,
+  FormErrorMessage,
 } from "@chakra-ui/react";
 import { FileUploader } from "react-drag-drop-files";
 import { MdDelete, MdCloudUpload } from "react-icons/md";
@@ -19,8 +20,16 @@ interface ImageDropzoneProps {
   text: string;
   image: File | null;
   setImage: Dispatch<SetStateAction<File | null>>;
+  formSubmited: boolean;
+  disabled?: boolean;
 }
-const ImageDropzone = ({ text, image, setImage }: ImageDropzoneProps) => {
+const ImageDropzone = ({
+  text,
+  image,
+  setImage,
+  formSubmited,
+  disabled,
+}: ImageDropzoneProps) => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const handleChange = (file: File) => {
@@ -41,11 +50,17 @@ const ImageDropzone = ({ text, image, setImage }: ImageDropzoneProps) => {
   }, [image]);
 
   return (
-    <FormControl>
+    <FormControl
+      tabIndex={-1}
+      isInvalid={formSubmited && imagePreview === ""}
+      isRequired
+      isDisabled={disabled}
+    >
       <FormLabel>{text}</FormLabel>
       {image ? (
         <Box position={"absolute"} top={0} right={0}>
           <Button
+            isDisabled={disabled}
             colorScheme="red"
             rounded={"xl"}
             onClick={() => {
@@ -59,6 +74,7 @@ const ImageDropzone = ({ text, image, setImage }: ImageDropzoneProps) => {
         ""
       )}
       <FileUploader
+        disabled={disabled}
         handleChange={handleChange}
         name="file"
         types={fileTypes}
@@ -66,10 +82,14 @@ const ImageDropzone = ({ text, image, setImage }: ImageDropzoneProps) => {
       >
         {image ? (
           <Flex rounded={"md"} h={"12rem"}>
-            <Image src={imagePreview ? imagePreview : "no image"}></Image>
+            <Image
+              src={imagePreview ? imagePreview : "no image"}
+              style={disabled ? { filter: "saturate(0)" } : {}}
+            ></Image>
           </Flex>
         ) : (
           <Flex
+            borderColor={formSubmited && imagePreview === "" ? "red" : "grey"}
             borderWidth={"3px"}
             rounded={"md"}
             h={"12rem"}
@@ -78,12 +98,21 @@ const ImageDropzone = ({ text, image, setImage }: ImageDropzoneProps) => {
             borderStyle={"dotted"}
           >
             <Stack alignItems={"center"}>
-              <Icon as={MdCloudUpload} boxSize={8} />
-              <Text>Arrastra y suelta</Text>
+              <Icon
+                as={MdCloudUpload}
+                boxSize={8}
+                color={formSubmited && imagePreview === "" ? "red" : "grey"}
+              />
+              <Text
+                color={formSubmited && imagePreview === "" ? "red" : "grey"}
+              >
+                Arrastra y suelta
+              </Text>
             </Stack>
           </Flex>
         )}
       </FileUploader>
+      <FormErrorMessage>{`${text} es requerido!`}</FormErrorMessage>
     </FormControl>
   );
 };
