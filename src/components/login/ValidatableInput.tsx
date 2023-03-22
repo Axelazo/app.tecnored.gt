@@ -9,10 +9,13 @@ import { FieldError, UseFormRegisterReturn } from "react-hook-form";
 
 interface ValidatableInputProps {
   type?: React.HTMLInputTypeAttribute | undefined;
-  id: string;
-  label: string;
+  id?: string;
+  label?: string;
   error?: FieldError;
-  register: UseFormRegisterReturn;
+  register?: UseFormRegisterReturn;
+  required?: boolean;
+  value?: string | number | readonly string[] | undefined;
+  disabled?: boolean;
 }
 
 const ValidatableInput = ({
@@ -21,12 +24,20 @@ const ValidatableInput = ({
   label,
   error,
   register,
+  required,
+  value,
+  disabled,
 }: ValidatableInputProps) => {
   return (
-    <FormControl id={id} isInvalid={!!error}>
+    <FormControl
+      id={id}
+      isInvalid={!!error}
+      isRequired={required}
+      isDisabled={disabled}
+    >
       <FormLabel>{label}</FormLabel>
       <InputGroup>
-        <Input type={type} {...register} />
+        <Input type={type} {...register} value={value} />
       </InputGroup>
       <FormErrorMessage>{error?.message}</FormErrorMessage>
     </FormControl>
