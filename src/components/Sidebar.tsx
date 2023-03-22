@@ -47,6 +47,7 @@ interface LinkItemProps {
   path?: string;
   icon: IconType;
 }
+
 const LinkItems: Array<LinkItemProps> = [
   { name: "Dashboard", icon: FaHome, path: "/" },
   { name: "Clientes", icon: FaUserTag, path: "/clients" },
@@ -82,6 +83,10 @@ export default function Sidebar(/* { children }: { children: ReactNode } */) {
       </Drawer>
       {/* mobilenav */}
       <MobileNav onOpen={onOpen} />
+      <Text position={"fixed"} bottom={0} zIndex={1000}>
+        TecnoRedMS! - Alpha v0.2.1
+      </Text>
+
       <Box ml={{ base: 0, md: 60 }} p="4">
         <Box mt={20}>
           <Outlet />
