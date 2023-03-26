@@ -2,7 +2,7 @@ export interface ClientFormValues {
   firstNames: string;
   lastNames: string;
   dpiNumber: string;
-  nitNumber: string;
+  nitNumber?: string;
   address: string;
   locality: string;
   municipality: number;

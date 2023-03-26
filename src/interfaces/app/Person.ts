@@ -6,6 +6,7 @@ export interface Person {
   firstNames: string;
   lastNames: string;
   birthday: Date;
+  email: string;
   address: Address;
   dpi: Dpi;
   nitNumber: string;
