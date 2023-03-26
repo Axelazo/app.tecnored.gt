@@ -1,5 +1,4 @@
 import ApiClient from "../api/api";
-
 import {
   Flex,
   Box,
@@ -13,7 +12,6 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 import { Logo } from "../components/Logo";
 import { useAuth } from "../providers/AuthProvider";
 import {
@@ -25,7 +23,7 @@ import { Resolver, useForm } from "react-hook-form";
 import PasswordInput from "components/login/PasswordInput";
 import ValidatableInput from "components/login/ValidatableInput";
 
-const api = new ApiClient();
+const api = ApiClient();
 
 const resolver: Resolver<UserLoginFormValues> = async (
   values: UserLoginFormValues
