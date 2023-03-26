@@ -15,6 +15,7 @@ interface ValidatableInputProps {
   register?: UseFormRegisterReturn;
   required?: boolean;
   value?: string | number | readonly string[] | undefined;
+  defaultValue?: string | number | readonly string[] | undefined;
   disabled?: boolean;
 }
 
@@ -27,6 +28,7 @@ const ValidatableInput = ({
   required,
   value,
   disabled,
+  defaultValue,
 }: ValidatableInputProps) => {
   return (
     <FormControl
@@ -37,7 +39,7 @@ const ValidatableInput = ({
     >
       <FormLabel>{label}</FormLabel>
       <InputGroup>
-        <Input type={type} {...register} value={value} />
+        <Input type={type} {...register} defaultValue={defaultValue} />
       </InputGroup>
       <FormErrorMessage>{error?.message}</FormErrorMessage>
     </FormControl>
