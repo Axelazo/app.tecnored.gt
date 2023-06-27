@@ -3,7 +3,6 @@ import {
   Button,
   Flex,
   FormControl,
-  FormErrorMessage,
   FormLabel,
   HStack,
   Input,
@@ -25,28 +24,13 @@ import { Client } from "interfaces/app/Client";
 import { ClientFormResolver } from "resolvers/ClientFormResolver";
 import ValidatableInput from "components/login/ValidatableInput";
 import { AxiosError } from "axios";
-import {
-  getDepartments,
-  getMunicipalitiesFromDepartment,
-} from "lib/guatemala-picker";
-
-import { useEffect } from "react";
 import { loadFile } from "helpers/files";
 import { formDataToJson } from "helpers/conversion";
-
-interface ErrorResponseData {
-  message: string;
-  // add any other properties here if they're expected in the response
-}
-
-const departments = getDepartments();
+import DepartmentMunicipalitySelect from "components/misc/DepartmentMunicipalitySelect";
+import useApiClient from "api/apiHook";
+import { ErrorResponseData } from "interfaces/app/ErrorResponseData";
 
 function CreateClient() {
-  const [municipalities, setMunicipalities] = useState(
-    getMunicipalitiesFromDepartment(12)
-  );
-  const [department, setDepartment] = useState(12);
-  const [municipality, setMunicipality] = useState(1);
   const [dpiImageFront, setdpiImageFront] = useState<File | null>(null);
   const [dpiImageBack, setdpiImageBack] = useState<File | null>(null);
   const { register, handleSubmit, formState, clearErrors, reset } =
@@ -56,8 +40,9 @@ function CreateClient() {
   const toast = useToast();
   const navigate = useNavigate();
 
-  const onSubmit = handleSubmit(async (clientData) => {
-    const api = ApiClient();
+  const api = useApiClient();
+
+  /*   const onSubmit = handleSubmit(async (clientData) => {
     const formData = new FormData();
 
     const [dpiFront, dpiBack] = await Promise.all([
@@ -131,10 +116,13 @@ function CreateClient() {
           }, 3000);
         })
         .catch((error: AxiosError) => {
+          console.log("catched error!");
           if (error.response && error.response.data) {
             console.log(error.response.data);
             const message = (error.response.data as ErrorResponseData).message;
+            console.log(`error is ` + message);
             toast({
+              title: "Error",
               description: `${message}`,
               status: "error",
               duration: 5000,
@@ -143,11 +131,109 @@ function CreateClient() {
           }
         });
     }
-  });
+  }); */
 
-  useEffect(() => {
-    setMunicipalities(getMunicipalitiesFromDepartment(department));
-  }, [department]);
+  function onSubmit(clientData: ClientFormValues) {
+    const timeout = Math.floor(Math.random() * 2000) + 1000; // Random wait time between 1-3 seconds
+    return new Promise((resolve, reject) => {
+      setTimeout(async () => {
+        const formData = new FormData();
+
+        const [dpiFront, dpiBack] = await Promise.all([
+          loadFile(dpiImageFront),
+          loadFile(dpiImageBack),
+        ]);
+
+        if (dpiFront && dpiBack) {
+          formData.append("dpiFront", dpiFront, dpiImageFront?.name);
+          formData.append("dpiBack", dpiBack, dpiImageBack?.name);
+          formData.append("person[firstNames]", clientData.firstNames);
+          formData.append("person[lastNames]", clientData.lastNames);
+          formData.append("address[street]", clientData.address);
+          formData.append("address[locality]", clientData.locality);
+          formData.append(
+            "address[municipality]",
+            clientData.municipality.toString()
+          );
+          formData.append(
+            "address[department]",
+            clientData.department.toString()
+          );
+          formData.append("dpi[number]", clientData.dpiNumber);
+
+          if (clientData.phone) {
+            formData.append(`phones[0][type]`, "Teléfono");
+            formData.append(`phones[0][number]`, clientData.phone);
+          }
+
+          // * Optional parameters
+          if (clientData.birthday) {
+            formData.append(
+              "person[birthday]",
+              new Date(clientData.birthday).toISOString()
+            );
+          }
+
+          if (clientData.email) {
+            formData.append(`person[email]`, clientData.email);
+          }
+
+          if (clientData.nitNumber) {
+            formData.append(`person[nitNumber]`, clientData.nitNumber);
+          }
+
+          if (clientData.cellphone) {
+            formData.append(`phones[1][type]`, "Celular");
+            formData.append(`phones[1][number]`, clientData.cellphone);
+          }
+
+          if (clientData.zipCode) {
+            formData.append("address[zipCode]", clientData.zipCode);
+          }
+
+          if (clientData.addressType) {
+            formData.append(`address[type]`, clientData.addressType);
+          }
+
+          console.log(formDataToJson(formData));
+
+          api
+            .post<Client>("/clients/create", formData, {
+              headers: { "Content-Type": "multipart/form-data" },
+            })
+            .then((response) => {
+              toast({
+                description: `Cliente agregado exitosamente!`,
+                status: "success",
+                duration: 1000,
+                isClosable: true,
+              });
+              setTimeout(() => {
+                navigate({ pathname: `/clients/view/${response.id}` });
+              }, 3000);
+              resolve(response);
+            })
+            .catch((error: AxiosError) => {
+              console.log("catched error!");
+              if (error.response && error.response.data) {
+                console.log(error.response.data);
+                const message = (error.response.data as ErrorResponseData)
+                  .message;
+                console.log(`error is ` + message);
+                toast({
+                  title: "Error",
+                  description: `${message}`,
+                  status: "error",
+                  duration: 5000,
+                  isClosable: true,
+                });
+              }
+              reject();
+            });
+        }
+      }, timeout);
+    });
+  }
 
   return (
     <Stack w={"full"}>
@@ -163,7 +249,7 @@ function CreateClient() {
           Regresar a la Lista de Clientes
         </Button>
       </PageHeader>
-      <form onSubmit={onSubmit} noValidate={true}>
+      <form onSubmit={handleSubmit(onSubmit)} noValidate={true}>
         <DualSideDivider text={"Datos personales"} width={10} />
         <VStack spacing={4}>
           <HStack spacing={8} w={"full"}>
@@ -264,56 +350,11 @@ function CreateClient() {
             />
           </HStack>
           <HStack spacing={8} w={"full"}>
-            <FormControl
-              isInvalid={!!formState.errors.municipality?.message}
-              isRequired
-            >
-              <FormLabel>Municipio</FormLabel>
-              <Select
-                placeholder="Seleccionar municipio"
-                {...register("municipality")}
-                onChange={(ev) => {
-                  setMunicipality(parseInt(ev.target.value));
-                  console.log(ev.target.value);
-                }}
-                defaultValue={municipality}
-              >
-                {municipalities.map((municipality) => {
-                  return (
-                    <option value={municipality.id}>
-                      {municipality.title}
-                    </option>
-                  );
-                })}
-              </Select>
-              <FormErrorMessage>
-                {formState.errors.municipality?.message}
-              </FormErrorMessage>
-            </FormControl>
-            <FormControl
-              isInvalid={!!formState.errors.department?.message}
-              isRequired
-            >
-              <FormLabel>Departamento</FormLabel>
-              <Select
-                placeholder="Seleccionar departamento"
-                {...register("department")}
-                onChange={(ev) => {
-                  setDepartment(parseInt(ev.target.value));
-                  console.log(ev.target.value);
-                }}
-                defaultValue={department}
-              >
-                {departments.map((department) => {
-                  return (
-                    <option value={department.id}>{department.title}</option>
-                  );
-                })}
-              </Select>{" "}
-              <FormErrorMessage>
-                {formState.errors.department?.message}
-              </FormErrorMessage>
-            </FormControl>
+            <DepartmentMunicipalitySelect
+              formState={formState}
+              register={register("municipality")}
+              register1={register("department")}
+            ></DepartmentMunicipalitySelect>
           </HStack>
           <HStack spacing={8} w={"full"}>
             <FormControl>
