@@ -10,6 +10,8 @@ function DualSideDivider({ text, width }: DualSideDividerProps) {
     <Flex align="center">
       <Divider />
       <Text
+        my={5}
+        pt={5}
         padding="2"
         wordBreak={"keep-all"}
         minW={`${width}rem`}
