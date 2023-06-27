@@ -1,4 +1,3 @@
-import ApiClient from "../api/api";
 import {
   Flex,
   Box,
@@ -14,67 +13,31 @@ import {
 import { useNavigate } from "react-router-dom";
 import { Logo } from "../components/Logo";
 import { useAuth } from "../providers/AuthProvider";
-import {
-  User,
-  UserLoginAPIResponse,
-  UserLoginFormValues,
-} from "interfaces/User";
-import { Resolver, useForm } from "react-hook-form";
+import { UserLoginAPIResponse, UserLoginFormValues } from "interfaces/User";
+import { useForm } from "react-hook-form";
 import PasswordInput from "components/login/PasswordInput";
 import ValidatableInput from "components/login/ValidatableInput";
-
-const api = ApiClient();
-
-const resolver: Resolver<UserLoginFormValues> = async (
-  values: UserLoginFormValues
-) => {
-  return {
-    values: values.email && values.password ? values : {},
-    errors: {
-      ...(!values.email && {
-        email: {
-          type: "required",
-          message: "El correo electrónico es requerido!",
-        },
-      }),
-      ...(values.email &&
-        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email) && {
-          email: {
-            type: "invalid",
-            message: "El correo electrónico debe ser válido!",
-          },
-        }),
-      ...(!values.password && {
-        password: {
-          type: "required",
-          message: "La contraseña es requerida!",
-        },
-      }),
-    },
-  };
-};
+import useApiClient from "api/apiHook";
+import { AxiosError } from "axios";
+import { useState } from "react";
+import { UserLoginFormResolver } from "resolvers/LoginFormResolver";
+import { ErrorResponseData } from "interfaces/app/ErrorResponseData";
 
 export default function Login() {
+  const api = useApiClient();
+
   const { setUser } = useAuth();
   const navigate = useNavigate();
   const toast = useToast();
 
-  const { register, handleSubmit, formState, clearErrors } =
+  const { register, handleSubmit, formState, reset } =
     useForm<UserLoginFormValues>({
-      resolver,
+      resolver: UserLoginFormResolver,
     });
 
-  const onSubmit = handleSubmit(async (data) => {
-    try {
-      await login(data);
-    } catch (error) {
-      console.error(error);
-    }
-  });
-
-  const login = async ({ email, password }: UserLoginFormValues) => {
-    return new Promise<User>((resolve, reject) => {
-      const timeout = Math.floor(Math.random() * 2000) + 1000; // Random wait time between 1-3 seconds
+  function onSubmit({ email, password }: UserLoginFormValues) {
+    const timeout = Math.floor(Math.random() * 2000) + 1000; // Random wait time between 1-3 seconds
+    return new Promise((resolve, reject) => {
       setTimeout(() => {
         api
           .post<UserLoginAPIResponse>("/signin", {
@@ -85,6 +48,7 @@ export default function Login() {
             setUser?.(response.data);
             navigate({ pathname: "/dashboard" });
             toast({
+              title: "Inicio de Sesión exitoso!",
               description: `Bienvenido ${
                 response.data.firstNames.split(" ")[0]
               }`,
@@ -95,18 +59,26 @@ export default function Login() {
             navigate({ pathname: "/dashboard" });
             resolve(response.data);
           })
-          .catch((reason) => {
-            toast({
-              description: "Nombre de usuario o contraseña incorrectos.",
-              status: "error",
-              duration: 3000,
-              isClosable: true,
-            });
-            reject(reason);
+          .catch((error: AxiosError) => {
+            if (error.response && error.response.data) {
+              console.log(error.response.data);
+              const message = (error.response.data as ErrorResponseData)
+                .message;
+              toast({
+                title: `Error`,
+                description: `${message}`,
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+              });
+            }
+          })
+          .finally(() => {
+            reset({ email, password });
           });
       }, timeout);
     });
-  };
+  }
 
   return (
     <Flex
@@ -132,7 +104,7 @@ export default function Login() {
           p={8}
         >
           <Stack spacing={4}>
-            <form onSubmit={onSubmit} noValidate={true}>
+            <form onSubmit={handleSubmit(onSubmit)} noValidate={true}>
               <ValidatableInput
                 label="Correo electrónico"
                 id="email"
