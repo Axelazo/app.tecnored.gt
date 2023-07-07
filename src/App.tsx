@@ -17,6 +17,13 @@ import { useAuth } from "providers/AuthProvider";
 import ViewClient from "components/clients/ViewClient";
 import UpdateClient from "components/clients/UpdateClient";
 import Dummy from "pages/Dummy";
+import Reports from "pages/Reports";
+import CreateService from "components/services/CreateService";
+import Monitoring from "pages/monitoring/Monitoring";
+import Employees from "pages/employees/Employees";
+import EmployeesList from "components/employees/EmployeesList";
+import CreateEmployee from "components/employees/CreateEmployee";
+import ViewEmployee from "components/employees/ViewEmployee";
 
 function App() {
   const { user } = useAuth();
@@ -41,11 +48,13 @@ function App() {
           <Route element={<Sidebar />}>
             <Route element={<PrivateRoute />}>
               <Route path="/profile" element={<Profile />} />
+              <Route path="/reports" element={<Reports />} />
+
               {isAdmin ? (
-                <Route path="/home" element={<Dashboard />} />
+                <Route path="/dashboard" element={<Dashboard />} />
               ) : (
                 <Route
-                  path="/home"
+                  path="/dashboard"
                   element={<Dummy data={"Portal Usuario"} />}
                 />
               )}
@@ -56,9 +65,19 @@ function App() {
                   <Route path="create" element={<CreateClient />} />
                   <Route path="view/:id" element={<ViewClient />} />
                   <Route path="update/:id" element={<UpdateClient />} />
+                  <Route
+                    path="view/:id/services/create"
+                    element={<CreateService />}
+                  />
                 </Route>
               )}
-              <Route path="*" element={<Navigate to="/home" />} />
+              <Route path="/monitoring" element={<Monitoring />} />
+              <Route path="/employees" element={<Employees />}>
+                <Route path="" element={<EmployeesList />} />
+                <Route path="create" element={<CreateEmployee />} />
+                <Route path="view/:id" element={<ViewEmployee />} />
+              </Route>
+              <Route path="*" element={<Navigate to="/dashboard" />} />
             </Route>
           </Route>
         ) : (
