@@ -19,7 +19,6 @@ import DualSideDivider from "components/DualSideDivider";
 import ImageDropzone from "components/misc/ImageDropzone";
 import { ClientFormValues } from "interfaces/Client";
 import PageHeader from "components/common/PageHeader";
-import ApiClient from "api/api";
 import { Client } from "interfaces/app/Client";
 import { ClientFormResolver } from "resolvers/ClientFormResolver";
 import ValidatableInput from "components/login/ValidatableInput";
@@ -195,8 +194,6 @@ function CreateClient() {
             formData.append(`address[type]`, clientData.addressType);
           }
 
-          console.log(formDataToJson(formData));
-
           api
             .post<Client>("/clients/create", formData, {
               headers: { "Content-Type": "multipart/form-data" },
@@ -205,7 +202,7 @@ function CreateClient() {
               toast({
                 description: `Cliente agregado exitosamente!`,
                 status: "success",
-                duration: 1000,
+                duration: 2000,
                 isClosable: true,
               });
               setTimeout(() => {
@@ -228,7 +225,6 @@ function CreateClient() {
                   isClosable: true,
                 });
               }
-              reject();
             });
         }
       }, timeout);

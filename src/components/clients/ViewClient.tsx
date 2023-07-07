@@ -45,11 +45,6 @@ import { formatDistanceToNow, parseISO } from "date-fns";
 import es from "date-fns/locale/es";
 import { Client } from "interfaces/app/Client";
 import { ApiResponse } from "interfaces/types/ApiResponse";
-import {
-  getDepartment,
-  getMunicipalitiesFromDepartment,
-  getMunicipalityFromDepartment,
-} from "lib/guatemala-picker";
 
 function timeAgo(date: Date) {
   const formatedDate = parseISO(date.toString());
@@ -248,7 +243,14 @@ function ViewClient() {
           alignContent={"center"}
         >
           <Heading fontSize={"2xl"}>Servicios asociados:</Heading>
-          <Button leftIcon={<MdAdd />} colorScheme="green" variant="solid">
+          <Button
+            leftIcon={<MdAdd />}
+            colorScheme="green"
+            variant="solid"
+            as={NavLink}
+            to={"services/create"}
+            relative="path"
+          >
             Agregar un nuevo servicio
           </Button>
         </Flex>

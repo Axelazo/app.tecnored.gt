@@ -10,7 +10,7 @@ import {
   Flex,
   Td,
 } from "@chakra-ui/react";
-import ApiClient from "api/api";
+import useApiClient from "api/apiHook";
 import { AxiosError } from "axios";
 import { Client } from "interfaces/app/Client";
 import { ApiResponse } from "interfaces/types/ApiResponse";
@@ -20,7 +20,7 @@ import ClientRow from "./ClientRow";
 function ClientsTable() {
   const [clients, setClients] = useState<Client[] | null>(null);
 
-  const api = ApiClient();
+  const api = useApiClient();
 
   useEffect(() => {
     const clientsResponse = async () => {
@@ -95,7 +95,7 @@ function ClientsTable() {
             })
           ) : (
             <Tr>
-              <Td colSpan={5} h={"64vh"}>
+              <Td colSpan={5} h={"55vh"}>
                 <Text w={"full"} textAlign={"center"}>
                   No se han encontrado clientes
                 </Text>

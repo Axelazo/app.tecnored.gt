@@ -55,6 +55,7 @@ function UpdateClient() {
     });
   const toast = useToast();
   const navigate = useNavigate();
+
   const [client, setClient] = useState<Client | null>(null);
   const { id } = useParams();
 
@@ -204,6 +205,16 @@ function UpdateClient() {
   return (
     <Stack w={"full"}>
       <PageHeader title="Editar la información del cliente">
+        <Button
+          leftIcon={<IoMdArrowRoundBack />}
+          colorScheme="yellow"
+          variant="solid"
+          onClick={() => {
+            navigate(-1);
+          }}
+        >
+          Regresar
+        </Button>
         <Button
           leftIcon={<IoMdArrowRoundBack />}
           colorScheme="orange"
