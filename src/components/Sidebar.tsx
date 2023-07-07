@@ -1,4 +1,4 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useLocation } from "react-router-dom";
 import {
   IconButton,
   Avatar,
@@ -46,18 +46,31 @@ interface LinkItemProps {
   name: string;
   path?: string;
   icon: IconType;
+  role: string;
 }
-
 const LinkItems: Array<LinkItemProps> = [
-  { name: "Dashboard", icon: FaHome, path: "/" },
-  { name: "Clientes", icon: FaUserTag, path: "/clients" },
-  { name: "Soporte Técnico", icon: FaToolbox },
-  { name: "Empleados", icon: FaUserTie },
-  { name: "Planilla", icon: FaMoneyBillWave },
-  { name: "Monitoreo", icon: TbHeartRateMonitor },
-  { name: "Establecimientos", icon: FaBuilding },
-  { name: "Inventario", icon: MdInventory },
-  { name: "Configuracion", icon: FaCog },
+  { name: "Portal de Usuario", icon: FaHome, path: "/portal", role: "user" },
+  {
+    name: "Portal de Trabajador",
+    icon: FaHome,
+    path: "/my-portal",
+    role: "worker",
+  },
+  { name: "Dashboard", icon: FaHome, path: "/dashboard", role: "operator" },
+  { name: "Clientes", icon: FaUserTag, path: "/clients", role: "operator" },
+  { name: "Soporte Técnico", icon: FaToolbox, role: "operator" },
+  { name: "Seguimiento Soporte Técnico", icon: FaToolbox, role: "technician" },
+  { name: "Empleados", icon: FaUserTie, path: "/employees", role: "operator" },
+  { name: "Planilla", icon: FaMoneyBillWave, role: "operator" },
+  {
+    name: "Monitoreo",
+    icon: TbHeartRateMonitor,
+    path: "/monitoring",
+    role: "operator",
+  },
+  { name: "Establecimientos", icon: FaBuilding, role: "operator" },
+  { name: "Inventario", icon: MdInventory, role: "operator" },
+  { name: "Configuracion", icon: FaCog, role: "admin" },
 ];
 
 export default function Sidebar(/* { children }: { children: ReactNode } */) {
@@ -101,10 +114,26 @@ interface SidebarProps extends BoxProps {
 }
 
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
+  const { user } = useAuth();
+  let filteredLinkItems;
+
+  // Filter the roles of the user to determine which routes to create
+  const userRoles = user ? user.roles.map((role) => role.roleName) : [];
+
+  if (userRoles.includes("admin")) {
+    // If user is an admin, return the entire LinkItems array
+    filteredLinkItems = LinkItems;
+  } else {
+    // Otherwise, filter the LinkItems array based on the user's roles
+    filteredLinkItems = LinkItems.filter((link) =>
+      userRoles.includes(link.role)
+    );
+  }
+
   return (
     <Box
       zIndex={6}
-      bg={useColorModeValue("white", "gray.900")}
+      bg={useColorModeValue("#24344b", "#2d3748")}
       borderRight="2px"
       borderRightColor={useColorModeValue("gray.200", "gray.700")}
       w={{ base: "full", md: 60 }}
@@ -122,7 +151,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
         <Logo />
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
-      {LinkItems.map((link) => (
+      {filteredLinkItems.map((link) => (
         <NavItem key={link.name} icon={link.icon} path={link.path}>
           {link.name}
         </NavItem>
@@ -137,9 +166,16 @@ interface NavItemProps extends FlexProps {
   children: ReactText;
 }
 const NavItem = ({ icon, path, children, ...rest }: NavItemProps) => {
+  const location = useLocation();
+  let isActive;
+  if (path)
+    isActive =
+      location.pathname.startsWith(path) && location.pathname.length > 2;
   return (
     <NavLink to={path ?? "/"} style={{ textDecoration: "none" }}>
       <Flex
+        bg={isActive ? "cyan.400" : "transparent"} // Set bgColor based on isActive
+        color={"white"}
         align="center"
         p="4"
         mx="4"
@@ -148,7 +184,6 @@ const NavItem = ({ icon, path, children, ...rest }: NavItemProps) => {
         cursor="pointer"
         _hover={{
           bg: "cyan.400",
-          color: "white",
         }}
         {...rest}
       >
@@ -174,6 +209,34 @@ interface MobileProps extends FlexProps {
 const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
   const { user, logout } = useAuth();
 
+  const userType = () => {
+    let types: string[] = [];
+    user?.roles.forEach((role) => {
+      switch (role.roleName) {
+        case "user":
+          types.push("Usuario");
+          break;
+        case "worker":
+          types.push("Empleado");
+          break;
+        case "technician":
+          types.push("Técnico");
+          break;
+        case "operator":
+          types.push("Operador");
+          break;
+        case "admin":
+          types.push("Administrador");
+          break;
+        default:
+          break;
+      }
+    });
+    return types;
+  };
+
+  const types = userType();
+
   const handleLogout = () => {
     logout();
   };
@@ -185,7 +248,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
       position={"fixed"}
       height="20"
       alignItems="center"
-      bg={useColorModeValue("white", "gray.900")}
+      bg={useColorModeValue("white", "#2d3748")}
       borderBottomWidth="1px"
       borderBottomColor={useColorModeValue("gray.200", "gray.700")}
       justifyContent={{ base: "space-between", md: "flex-end" }}
@@ -232,7 +295,9 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
                     {user?.lastNames.split(" ")[0]}
                   </Text>
                   <Text fontSize="xs" color="gray.600">
-                    {user?.roles[0].roleName}
+                    {types.map((role, index) => {
+                      return <Text key={index}>{role}</Text>;
+                    })}
                   </Text>
                 </VStack>
                 <Box display={{ base: "none", md: "flex" }}>
