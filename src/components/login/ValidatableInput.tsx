@@ -4,20 +4,10 @@ import {
   FormControl,
   FormLabel,
   FormErrorMessage,
+  FormHelperText,
+  InputLeftElement,
 } from "@chakra-ui/react";
-import { FieldError, UseFormRegisterReturn } from "react-hook-form";
-
-interface ValidatableInputProps {
-  type?: React.HTMLInputTypeAttribute | undefined;
-  id?: string;
-  label?: string;
-  error?: FieldError;
-  register?: UseFormRegisterReturn;
-  required?: boolean;
-  value?: string | number | readonly string[] | undefined;
-  defaultValue?: string | number | readonly string[] | undefined;
-  disabled?: boolean;
-}
+import ValidatableInputProps from "interfaces/validation/ValidatableInputProps";
 
 const ValidatableInput = ({
   type,
@@ -29,6 +19,8 @@ const ValidatableInput = ({
   value,
   disabled,
   defaultValue,
+  helperText,
+  leftElement,
 }: ValidatableInputProps) => {
   return (
     <FormControl
@@ -39,9 +31,11 @@ const ValidatableInput = ({
     >
       <FormLabel>{label}</FormLabel>
       <InputGroup>
+        {leftElement && <InputLeftElement>{leftElement}</InputLeftElement>}
         <Input type={type} {...register} defaultValue={defaultValue} />
       </InputGroup>
       <FormErrorMessage>{error?.message}</FormErrorMessage>
+      <FormHelperText>{helperText} </FormHelperText>
     </FormControl>
   );
 };
