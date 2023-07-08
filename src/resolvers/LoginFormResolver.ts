@@ -1,8 +1,8 @@
-import { UserLoginFormValues } from "interfaces/User";
+import { LoginFormValues } from "../formValues/LoginFormValues";
 import { Resolver } from "react-hook-form";
 
-export const UserLoginFormResolver: Resolver<UserLoginFormValues> = async (
-  values: UserLoginFormValues
+export const LoginFormResolver: Resolver<LoginFormValues> = (
+  values: LoginFormValues
 ) => {
   return {
     values: values.email && values.password ? values : {},
