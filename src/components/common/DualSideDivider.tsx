@@ -2,7 +2,7 @@ import { Flex, Divider, Text } from "@chakra-ui/react";
 
 interface DualSideDividerProps {
   text: string;
-  width: Number;
+  width: number;
 }
 
 function DualSideDivider({ text, width }: DualSideDividerProps) {

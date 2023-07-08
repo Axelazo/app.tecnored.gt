@@ -7,7 +7,7 @@ import {
   FormHelperText,
   InputLeftElement,
 } from "@chakra-ui/react";
-import ValidatableInputProps from "interfaces/validation/ValidatableInputProps";
+import { ValidatableInputProps } from "../interfaces/validation/ValidatableInputProps";
 
 const ValidatableInput = ({
   type,
@@ -16,7 +16,6 @@ const ValidatableInput = ({
   error,
   register,
   required,
-  value,
   disabled,
   defaultValue,
   helperText,

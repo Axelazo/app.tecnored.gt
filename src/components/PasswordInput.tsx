@@ -14,7 +14,7 @@ import { FieldError, UseFormRegisterReturn } from "react-hook-form";
 interface PasswordInputProps {
   label: string;
   error?: FieldError;
-  register: UseFormRegisterReturn;
+  register?: UseFormRegisterReturn;
 }
 
 const PasswordInput = ({ label, error, register }: PasswordInputProps) => {
