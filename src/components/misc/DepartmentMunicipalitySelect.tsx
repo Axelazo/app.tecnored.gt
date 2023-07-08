@@ -2,38 +2,26 @@ import { useEffect, useState } from "react";
 import {
   getDepartments,
   getMunicipalitiesFromDepartment,
-} from "lib/guatemala-picker";
+} from "../../lib/index";
 import {
-  HStack,
   FormControl,
   FormLabel,
   Select,
   FormErrorMessage,
 } from "@chakra-ui/react";
-import DepartmentMunicipalityProps from "interfaces/validation/DepartmentMunicipalityProps";
+import DepartmentMunicipalityProps from "../../interfaces/validation/DepartmentMunicipalityProps";
 import { FieldValues } from "react-hook-form";
 
 const departments = getDepartments();
 
 function DepartmentMunicipalitySelect<T extends FieldValues>({
-  formState,
-  type,
-  id,
-  label,
-  error,
-  register,
-  required,
   value,
-  disabled,
-  defaultValue,
-  helperText,
-  error1,
-  register1,
-  required1,
   value1,
+  formState,
+  register,
+  disabled,
+  register1,
   disabled1,
-  defaultValue1,
-  helperText1,
 }: DepartmentMunicipalityProps<T>) {
   const [municipalities, setMunicipalities] = useState(
     getMunicipalitiesFromDepartment(12)
@@ -63,7 +51,11 @@ function DepartmentMunicipalitySelect<T extends FieldValues>({
           defaultValue={department}
         >
           {departments.map((department) => {
-            return <option value={department.id}>{department.title}</option>;
+            return (
+              <option value={department.id} key={department.id}>
+                {department.title}
+              </option>
+            );
           })}
         </Select>{" "}
         <FormErrorMessage>
@@ -87,7 +79,9 @@ function DepartmentMunicipalitySelect<T extends FieldValues>({
         >
           {municipalities.map((municipality) => {
             return (
-              <option value={municipality.id}>{municipality.title}</option>
+              <option value={municipality.id} key={municipality.id}>
+                {municipality.title}
+              </option>
             );
           })}
         </Select>
