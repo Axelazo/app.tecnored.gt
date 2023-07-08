@@ -1,7 +1,15 @@
-import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from "axios";
-import { User } from "interfaces/User";
+import { useToast } from "@chakra-ui/react";
+import axios, {
+  AxiosError,
+  AxiosInstance,
+  AxiosRequestConfig,
+  AxiosResponse,
+} from "axios";
+import { User } from "../interfaces/User";
 
-const ApiClient = () => {
+const useApiClient = () => {
+  const toast = useToast();
+
   const baseUrl = "http://localhost:4000/";
   const axiosInstance: AxiosInstance = axios.create({
     baseURL: baseUrl,
@@ -29,30 +37,34 @@ const ApiClient = () => {
     }
   }
 
-  const request = async <T>(config: AxiosRequestConfig): Promise<T> => {
-    try {
-      const response = await axiosInstance.request<T>(config);
-      return response.data;
-    } catch (err: any) {
-      const error = err as AxiosError;
-      if (error.code === "ERR_NETWORK") {
-        console.log({
-          title: "Conexión rechazada",
-          description:
-            "No se ha podido contactar al servidor, por favor intente de nuevo más tarde",
-          status: "error",
-          duration: 5000,
-          isClosable: true,
+  const request = <T>(config: AxiosRequestConfig): Promise<T> => {
+    return new Promise((resolve, reject) => {
+      axiosInstance
+        .request<T>(config)
+        .then((response: AxiosResponse<T>) => {
+          resolve(response.data);
+        })
+        .catch((error: AxiosError) => {
+          console.error(error.message);
+          if (
+            error.code === "ERR_NETWORK" ||
+            error.code === "ERR_CONNECTION_REFUSED"
+          ) {
+            toast({
+              title: "Conexión rechazada",
+              description:
+                "No se ha podido contactar al servidor, por favor intente de nuevo más tarde",
+              status: "error",
+              duration: 5000,
+              isClosable: true,
+            });
+          }
+          reject(error);
         });
-      }
-      throw error;
-    }
+    });
   };
 
-  const get = async <T>(
-    url: string,
-    config?: AxiosRequestConfig
-  ): Promise<T> => {
+  const get = <T>(url: string, config?: AxiosRequestConfig): Promise<T> => {
     return request<T>({
       method: "get",
       url,
@@ -60,7 +72,7 @@ const ApiClient = () => {
     });
   };
 
-  const post = async <T>(
+  const post = <T>(
     url: string,
     data?: any,
     config?: AxiosRequestConfig
@@ -73,7 +85,7 @@ const ApiClient = () => {
     });
   };
 
-  const put = async <T>(
+  const put = <T>(
     url: string,
     data?: any,
     config?: AxiosRequestConfig
@@ -86,10 +98,7 @@ const ApiClient = () => {
     });
   };
 
-  const remove = async <T>(
-    url: string,
-    config?: AxiosRequestConfig
-  ): Promise<T> => {
+  const remove = <T>(url: string, config?: AxiosRequestConfig): Promise<T> => {
     return request<T>({
       method: "delete",
       url,
@@ -100,4 +109,4 @@ const ApiClient = () => {
   return { get, post, put, remove, setToken, clearToken };
 };
 
-export default ApiClient;
+export default useApiClient;
