@@ -9,7 +9,6 @@ import {
   VStack,
   Icon,
   useColorModeValue,
-  Link,
   Drawer,
   DrawerContent,
   Text,
@@ -37,10 +36,10 @@ import { TbHeartRateMonitor } from "react-icons/tb";
 import { FiChevronDown } from "react-icons/fi";
 import { TfiMenu } from "react-icons/tfi";
 import { IconType } from "react-icons";
-import { ReactText } from "react";
 import { DarkModeSwitcher } from "./DarkModeSwitcher";
 import { Logo } from "./Logo";
-import { useAuth } from "../providers/AuthProvider";
+import { useAuth } from "../hooks/useAuth";
+import { ReactText } from "react";
 
 interface LinkItemProps {
   name: string;
@@ -96,7 +95,12 @@ export default function Sidebar(/* { children }: { children: ReactNode } */) {
       </Drawer>
       {/* mobilenav */}
       <MobileNav onOpen={onOpen} />
-      <Text position={"fixed"} bottom={0} zIndex={1000}>
+      <Text
+        position={"fixed"}
+        bottom={0}
+        zIndex={1000}
+        display={{ base: "none", md: "visible" }}
+      >
         TecnoRedMS! - Alpha v0.2.1
       </Text>
 
@@ -210,7 +214,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
   const { user, logout } = useAuth();
 
   const userType = () => {
-    let types: string[] = [];
+    const types: string[] = [];
     user?.roles.forEach((role) => {
       switch (role.roleName) {
         case "user":
@@ -274,49 +278,55 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
           icon={<FaBell />}
         />
         <Flex alignItems={"center"}>
-          <Menu>
-            <MenuButton py={2} _focus={{ boxShadow: "none" }}>
-              <HStack>
-                <Avatar
-                  size={"sm"}
-                  name={`${user?.firstNames.split(" ")[0]} ${
-                    user?.lastNames.split(" ")[0]
-                  }`}
-                  src="https://bit.ly/broken-link"
-                />
-                <VStack
-                  display={{ base: "none", md: "flex" }}
-                  alignItems="flex-start"
-                  spacing="1px"
-                  ml="2"
-                >
-                  <Text fontSize="sm">
-                    {user?.firstNames.split(" ")[0]}{" "}
-                    {user?.lastNames.split(" ")[0]}
-                  </Text>
-                  <Text fontSize="xs" color="gray.600">
+          {user ? (
+            <Menu>
+              <MenuButton py={2} _focus={{ boxShadow: "none" }}>
+                <HStack>
+                  <Avatar
+                    size={"sm"}
+                    name={`${user.firstNames.split(" ")[0]} ${
+                      user.lastNames.split(" ")[0]
+                    }`}
+                  />
+
+                  <VStack
+                    display={{ base: "none", md: "flex" }}
+                    alignItems="flex-start"
+                    spacing="1px"
+                    ml="2"
+                  >
+                    <Text fontSize="sm">
+                      {user.firstNames.split(" ")[0]}{" "}
+                      {user.lastNames.split(" ")[0]}
+                    </Text>
                     {types.map((role, index) => {
-                      return <Text key={index}>{role}</Text>;
+                      return (
+                        <Text key={index} fontSize="xs" color="gray.600">
+                          {role}
+                        </Text>
+                      );
                     })}
-                  </Text>
-                </VStack>
-                <Box display={{ base: "none", md: "flex" }}>
-                  <FiChevronDown />
-                </Box>
-              </HStack>
-            </MenuButton>
-            <MenuList>
-              <MenuItem as={NavLink} to={"/profile"}>
-                Perfil
-              </MenuItem>
-              <MenuItem>Configuración</MenuItem>
-              <MenuItem closeOnSelect={false}>
-                <DarkModeSwitcher />
-              </MenuItem>
-              <MenuDivider />
-              <MenuItem onClick={handleLogout}>Cerrar sesión</MenuItem>
-            </MenuList>
-          </Menu>
+                  </VStack>
+                  <Box display={{ base: "none", md: "flex" }}>
+                    <FiChevronDown />
+                  </Box>
+                </HStack>
+              </MenuButton>
+              <MenuList>
+                <MenuItem as={NavLink} to={"/profile"}>
+                  Perfil
+                </MenuItem>
+                <MenuItem>Configuración</MenuItem>
+                <MenuItem closeOnSelect={false}>
+                  <DarkModeSwitcher />
+                </MenuItem>
+                <MenuDivider />
+                <MenuItem onClick={handleLogout}>Cerrar sesión</MenuItem>
+              </MenuList>
+            </Menu>
+          ) : (
+            ""
+          )}
         </Flex>
       </HStack>
     </Flex>
