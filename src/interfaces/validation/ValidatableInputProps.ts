@@ -1,17 +1,15 @@
 import { FieldError, UseFormRegisterReturn } from "react-hook-form";
 
-interface ValidatableInputProps {
+export interface ValidatableInputProps {
   type?: React.HTMLInputTypeAttribute | undefined;
   id?: string;
   label?: string;
-  error?: FieldError | undefined;
+  error?: FieldError;
   register?: UseFormRegisterReturn;
   required?: boolean;
   value?: string | number | readonly string[] | undefined;
   defaultValue?: string | number | readonly string[] | undefined;
-  disabled?: boolean;
-  helperText?: string;
-  leftElement?: any;
+  disabled?: boolean | undefined;
+  helperText?: string | undefined;
+  leftElement?: JSX.Element;
 }
-
-export default ValidatableInputProps;
