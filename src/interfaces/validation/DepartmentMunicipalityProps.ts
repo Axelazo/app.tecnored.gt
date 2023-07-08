@@ -1,11 +1,11 @@
-import { GenericFormValues } from "interfaces/formValues/GenericFormValues";
 import {
   FieldError,
   FieldValues,
   FormState,
   UseFormRegisterReturn,
 } from "react-hook-form";
-import ValidatableInputProps from "./ValidatableInputProps";
+import { GenericFormValues } from "../../formValues/GenericFormValues";
+import { ValidatableInputProps } from "./ValidatableInputProps";
 
 interface DepartmentMunicipalityProps<T extends FieldValues>
   extends ValidatableInputProps {
