@@ -27,13 +27,6 @@ function PageHeader({ title, children, size }: PageHeaderProps) {
           {children}
         </Stack>
       </Stack>
-      {/*       <Stack pt={4}>
-        <Alert status="info">
-          <AlertIcon />
-          Asegúrate de ingresar la información de manera correcta. Respeta
-          mayusculas y minusculas, ademas de signos de puntuación.
-        </Alert>
-      </Stack> */}
     </Stack>
   );
 }
