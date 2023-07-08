@@ -1,7 +1,6 @@
-import { useColorModeValue, Image, useBreakpointValue } from "@chakra-ui/react";
+import { useColorModeValue, Image } from "@chakra-ui/react";
 import logoWhite from "../logo-color.svg";
 import logoDark from "../logo-white.svg";
-import { useEffect, useRef } from "react";
 
 export const Logo = () => {
   const logo = useColorModeValue(logoWhite, logoDark);
