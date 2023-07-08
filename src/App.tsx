@@ -1,29 +1,36 @@
 import {
-  BrowserRouter as Router,
   Navigate,
   Route,
+  BrowserRouter as Router,
   Routes,
 } from "react-router-dom";
-import PrivateRoute from "./components/router/PrivateRoute";
-import Dashboard from "pages/Dashboard";
-import Login from "pages/Login";
-import Profile from "pages/Profile";
-import Sidebar from "./components/Sidebar";
-import Clients from "pages/clients/Clients";
-import ClientList from "components/clients/ClientsList";
-import CreateClient from "components/clients/CreateClient";
+import PrivateRoute from "./router/PrivateRoute";
 
-import { useAuth } from "providers/AuthProvider";
-import ViewClient from "components/clients/ViewClient";
-import UpdateClient from "components/clients/UpdateClient";
-import Dummy from "pages/Dummy";
-import Reports from "pages/Reports";
-import CreateService from "components/services/CreateService";
-import Monitoring from "pages/monitoring/Monitoring";
-import Employees from "pages/employees/Employees";
-import EmployeesList from "components/employees/EmployeesList";
-import CreateEmployee from "components/employees/CreateEmployee";
-import ViewEmployee from "components/employees/ViewEmployee";
+//Components
+import Sidebar from "./components/Sidebar";
+
+import ClientsList from "./components/clients/ClientsList";
+import CreateClient from "./components/clients/CreateClient";
+import UpdateClient from "./components/clients/UpdateClient";
+import ViewClient from "./components/clients/ViewClient";
+
+import EmployeesList from "./components/employees/EmployeesList";
+import CreateEmployee from "./components/employees/CreateEmployee";
+import ViewEmployee from "./components/employees/ViewEmployee";
+
+//Pages
+import { Login } from "./pages/login/Login";
+import Profile from "./pages/Profile";
+import Clients from "./pages/clients/Clients";
+import Employees from "./pages/employees/Employees";
+import Reports from "./pages/reports/Reports";
+import Monitoring from "./pages/monitoring/Monitoring";
+import Dummy from "./pages/dummy/Dummy";
+import CreateService from "./pages/services/CreateService";
+
+//Hooks
+import { useAuth } from "./hooks/useAuth";
+import Dashboard from "./pages/dashboard/Dashboard";
 
 function App() {
   const { user } = useAuth();
@@ -61,7 +68,7 @@ function App() {
               {/*! Operator routes*/}
               {isOperator && (
                 <Route path="/clients" element={<Clients />}>
-                  <Route path="" element={<ClientList />} />
+                  <Route path="" element={<ClientsList />} />
                   <Route path="create" element={<CreateClient />} />
                   <Route path="view/:id" element={<ViewClient />} />
                   <Route path="update/:id" element={<UpdateClient />} />
