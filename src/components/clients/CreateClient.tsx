@@ -1,33 +1,33 @@
 import {
   Box,
+  useToast,
+  Stack,
   Button,
-  Flex,
+  VStack,
+  HStack,
   FormControl,
   FormLabel,
-  HStack,
   Input,
   Select,
-  Stack,
-  useToast,
-  VStack,
+  Flex,
 } from "@chakra-ui/react";
+import { AxiosError } from "axios";
+import {} from "framer-motion";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { IoMdArrowRoundBack } from "react-icons/io";
-import { NavLink, useNavigate } from "react-router-dom";
-import DualSideDivider from "components/DualSideDivider";
-import ImageDropzone from "components/misc/ImageDropzone";
-import { ClientFormValues } from "interfaces/Client";
-import PageHeader from "components/common/PageHeader";
-import { Client } from "interfaces/app/Client";
-import { ClientFormResolver } from "resolvers/ClientFormResolver";
-import ValidatableInput from "components/login/ValidatableInput";
-import { AxiosError } from "axios";
-import { loadFile } from "helpers/files";
-import { formDataToJson } from "helpers/conversion";
-import DepartmentMunicipalitySelect from "components/misc/DepartmentMunicipalitySelect";
-import useApiClient from "api/apiHook";
-import { ErrorResponseData } from "interfaces/app/ErrorResponseData";
+import { useNavigate, NavLink } from "react-router-dom";
+import { ClientFormValues } from "../../formValues/ClientFormValues";
+import { loadFile } from "../../helpers/files";
+import useApiClient from "../../hooks/useApiClient";
+import { Client } from "../../interfaces/app/Client";
+import { ErrorResponseData } from "../../interfaces/app/ErrorResponseData";
+import { ClientFormResolver } from "../../resolvers/ClientFormResolver";
+import ValidatableInput from "../ValidatableInput";
+import DualSideDivider from "../common/DualSideDivider";
+import PageHeader from "../common/PageHeader";
+import DepartmentMunicipalitySelect from "../misc/DepartmentMunicipalitySelect";
+import ImageDropzone from "../misc/ImageDropzone";
 
 function CreateClient() {
   const [dpiImageFront, setdpiImageFront] = useState<File | null>(null);
@@ -40,97 +40,6 @@ function CreateClient() {
   const navigate = useNavigate();
 
   const api = useApiClient();
-
-  /*   const onSubmit = handleSubmit(async (clientData) => {
-    const formData = new FormData();
-
-    const [dpiFront, dpiBack] = await Promise.all([
-      loadFile(dpiImageFront),
-      loadFile(dpiImageBack),
-    ]);
-
-    if (dpiFront && dpiBack) {
-      formData.append("dpiFront", dpiFront, dpiImageFront?.name);
-      formData.append("dpiBack", dpiBack, dpiImageBack?.name);
-      formData.append("person[firstNames]", clientData.firstNames);
-      formData.append("person[lastNames]", clientData.lastNames);
-      formData.append("address[street]", clientData.address);
-      formData.append("address[locality]", clientData.locality);
-      formData.append(
-        "address[municipality]",
-        clientData.municipality.toString()
-      );
-      formData.append("address[department]", clientData.department.toString());
-      formData.append("dpi[number]", clientData.dpiNumber);
-
-      if (clientData.phone) {
-        formData.append(`phones[0][type]`, "Teléfono");
-        formData.append(`phones[0][number]`, clientData.phone);
-      }
-
-      // * Optional parameters
-      if (clientData.birthday) {
-        formData.append(
-          "person[birthday]",
-          new Date(clientData.birthday).toISOString()
-        );
-      }
-
-      if (clientData.email) {
-        formData.append(`person[email]`, clientData.email);
-      }
-
-      if (clientData.nitNumber) {
-        formData.append(`person[nitNumber]`, clientData.nitNumber);
-      }
-
-      if (clientData.cellphone) {
-        formData.append(`phones[1][type]`, "Celular");
-        formData.append(`phones[1][number]`, clientData.cellphone);
-      }
-
-      if (clientData.zipCode) {
-        formData.append("address[zipCode]", clientData.zipCode);
-      }
-
-      if (clientData.addressType) {
-        formData.append(`address[type]`, clientData.addressType);
-      }
-
-      console.log(formDataToJson(formData));
-
-      api
-        .post<Client>("/clients/create", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
-        .then((response) => {
-          toast({
-            description: `Cliente agregado exitosamente!`,
-            status: "success",
-            duration: 1000,
-            isClosable: true,
-          });
-          setTimeout(() => {
-            navigate({ pathname: `/clients/view/${response.id}` });
-          }, 3000);
-        })
-        .catch((error: AxiosError) => {
-          console.log("catched error!");
-          if (error.response && error.response.data) {
-            console.log(error.response.data);
-            const message = (error.response.data as ErrorResponseData).message;
-            console.log(`error is ` + message);
-            toast({
-              title: "Error",
-              description: `${message}`,
-              status: "error",
-              duration: 5000,
-              isClosable: true,
-            });
-          }
-        });
-    }
-  }); */
 
   function onSubmit(clientData: ClientFormValues) {
     const timeout = Math.floor(Math.random() * 2000) + 1000; // Random wait time between 1-3 seconds

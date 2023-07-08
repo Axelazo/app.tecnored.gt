@@ -13,31 +13,27 @@ import {
   useToast,
   VStack,
 } from "@chakra-ui/react";
-import ApiClient from "api/api";
+import useApiClient from "../../hooks/useApiClient";
 import { AxiosError } from "axios";
-import PageHeader from "components/common/PageHeader";
-import DualSideDivider from "components/DualSideDivider";
-import ValidatableInput from "components/login/ValidatableInput";
-import ImageDropzone from "components/misc/ImageDropzone";
-import { formDataToJson } from "helpers/conversion";
-import { DownloadImageAsFile, loadFile } from "helpers/files";
-import { Client } from "interfaces/app/Client";
-import { ClientFormValues } from "interfaces/Client";
-import { ApiResponse } from "interfaces/types/ApiResponse";
+import PageHeader from "../common/PageHeader";
+import DualSideDivider from "../common/DualSideDivider";
+import ValidatableInput from "../ValidatableInput";
+import ImageDropzone from "../misc/ImageDropzone";
+import { formDataToJson } from "../../helpers/conversion";
+import { DownloadImageAsFile, loadFile } from "../../helpers/files";
+import { Client } from "../../interfaces/app/Client";
+import { ClientFormValues } from "../../formValues/ClientFormValues";
+import { ApiResponse } from "../../interfaces/misc/ApiResponse";
 import {
   getDepartments,
   getMunicipalitiesFromDepartment,
-} from "lib/guatemala-picker";
+} from "../../lib/index";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
-import { ClientFormResolver } from "resolvers/ClientFormResolver";
-
-interface ErrorResponseData {
-  message: string;
-  // add any other properties here if they're expected in the response
-}
+import { ClientFormResolver } from "../../resolvers/ClientFormResolver";
+import { ErrorResponseData } from "../../interfaces/app/ErrorResponseData";
 
 const departments = getDepartments();
 
@@ -59,7 +55,7 @@ function UpdateClient() {
   const [client, setClient] = useState<Client | null>(null);
   const { id } = useParams();
 
-  const api = ApiClient();
+  const api = useApiClient();
   const clientId = id ? parseInt(id) : undefined;
 
   const onSubmit = handleSubmit(async (clientData) => {
@@ -117,13 +113,11 @@ function UpdateClient() {
         formData.append(`address[type]`, clientData.addressType);
       }
 
-      console.log(formDataToJson(formData));
-
       api
         .put<Client>(`/clients/update/${clientId}`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         })
-        .then((response) => {
+        .then(() => {
           toast({
             description: `Cliente actualizado exitosamente!`,
             status: "success",
@@ -136,7 +130,6 @@ function UpdateClient() {
         })
         .catch((error: AxiosError) => {
           if (error.response && error.response.data) {
-            console.log(error.response.data);
             const message = (error.response.data as ErrorResponseData).message;
             toast({
               description: `${message}`,
@@ -181,11 +174,9 @@ function UpdateClient() {
             setdpiImageBack(file);
           }
         });
-
-        console.log(client.person.address);
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
       });
   }, []);
 
@@ -353,7 +344,6 @@ function UpdateClient() {
                 {...register("municipality")}
                 onChange={(ev) => {
                   setMunicipality(parseInt(ev.target.value));
-                  console.log(ev.target.value);
                 }}
                 defaultValue={client?.person.address.municipality.id}
               >
@@ -379,7 +369,6 @@ function UpdateClient() {
                 {...register("department")}
                 onChange={(ev) => {
                   setDepartment(parseInt(ev.target.value));
-                  console.log(ev.target.value);
                 }}
                 defaultValue={client?.person.address.department.id}
               >

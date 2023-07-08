@@ -10,10 +10,10 @@ import {
   Flex,
   Td,
 } from "@chakra-ui/react";
-import useApiClient from "api/apiHook";
+import useApiClient from "../../hooks/useApiClient";
 import { AxiosError } from "axios";
-import { Client } from "interfaces/app/Client";
-import { ApiResponse } from "interfaces/types/ApiResponse";
+import { Client } from "../../interfaces/app/Client";
+import { ApiResponse } from "../../interfaces/misc/ApiResponse";
 import { useEffect, useState } from "react";
 import ClientRow from "./ClientRow";
 

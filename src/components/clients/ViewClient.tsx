@@ -1,65 +1,55 @@
 import {
-  Spinner,
-  Text,
+  Box,
   Flex,
+  Spinner,
   Stack,
-  Button,
-  Table,
-  TableContainer,
-  Tbody,
-  Th,
-  Thead,
-  Tr,
-  Heading,
   Menu,
   MenuButton,
-  MenuItem,
-  MenuList,
+  Button,
   Portal,
-  Td,
-  Select,
+  MenuList,
+  MenuItem,
   HStack,
   Tag,
-  Box,
+  Heading,
+  Select,
+  TableContainer,
+  Table,
+  Thead,
+  Tr,
+  Th,
+  Tbody,
+  Td,
   MenuDivider,
+  Text,
   Image,
 } from "@chakra-ui/react";
 import { AxiosError } from "axios";
-import { useEffect, useState } from "react";
-import { NavLink, useParams } from "react-router-dom";
-import ApiClient from "api/api";
-import PageHeader from "components/common/PageHeader";
-import { IoMdArrowRoundBack } from "react-icons/io";
-import { MdAdd, MdEdit, MdPrint } from "react-icons/md";
+import { useState, useEffect } from "react";
 import {
-  FaFileInvoiceDollar,
-  FaInfoCircle,
-  FaMap,
-  FaPowerOff,
-  FaTicketAlt,
   FaFilePdf,
   FaFileExcel,
+  FaInfoCircle,
+  FaPowerOff,
+  FaFileInvoiceDollar,
+  FaTicketAlt,
+  FaMap,
 } from "react-icons/fa";
+import { IoMdArrowRoundBack } from "react-icons/io";
+import { MdPrint, MdEdit, MdAdd } from "react-icons/md";
+import { useParams, NavLink } from "react-router-dom";
+import { Client } from "../../interfaces/app/Client";
+import { ApiResponse } from "../../interfaces/misc/ApiResponse";
+import PageHeader from "../common/PageHeader";
+import { timeAgo } from "../../helpers/time";
+import useApiClient from "../../hooks/useApiClient";
 import { ChevronDownIcon } from "@chakra-ui/icons";
-import { formatDistanceToNow, parseISO } from "date-fns";
-import es from "date-fns/locale/es";
-import { Client } from "interfaces/app/Client";
-import { ApiResponse } from "interfaces/types/ApiResponse";
-
-function timeAgo(date: Date) {
-  const formatedDate = parseISO(date.toString());
-  const timeAgo = formatDistanceToNow(formatedDate, {
-    addSuffix: true,
-    locale: es,
-  });
-  return timeAgo;
-}
 
 function ViewClient() {
   const [client, setClient] = useState<Client | null>(null);
   const { id } = useParams();
 
-  const api = ApiClient();
+  const api = useApiClient();
   const clientId = id ? parseInt(id) : undefined;
 
   useEffect(() => {
@@ -85,7 +75,7 @@ function ViewClient() {
         setClient(client);
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
       });
   }, []);
 
