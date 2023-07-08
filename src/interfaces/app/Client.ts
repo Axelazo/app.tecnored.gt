@@ -1,4 +1,4 @@
-import { Timestamps } from "interfaces/types/Timestamps";
+import { Timestamps } from "../misc/Timestamps";
 import { Person } from "./Person";
 
 export interface Client extends Timestamps {
