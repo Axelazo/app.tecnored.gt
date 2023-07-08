@@ -11,33 +11,37 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import { Logo } from "../components/Logo";
-import { useAuth } from "../providers/AuthProvider";
-import { UserLoginAPIResponse, UserLoginFormValues } from "interfaces/User";
-import { useForm } from "react-hook-form";
-import PasswordInput from "components/login/PasswordInput";
-import ValidatableInput from "components/login/ValidatableInput";
-import useApiClient from "api/apiHook";
+import { Logo } from "../../components/Logo";
+import { useAuth } from "../../hooks/useAuth";
+import {
+  UserLoginAPIResponse,
+  UserLoginFormValues,
+} from "../../interfaces/User";
+import { FieldError, useForm } from "react-hook-form";
+import PasswordInput from "../../components/PasswordInput";
+import ValidatableInput from "../../components/ValidatableInput";
+import useApiClient from "../../hooks/useApiClient";
 import { AxiosError } from "axios";
-import { useState } from "react";
-import { UserLoginFormResolver } from "resolvers/LoginFormResolver";
-import { ErrorResponseData } from "interfaces/app/ErrorResponseData";
+import { LoginFormResolver } from "../../resolvers/LoginFormResolver";
+import { LoginFormValues } from "../../formValues/LoginFormValues";
+import { ErrorResponseData } from "../../interfaces/app/ErrorResponseData";
 
-export default function Login() {
+export function Login() {
   const api = useApiClient();
 
   const { setUser } = useAuth();
   const navigate = useNavigate();
   const toast = useToast();
 
-  const { register, handleSubmit, formState, reset } =
-    useForm<UserLoginFormValues>({
-      resolver: UserLoginFormResolver,
-    });
+  const { register, handleSubmit, formState, reset } = useForm<LoginFormValues>(
+    {
+      resolver: LoginFormResolver,
+    }
+  );
 
   function onSubmit({ email, password }: UserLoginFormValues) {
     const timeout = Math.floor(Math.random() * 2000) + 1000; // Random wait time between 1-3 seconds
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       setTimeout(() => {
         api
           .post<UserLoginAPIResponse>("/signin", {
@@ -61,7 +65,6 @@ export default function Login() {
           })
           .catch((error: AxiosError) => {
             if (error.response && error.response.data) {
-              console.log(error.response.data);
               const message = (error.response.data as ErrorResponseData)
                 .message;
               toast({
@@ -89,9 +92,8 @@ export default function Login() {
     >
       <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
         <Stack align={"center"}>
-          <Heading fontSize={"4xl"}>Sistema Administrativo</Heading>
-
           <Logo />
+          <Heading fontSize={"4xl"}>Sistema Administrativo</Heading>
           <Text fontSize={"lg"} color={"gray.600"}>
             Inicia sesión en tu cuenta, si no tienes una
             <Link color={"blue.400"}> haz click aquí!</Link>
@@ -104,24 +106,28 @@ export default function Login() {
           p={8}
         >
           <Stack spacing={4}>
-            <form onSubmit={handleSubmit(onSubmit)} noValidate={true}>
+            <form
+              onSubmit={(event) => void handleSubmit(onSubmit)(event)} // https://stackoverflow.com/questions/74190256/eslint-promise-returning-function-provided-to-attribute-where-a-void-return-was
+              noValidate={true}
+            >
               <ValidatableInput
                 label="Correo electrónico"
                 id="email"
                 register={register("email")}
                 type={"email"}
-                error={formState.errors.email}
+                error={formState.errors.email as FieldError}
               />
               <PasswordInput
                 label="Contraseña"
                 register={register("password")}
-                error={formState.errors.password}
+                error={formState.errors.password as FieldError}
               />
               <Stack spacing={10}>
                 <Stack
                   direction={{ base: "column", sm: "row" }}
                   align={"start"}
                   justify={"space-between"}
+                  pt={4}
                 >
                   <Checkbox>Recordarme</Checkbox>
                   <Link color={"blue.400"}>Olvidaste tu contraseña?</Link>
