@@ -1,5 +1,5 @@
 import { FormControl, FormLabel, Input, Stack, Button } from "@chakra-ui/react";
-import PageHeader from "components/common/PageHeader";
+import PageHeader from "../common/PageHeader";
 import { FaPlus } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import EmployeesTable from "./EmployeesTable";

@@ -37,8 +37,8 @@ import {
 import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { NavLink, useParams } from "react-router-dom";
-import useApiClient from "api/apiHook";
-import PageHeader from "components/common/PageHeader";
+import useApiClient from "../../hooks/useApiClient";
+import PageHeader from "../common/PageHeader";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import {
   MdAdd,
@@ -52,9 +52,9 @@ import {
 } from "react-icons/md";
 import { FaFilePdf, FaFileExcel } from "react-icons/fa";
 import { AddIcon, ChevronDownIcon, MinusIcon } from "@chakra-ui/icons";
-import { ApiResponse } from "interfaces/types/ApiResponse";
-import { Employee } from "interfaces/app/Employee";
-import { ageAtDate, timeAgo } from "helpers/time";
+import { ApiResponse } from "../../interfaces/misc/ApiResponse";
+import { Employee } from "../../interfaces/app/Employee";
+import { ageAtDate } from "../../helpers/time";
 import { Bar, Line } from "react-chartjs-2";
 
 function ViewEmployee() {

@@ -16,23 +16,24 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { NavLink, useNavigate } from "react-router-dom";
-import DualSideDivider from "components/DualSideDivider";
-import ImageDropzone from "components/misc/ImageDropzone";
-import PageHeader from "components/common/PageHeader";
-import ValidatableInput from "components/login/ValidatableInput";
+import DualSideDivider from "../common/DualSideDivider";
+import ImageDropzone from "../misc/ImageDropzone";
+import PageHeader from "../common/PageHeader";
+import ValidatableInput from "../ValidatableInput";
 import { useEffect } from "react";
-import { loadFile } from "helpers/files";
-import { formDataToJson } from "helpers/conversion";
-import { Establishment } from "interfaces/app/Establishment";
-import { ApiResponse } from "interfaces/types/ApiResponse";
-import { Area } from "interfaces/app/Area";
-import { Position } from "interfaces/app/Position";
-import { Bank } from "interfaces/app/Bank";
-import { EmployeeFormValues } from "interfaces/formValues/EmployeeFormValues";
-import { EmployeFormResolver } from "resolvers/EmployeeFormResolver";
-import DepartmentMunicipalitySelect from "components/misc/DepartmentMunicipalitySelect";
-import { Employee } from "interfaces/app/Employee";
-import useApiClient from "api/apiHook";
+import { loadFile } from "../../helpers/files";
+import { formDataToJson } from "../../helpers/conversion";
+import { Establishment } from "../../interfaces/app/Establishment";
+import { Area } from "../../interfaces/app/Area";
+import { Position } from "../../interfaces/app/Position";
+import { Bank } from "../../interfaces/app/Bank";
+import { Employee } from "../../interfaces/app/Employee";
+import { ApiResponse } from "../../interfaces/misc/ApiResponse";
+
+import { EmployeeFormValues } from "../../formValues/EmployeeFormValues";
+import { EmployeFormResolver } from "../../resolvers/EmployeeFormResolver";
+import DepartmentMunicipalitySelect from "../misc/DepartmentMunicipalitySelect";
+import useApiClient from "../../hooks/useApiClient";
 
 function CreateEmployee() {
   const api = useApiClient();
@@ -406,7 +407,7 @@ function CreateEmployee() {
               label={"Sueldo (mensual)"}
               register={register("salary")}
               error={formState.errors.salary}
-              leftElement={"Q"}
+              leftElement={<p>Q</p>}
             />
           </HStack>
           <HStack spacing={8} w={"full"}>
