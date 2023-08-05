@@ -58,8 +58,13 @@ const LinkItems: Array<LinkItemProps> = [
   { name: "Dashboard", icon: FaHome, path: "/dashboard", role: "operator" },
   { name: "Clientes", icon: FaUserTag, path: "/clients", role: "operator" },
   { name: "Soporte Técnico", icon: FaToolbox, role: "operator" },
-  { name: "Seguimiento Soporte Técnico", icon: FaToolbox, role: "technician" },
-  { name: "Empleados", icon: FaUserTie, path: "/employees", role: "operator" },
+  /*   { name: "Seguimiento Soporte Técnico", icon: FaToolbox, role: "technician" },
+   */ {
+    name: "Empleados",
+    icon: FaUserTie,
+    path: "/employees",
+    role: "operator",
+  },
   { name: "Planilla", icon: FaMoneyBillWave, role: "operator" },
   {
     name: "Monitoreo",
@@ -67,9 +72,14 @@ const LinkItems: Array<LinkItemProps> = [
     path: "/monitoring",
     role: "operator",
   },
-  { name: "Establecimientos", icon: FaBuilding, role: "operator" },
-  { name: "Inventario", icon: MdInventory, role: "operator" },
-  { name: "Configuracion", icon: FaCog, role: "admin" },
+  //   { name: "Establecimientos", icon: FaBuilding, role: "operator" },
+  // { name: "Inventario", icon: MdInventory, role: "operator" },
+  {
+    name: "Configuracion",
+    icon: FaCog,
+    path: "/configuration",
+    role: "admin",
+  },
 ];
 
 export default function Sidebar(/* { children }: { children: ReactNode } */) {
