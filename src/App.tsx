@@ -31,6 +31,8 @@ import CreateService from "./pages/services/CreateService";
 //Hooks
 import { useAuth } from "./hooks/useAuth";
 import Dashboard from "./pages/dashboard/Dashboard";
+import Configuration from "./pages/config/Configuration";
+import { Plans } from "./components/config/Plans";
 
 function App() {
   const { user } = useAuth();
@@ -58,7 +60,12 @@ function App() {
               <Route path="/reports" element={<Reports />} />
 
               {isAdmin ? (
-                <Route path="/dashboard" element={<Dashboard />} />
+                <>
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/configuration" element={<Configuration />}>
+                    <Route path="plans" element={<Plans />} />
+                  </Route>
+                </>
               ) : (
                 <Route
                   path="/dashboard"
@@ -67,23 +74,26 @@ function App() {
               )}
               {/*! Operator routes*/}
               {isOperator && (
-                <Route path="/clients" element={<Clients />}>
-                  <Route path="" element={<ClientsList />} />
-                  <Route path="create" element={<CreateClient />} />
-                  <Route path="view/:id" element={<ViewClient />} />
-                  <Route path="update/:id" element={<UpdateClient />} />
-                  <Route
-                    path="view/:id/services/create"
-                    element={<CreateService />}
-                  />
-                </Route>
+                <>
+                  <Route path="/clients" element={<Clients />}>
+                    <Route path="" element={<ClientsList />} />
+                    <Route path="create" element={<CreateClient />} />
+                    <Route path="view/:id" element={<ViewClient />} />
+                    <Route path="update/:id" element={<UpdateClient />} />
+                    <Route
+                      path="view/:id/services/create"
+                      element={<CreateService />}
+                    />
+                  </Route>
+                  <Route path="/employees" element={<Employees />}>
+                    <Route path="" element={<EmployeesList />} />
+                    <Route path="create" element={<CreateEmployee />} />
+                    <Route path="view/:id" element={<ViewEmployee />} />
+                  </Route>
+                </>
               )}
               <Route path="/monitoring" element={<Monitoring />} />
-              <Route path="/employees" element={<Employees />}>
-                <Route path="" element={<EmployeesList />} />
-                <Route path="create" element={<CreateEmployee />} />
-                <Route path="view/:id" element={<ViewEmployee />} />
-              </Route>
+
               <Route path="*" element={<Navigate to="/dashboard" />} />
             </Route>
           </Route>

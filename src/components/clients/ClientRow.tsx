@@ -14,7 +14,7 @@ import { Link } from "react-router-dom";
 import { FaEye, FaPencilAlt, FaPowerOff } from "react-icons/fa";
 
 interface ClientRow {
-  index: Number;
+  index: number;
   firstNames: string;
   lastNames: string;
 }
