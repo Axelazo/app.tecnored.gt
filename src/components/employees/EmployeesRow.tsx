@@ -1,5 +1,6 @@
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import {
+  Avatar,
   Button,
   Menu,
   MenuButton,
@@ -20,14 +21,18 @@ import {
 } from "react-icons/fa";
 
 interface ClientRow {
-  index: Number;
+  image: string;
+  index: number;
   firstNames: string;
   lastNames: string;
 }
 
-function EmployeeRow({ index, firstNames, lastNames }: ClientRow) {
+function EmployeeRow({ index, firstNames, lastNames, image }: ClientRow) {
   return (
     <Tr>
+      <Td>
+        <Avatar src={image} />
+      </Td>
       <Td>{firstNames}</Td>
       <Td>{lastNames}</Td>
       <Td>
