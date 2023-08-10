@@ -75,6 +75,7 @@ function EmployeesTable() {
       <Table variant="simple">
         <Thead>
           <Tr>
+            <Th>Foto</Th>
             <Th>Nombres</Th>
             <Th>Apellidos</Th>
             <Th>Estado</Th>
@@ -88,6 +89,7 @@ function EmployeesTable() {
                 <EmployeesRow
                   key={index}
                   index={employee.id}
+                  image={employee.profileUrl}
                   firstNames={employee.person.firstNames}
                   lastNames={employee.person.lastNames}
                 />
