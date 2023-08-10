@@ -34,6 +34,8 @@ import { EmployeeFormValues } from "../../formValues/EmployeeFormValues";
 import { EmployeFormResolver } from "../../resolvers/EmployeeFormResolver";
 import DepartmentMunicipalitySelect from "../misc/DepartmentMunicipalitySelect";
 import useApiClient from "../../hooks/useApiClient";
+import { ErrorResponseData } from "../../interfaces/app/ErrorResponseData";
+import { AxiosError } from "axios";
 
 function CreateEmployee() {
   const api = useApiClient();
@@ -67,91 +69,118 @@ function CreateEmployee() {
   const navigate = useNavigate();
 
   const onSubmit = handleSubmit(async (employeeData) => {
-    console.log("Trying to submite!");
-    const formData = new FormData();
+    const timeout = Math.floor(Math.random() * 2000) + 1000; // Random wait time between 1-3 seconds
+    return new Promise((resolve, reject) => {
+      setTimeout(async () => {
+        const formData = new FormData();
 
-    const [dpiFront, dpiBack, profilePicture] = await Promise.all([
-      loadFile(dpiImageFront),
-      loadFile(dpiImageBack),
-      loadFile(picture),
-    ]);
+        const [dpiFront, dpiBack, profilePicture] = await Promise.all([
+          loadFile(dpiImageFront),
+          loadFile(dpiImageBack),
+          loadFile(picture),
+        ]);
 
-    if (dpiFront && dpiBack && profilePicture) {
-      formData.append("dpiFront", dpiFront, dpiImageFront?.name);
-      formData.append("dpiBack", dpiBack, dpiImageBack?.name);
-      formData.append("profilePicture", profilePicture, picture?.name);
+        if (dpiFront && dpiBack && profilePicture) {
+          formData.append("dpiFront", dpiFront, dpiImageFront?.name);
+          formData.append("dpiBack", dpiBack, dpiImageBack?.name);
+          formData.append("profilePicture", profilePicture, picture?.name);
 
-      formData.append("employee[firstNames]", employeeData.firstNames);
-      formData.append("employee[lastNames]", employeeData.lastNames);
-      formData.append("address[street]", employeeData.address);
-      formData.append("address[locality]", employeeData.locality);
-      formData.append(
-        "address[municipality]",
-        employeeData.municipality.toString()
-      );
-      formData.append(
-        "address[department]",
-        employeeData.department.toString()
-      );
-      formData.append("dpi[number]", employeeData.dpiNumber);
-      formData.append(
-        "employee[establishment]",
-        employeeData.establishment.toString()
-      );
-      formData.append("employee[area]", employeeData.area.toString());
-      formData.append("employee[position]", employeeData.position.toString());
-      formData.append("employee[salary]", employeeData.salary.toString());
-      formData.append(
-        "employee[birthday]",
-        new Date(employeeData.birthday).toISOString()
-      );
-      formData.append(`employee[nitNumber]`, employeeData.nitNumber);
+          formData.append("employee[firstNames]", employeeData.firstNames);
+          formData.append("employee[lastNames]", employeeData.lastNames);
+          formData.append("address[street]", employeeData.address);
+          formData.append("address[locality]", employeeData.locality);
+          formData.append(
+            "address[municipality]",
+            employeeData.municipality.toString()
+          );
+          formData.append(
+            "address[department]",
+            employeeData.department.toString()
+          );
+          formData.append("dpi[number]", employeeData.dpiNumber);
+          formData.append(
+            "employee[establishment]",
+            employeeData.establishment.toString()
+          );
+          formData.append("employee[area]", employeeData.area.toString());
+          formData.append(
+            "employee[position]",
+            employeeData.position.toString()
+          );
+          formData.append("employee[salary]", employeeData.salary.toString());
+          formData.append(
+            "employee[birthday]",
+            new Date(employeeData.birthday).toISOString()
+          );
+          formData.append(`employee[nitNumber]`, employeeData.nitNumber);
 
-      if (employeeData.bank) {
-        formData.append("employee[bank]", employeeData.bank.toString());
-        formData.append("employee[accountNumber]", employeeData.accountNumber);
-      }
+          if (employeeData.bank) {
+            formData.append("employee[bank]", employeeData.bank.toString());
+            formData.append(
+              "employee[accountNumber]",
+              employeeData.accountNumber
+            );
+          }
 
-      if (employeeData.phone) {
-        formData.append(`phones[0][type]`, "Teléfono");
-        formData.append(`phones[0][number]`, employeeData.phone);
-      }
+          if (employeeData.phone) {
+            formData.append(`phones[0][type]`, "Teléfono");
+            formData.append(`phones[0][number]`, employeeData.phone);
+          }
 
-      if (employeeData.email) {
-        formData.append(`employee[email]`, employeeData.email);
-      }
-      if (employeeData.cellphone) {
-        formData.append(`phones[1][type]`, "Celular");
-        formData.append(`phones[1][number]`, employeeData.cellphone);
-      }
+          if (employeeData.email) {
+            formData.append(`employee[email]`, employeeData.email);
+          }
+          if (employeeData.cellphone) {
+            formData.append(`phones[1][type]`, "Celular");
+            formData.append(`phones[1][number]`, employeeData.cellphone);
+          }
 
-      if (employeeData.zipCode) {
-        formData.append("address[zipCode]", employeeData.zipCode);
-      }
+          if (employeeData.zipCode) {
+            formData.append("address[zipCode]", employeeData.zipCode);
+          }
 
-      if (employeeData.addressType) {
-        formData.append(`address[type]`, employeeData.addressType);
-      }
+          if (employeeData.addressType) {
+            formData.append(`address[type]`, employeeData.addressType);
+          }
 
-      console.log(formDataToJson(formData));
+          console.log(formDataToJson(formData));
 
-      api
-        .post<Employee>("/employees/create", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
-        .then((response) => {
-          console.log(response);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
+          api
+            .post<Employee>("/employees/create", formData, {
+              headers: { "Content-Type": "multipart/form-data" },
+            })
+            .then((response) => {
+              toast({
+                description: `Empleado agregado exitosamente!`,
+                status: "success",
+                duration: 2000,
+                isClosable: true,
+              });
+              setTimeout(() => {
+                navigate({ pathname: `/employees/view/${response.id}` });
+              }, 3000);
+              resolve(response);
+            })
+            .catch((error: AxiosError) => {
+              console.log("catched error!");
+              if (error.response && error.response.data) {
+                console.log(error.response.data);
+                const message = (error.response.data as ErrorResponseData)
+                  .message;
+                console.log(`error is ` + message);
+                toast({
+                  title: "Error",
+                  description: `${message}`,
+                  status: "error",
+                  duration: 5000,
+                  isClosable: true,
+                });
+              }
+            });
+        }
+      }, timeout);
+    });
   });
-
-  const log = () => {
-    console.log(formState.errors.firstNames?.message);
-    console.log(getValues());
-  };
 
   useEffect(() => {
     api.get<ApiResponse<Bank[]>>("/banks").then((response) => {
@@ -465,8 +494,6 @@ function CreateEmployee() {
             colorScheme={"green"}
             type={"submit"}
             onClick={() => {
-              log();
-              console.log(`Valores por defecto;${formState.defaultValues}`);
               setTimeout(() => {
                 clearErrors();
                 reset({});
