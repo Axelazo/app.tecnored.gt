@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { HiUserGroup, HiUsers, HiUserAdd } from "react-icons/hi";
 
 import useApiClient from "../../hooks/useApiClient";
+import { useAuth } from "../../hooks/useAuth";
 
 interface DashboardData {
   clients: {
@@ -23,6 +24,7 @@ function Dashboard() {
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(
     null
   );
+
   const data = {
     labels: [
       "Enero",
@@ -57,7 +59,7 @@ function Dashboard() {
   const api = useApiClient();
 
   useEffect(() => {
-    void api.get<DashboardData>("/dashboard").then((data) => {
+    api.get<DashboardData>("/dashboard").then((data) => {
       setDashboardData(data);
       setLoading(false);
     });
