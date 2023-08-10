@@ -19,7 +19,6 @@ import PageHeader from "../common/PageHeader";
 import DualSideDivider from "../common/DualSideDivider";
 import ValidatableInput from "../ValidatableInput";
 import ImageDropzone from "../misc/ImageDropzone";
-import { formDataToJson } from "../../helpers/conversion";
 import { DownloadImageAsFile, loadFile } from "../../helpers/files";
 import { Client } from "../../interfaces/app/Client";
 import { ClientFormValues } from "../../formValues/ClientFormValues";
@@ -38,6 +37,7 @@ import { ErrorResponseData } from "../../interfaces/app/ErrorResponseData";
 const departments = getDepartments();
 
 function UpdateClient() {
+  // TODO: Replace with Department and Municipalities input
   const [municipalities, setMunicipalities] = useState(
     getMunicipalitiesFromDepartment(12)
   );
