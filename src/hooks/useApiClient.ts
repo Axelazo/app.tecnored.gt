@@ -5,10 +5,11 @@ import axios, {
   AxiosRequestConfig,
   AxiosResponse,
 } from "axios";
-import { User } from "../interfaces/User";
+import { useAuth } from "./useAuth";
 
 const useApiClient = () => {
   const toast = useToast();
+  const { user } = useAuth();
 
   const baseUrl = "http://localhost:4000/";
   const axiosInstance: AxiosInstance = axios.create({
@@ -18,23 +19,10 @@ const useApiClient = () => {
     },
   });
 
-  const setToken = (token: string): void => {
-    axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-    localStorage.setItem("token", token);
-  };
-
-  const clearToken = (): void => {
-    delete axiosInstance.defaults.headers.common["Authorization"];
-    localStorage.removeItem("token");
-  };
-
-  const storedUser = localStorage.getItem("user");
-  if (storedUser) {
-    const parsedUser = JSON.parse(storedUser) as User;
-    const token = parsedUser.token;
-    if (token) {
-      setToken(token);
-    }
+  if (user) {
+    axiosInstance.defaults.headers.common[
+      "Authorization"
+    ] = `Bearer ${user.token}`;
   }
 
   const request = <T>(config: AxiosRequestConfig): Promise<T> => {
@@ -106,7 +94,7 @@ const useApiClient = () => {
     });
   };
 
-  return { get, post, put, remove, setToken, clearToken };
+  return { get, post, put, remove };
 };
 
 export default useApiClient;
