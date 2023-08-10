@@ -175,7 +175,7 @@ function ViewEmployee() {
           >
             <Stack>
               <Image
-                src={`http://localhost:4000/public/e56f43a3-16a1-43ab-9b9f-1c31cbb23bde-a39a8ab43b08cbb8f959a0ed076391ed.jpg`}
+                src={employee.profileUrl}
                 objectFit={"contain"}
                 maxW={256}
                 p={4}
