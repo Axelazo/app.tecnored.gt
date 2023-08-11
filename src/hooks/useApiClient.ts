@@ -11,6 +11,9 @@ const useApiClient = () => {
   const toast = useToast();
   const { user } = useAuth();
 
+  // Add a flag to track whether a toast is already shown
+  let isToastShowing = false;
+
   const baseUrl = "http://localhost:4000/";
   const axiosInstance: AxiosInstance = axios.create({
     baseURL: baseUrl,
@@ -38,14 +41,22 @@ const useApiClient = () => {
             error.code === "ERR_NETWORK" ||
             error.code === "ERR_CONNECTION_REFUSED"
           ) {
-            toast({
-              title: "Conexión rechazada",
-              description:
-                "No se ha podido contactar al servidor, por favor intente de nuevo más tarde",
-              status: "error",
-              duration: 5000,
-              isClosable: true,
-            });
+            // Check if a toast is already showing, if not, show one
+            if (!isToastShowing) {
+              isToastShowing = true;
+
+              toast({
+                title: "Conexión rechazada",
+                description:
+                  "No se ha podido contactar al servidor, por favor intente de nuevo más tarde",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                onCloseComplete: () => {
+                  isToastShowing = false; // Reset the flag when toast is closed
+                },
+              });
+            }
           }
           reject(error);
         });
