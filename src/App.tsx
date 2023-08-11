@@ -33,6 +33,7 @@ import { useAuth } from "./hooks/useAuth";
 import Dashboard from "./pages/dashboard/Dashboard";
 import Configuration from "./pages/config/Configuration";
 import { Plans } from "./components/config/Plans";
+import UpdateEmployee from "./components/employees/UpdateEmployee";
 
 function App() {
   const { user } = useAuth();
@@ -89,6 +90,7 @@ function App() {
                     <Route path="" element={<EmployeesList />} />
                     <Route path="create" element={<CreateEmployee />} />
                     <Route path="view/:id" element={<ViewEmployee />} />
+                    <Route path="update/:id" element={<UpdateEmployee />} />
                   </Route>
                 </>
               )}
