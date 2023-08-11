@@ -51,12 +51,12 @@ function UpdateClient() {
     });
   const toast = useToast();
   const navigate = useNavigate();
-
-  const [client, setClient] = useState<Client | null>(null);
+  const [loadError, setLoadError] = useState(false);
   const { id } = useParams();
-
   const api = useApiClient();
   const clientId = id ? parseInt(id) : undefined;
+
+  const [client, setClient] = useState<Client | null>(null);
 
   const onSubmit = handleSubmit(async (clientData) => {
     const formData = new FormData();
@@ -121,7 +121,7 @@ function UpdateClient() {
           toast({
             description: `Cliente actualizado exitosamente!`,
             status: "success",
-            duration: 1000,
+            duration: 3000,
             isClosable: true,
           });
           setTimeout(() => {
@@ -142,24 +142,24 @@ function UpdateClient() {
     }
   });
 
-  useEffect(() => {
-    const clientResponse = async () => {
-      return new Promise<Client>((resolve, reject) => {
-        const timeout = Math.floor(Math.random() * 1); // Random wait time between 1-3 seconds
-        setTimeout(() => {
-          api
-            .get<ApiResponse<Client>>(`/clients/${clientId}`)
-            .then((response) => {
-              resolve(response.data);
-            })
-            .catch((reason: AxiosError) => {
-              //addtoast
-              reject(reason);
-            });
-        }, timeout);
-      });
-    };
+  const clientResponse = async () => {
+    return new Promise<Client>((resolve, reject) => {
+      const timeout = Math.floor(Math.random() * 1); // Random wait time between 1-3 seconds
+      setTimeout(() => {
+        api
+          .get<ApiResponse<Client>>(`/clients/${clientId}`)
+          .then((response) => {
+            resolve(response.data);
+          })
+          .catch((reason: AxiosError) => {
+            //addtoast
+            reject(reason);
+          });
+      }, timeout);
+    });
+  };
 
+  useEffect(() => {
     clientResponse()
       .then((client) => {
         //Set images on the DPI
@@ -176,7 +176,8 @@ function UpdateClient() {
         });
       })
       .catch((error) => {
-        console.error(error);
+        setLoadError(true);
+        console.error(`Query failed ${error.message}`);
       });
   }, []);
 
@@ -188,7 +189,11 @@ function UpdateClient() {
         alignItems={"center"}
         minH={"68vh"}
       >
-        <Spinner size={"xl"} />
+        {loadError ? (
+          <>No se ha podido encontrar el usuario</>
+        ) : (
+          <Spinner size={"xl"} />
+        )}
       </Flex>
     );
   }
