@@ -15,6 +15,8 @@ import { FieldValues } from "react-hook-form";
 const departments = getDepartments();
 
 function DepartmentMunicipalitySelect<T extends FieldValues>({
+  defaultDepartmentIndex: initialDepartmentId = 12,
+  defaultMunicipalityIndex: initialMunicipalityId = 1,
   value,
   value1,
   formState,
@@ -24,14 +26,18 @@ function DepartmentMunicipalitySelect<T extends FieldValues>({
   disabled1,
 }: DepartmentMunicipalityProps<T>) {
   const [municipalities, setMunicipalities] = useState(
-    getMunicipalitiesFromDepartment(12)
+    getMunicipalitiesFromDepartment(initialDepartmentId)
   );
-  const [department, setDepartment] = useState(12);
-  const [municipality, setMunicipality] = useState(1);
+  const [department, setDepartment] = useState(initialDepartmentId);
+  const [municipality, setMunicipality] = useState(initialMunicipalityId);
 
   useEffect(() => {
     setMunicipalities(getMunicipalitiesFromDepartment(department));
   }, [department]);
+
+  useEffect(() => {
+    setMunicipality(initialMunicipalityId);
+  }, [initialMunicipalityId]);
 
   return (
     <>
@@ -57,7 +63,7 @@ function DepartmentMunicipalitySelect<T extends FieldValues>({
               </option>
             );
           })}
-        </Select>{" "}
+        </Select>
         <FormErrorMessage>
           {formState.errors.department?.message}
         </FormErrorMessage>
@@ -79,7 +85,11 @@ function DepartmentMunicipalitySelect<T extends FieldValues>({
         >
           {municipalities.map((municipality) => {
             return (
-              <option value={municipality.id} key={municipality.id}>
+              <option
+                value={municipality.id}
+                key={municipality.id}
+                selected={municipality.id === initialMunicipalityId}
+              >
                 {municipality.title}
               </option>
             );
