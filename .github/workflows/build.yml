@@ -1,0 +1,29 @@
+name: Build and Deploy
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set Up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16 # Or the version you're using
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Application
+        run: npm run build
+
+      - name: Deploy to Server
+        run: |
+          mkdir -p /var/www/app.tecnored.gt
+          rsync -avz --delete /home/axelazo/actions-runner/_work/app.tecnored.gt/app.tecnored.gt /var/www/app.tecnored.gt/
