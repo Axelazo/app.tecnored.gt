@@ -17,4 +17,5 @@ export interface ValidatableInputProps {
   variant?:
     | ResponsiveValue<"outline" | "unstyled" | "filled" | "flushed">
     | undefined;
+  onChange?: (newValue: string) => void; // Added onChange prop with type definition
 }
