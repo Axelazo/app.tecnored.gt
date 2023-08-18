@@ -12,29 +12,12 @@ import {
   HStack,
   Tag,
   Heading,
-  Select,
-  TableContainer,
-  Table,
-  Thead,
-  Tr,
-  Th,
-  Tbody,
-  Td,
-  MenuDivider,
   Text,
   Image,
 } from "@chakra-ui/react";
 import { AxiosError } from "axios";
 import { useState, useEffect } from "react";
-import {
-  FaFilePdf,
-  FaFileExcel,
-  FaInfoCircle,
-  FaPowerOff,
-  FaFileInvoiceDollar,
-  FaTicketAlt,
-  FaMap,
-} from "react-icons/fa";
+import { FaFilePdf, FaFileExcel } from "react-icons/fa";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { MdPrint, MdEdit, MdAdd } from "react-icons/md";
 import { useParams, NavLink } from "react-router-dom";
@@ -44,6 +27,7 @@ import PageHeader from "../common/PageHeader";
 import { timeAgo } from "../../helpers/time";
 import useApiClient from "../../hooks/useApiClient";
 import { ChevronDownIcon } from "@chakra-ui/icons";
+import ServicesTable from "../services/ServicesTable";
 
 function ViewClient() {
   const [client, setClient] = useState<Client | null>(null);
@@ -245,7 +229,7 @@ function ViewClient() {
           </Button>
         </Flex>
       </HStack>
-      <HStack>
+      {/*       <HStack>
         <Flex w={"full"}>
           <Text>Mostrando los servicios asociados al cliente en:</Text>
         </Flex>
@@ -255,67 +239,8 @@ function ViewClient() {
           <option value={2}>Dolores</option>
           <option value={2}>Calzada Mopán</option>
         </Select>
-      </HStack>
-      <TableContainer>
-        <Table variant="simple">
-          <Thead>
-            <Tr>
-              <Th>No. de Servicio</Th>
-              <Th>Dirección IP</Th>
-              <Th>Plan</Th>
-              <Th>Velocidad</Th>
-              <Th>Ubicación</Th>
-              <Th>Estado</Th>
-              <Th>Conectividad</Th>
-              <Th>Administrar</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            <Tr>
-              <Td>55375929</Td>
-              <Td>192.168.3.20</Td>
-              <Td>Plan básico</Td>
-              <Td>5 mbps</Td>
-              <Td>Machaquila</Td>
-              <Td>Activo</Td>
-              <Td>Conectado</Td>
-              <Td>
-                <Menu isLazy>
-                  <MenuButton
-                    as={Button}
-                    rightIcon={<ChevronDownIcon />}
-                    w={"full"}
-                  >
-                    Acción
-                  </MenuButton>
-                  <MenuList>
-                    <MenuItem icon={<FaInfoCircle />}>
-                      Ver más información
-                    </MenuItem>
-                    <MenuItem icon={<MdEdit />}>Modificar servicio </MenuItem>
-                    <MenuItem icon={<FaPowerOff />}>
-                      Desactivar servicio
-                    </MenuItem>
-                    <MenuDivider />
-                    <MenuItem icon={<FaFileInvoiceDollar />}>
-                      Generar factura
-                    </MenuItem>
-                    <MenuItem icon={<FaFileInvoiceDollar />}>
-                      Historial de pagos
-                    </MenuItem>
-                    <MenuDivider />
-
-                    <MenuItem icon={<FaTicketAlt />}>
-                      Crear un nuevo ticket de soporte
-                    </MenuItem>
-                    <MenuItem icon={<FaMap />}>Ver en el mapa</MenuItem>
-                  </MenuList>
-                </Menu>
-              </Td>
-            </Tr>
-          </Tbody>
-        </Table>
-      </TableContainer>
+      </HStack> */}
+      <ServicesTable />
     </Stack>
   );
 }
