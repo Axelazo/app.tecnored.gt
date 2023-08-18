@@ -19,7 +19,7 @@ import EmployeesRow from "./EmployeesRow";
 
 function EmployeesTable() {
   const [employees, setEmployees] = useState<Employee[] | null>(null);
-
+  const [isLoading, setIsLoading] = useState(true);
   const api = useApiClient();
 
   useEffect(() => {
@@ -54,21 +54,11 @@ function EmployeesTable() {
       })
       .catch((error: AxiosError) => {
         console.log(error.code);
+      })
+      .finally(() => {
+        setIsLoading(false); // Set loading to false after data fetching
       });
   }, []);
-
-  if (!employees) {
-    return (
-      <Flex
-        flexGrow={1}
-        justifyContent={"center"}
-        alignItems={"center"}
-        minH={"68vh"}
-      >
-        <Spinner size={"xl"} />
-      </Flex>
-    );
-  }
 
   return (
     <TableContainer>
@@ -83,8 +73,20 @@ function EmployeesTable() {
           </Tr>
         </Thead>
         <Tbody>
-          {employees.length > 0 ? (
-            employees?.map((employee, index) => {
+          {isLoading ? ( // Show spinner while loading
+            <Tr>
+              <Td colSpan={8}>
+                <Flex
+                  flexGrow={1}
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                >
+                  <Spinner size={"sm"} />
+                </Flex>
+              </Td>
+            </Tr>
+          ) : employees && employees.length > 0 ? (
+            employees.map((employee, index) => {
               return (
                 <EmployeesRow
                   key={index}
