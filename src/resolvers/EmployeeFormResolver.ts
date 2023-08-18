@@ -1,4 +1,4 @@
-import { EmployeeFormValues } from "interfaces/formValues/EmployeeFormValues";
+import { EmployeeFormValues } from "../formValues/EmployeeFormValues";
 import { PersonFormResolver } from "./PersonFormResolver";
 import { Resolver } from "react-hook-form";
 

@@ -1,6 +1,6 @@
 import { PersonFormResolver } from "./PersonFormResolver";
 import { Resolver } from "react-hook-form";
-import { ClientFormValues } from "interfaces/formValues/ClientFormValues";
+import { ClientFormValues } from "../formValues/ClientFormValues";
 
 export const ClientFormResolver: Resolver<ClientFormValues> = async (
   values: ClientFormValues,

@@ -1,8 +1,9 @@
-import { PersonFormValues } from "interfaces/formValues/PersonFormValues";
+import { PersonFormValues } from "../formValues/PersonFormValues";
 import { Resolver } from "react-hook-form";
 
 export const PersonFormResolver: Resolver<PersonFormValues> = async (
   values: PersonFormValues
+  // eslint-disable-next-line @typescript-eslint/require-await
 ) => {
   const errors = {
     ...(values.dpiNumber &&
