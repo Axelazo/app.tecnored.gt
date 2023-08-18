@@ -63,3 +63,27 @@ export function getNearbyLocations(
 
   return locations;
 }
+
+/**
+ * Rounds and splits a GPS coordinates string into latitude and longitude parts.
+ *
+ * @param {string} coordinates - The GPS coordinates string in the format "latitude, longitude".
+ * @param {number} decimals - The number of decimal places to round to (default is 6).
+ * @returns {string} Rounded coordinates as a string in the format "latitude, longitude".
+ */
+export function roundAndSplitCoordinates(coordinates: string, decimals = 6) {
+  const [latitudeStr, longitudeStr] = coordinates
+    .split(",")
+    .map((coord) => parseFloat(coord));
+
+  if (isNaN(latitudeStr) || isNaN(longitudeStr)) {
+    throw new Error(
+      'Invalid coordinates format. Please use "latitude, longitude".'
+    );
+  }
+
+  const roundedLatitude = latitudeStr.toFixed(decimals);
+  const roundedLongitude = longitudeStr.toFixed(decimals);
+
+  return `${roundedLatitude}, ${roundedLongitude}`;
+}
