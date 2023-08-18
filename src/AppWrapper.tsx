@@ -10,22 +10,24 @@ import { isTokenExpired } from "./helpers/encryption";
 import { useAuth } from "./hooks/useAuth";
 
 export function AppWrapper() {
-  const { user, logout } = useAuth();
+  const { logout } = useAuth();
   const toast = useToast();
 
   useEffect(() => {
     const handleTokenExpiration = () => {
-      if (user && isTokenExpired(user.token)) {
-        logout();
-        toast({
-          title: "Sesión inválida",
-          description: "La sesión ha expirado, por favor, inicie sesión",
-          status: "error",
-          duration: 5000,
-          isClosable: true,
-        });
-      } else if (!user) {
-        logout();
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        const parsedUser = JSON.parse(storedUser);
+        if (parsedUser && isTokenExpired(parsedUser.token)) {
+          logout();
+          toast({
+            title: "Sesión inválida",
+            description: "La sesión ha expirado, por favor, inicie sesión",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+          });
+        }
       }
     };
 
@@ -36,7 +38,7 @@ export function AppWrapper() {
     return () => {
       document.removeEventListener("click", handleTokenExpiration);
     };
-  }, [user, toast, logout]);
+  }, [toast, logout]);
 
   return (
     <>
