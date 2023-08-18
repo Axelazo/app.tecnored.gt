@@ -1,4 +1,4 @@
-import { Timestamps } from "interfaces/types/Timestamps";
+import { Timestamps } from "../../interfaces/misc/Timestamps";
 
 export interface Establishment extends Timestamps {
   id: number;

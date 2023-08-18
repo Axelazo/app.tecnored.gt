@@ -1,4 +1,4 @@
-import { Timestamps } from "interfaces/types/Timestamps";
+import { Timestamps } from "../../interfaces/misc/Timestamps";
 import { Area } from "./Area";
 
 export interface Position extends Timestamps {

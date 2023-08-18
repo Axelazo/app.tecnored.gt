@@ -1,4 +1,4 @@
-import { Timestamps } from "interfaces/types/Timestamps";
+import { Timestamps } from "../../interfaces/misc/Timestamps";
 import { Person } from "./Person";
 import { Position } from "./Position";
 import { Account } from "./Account";
