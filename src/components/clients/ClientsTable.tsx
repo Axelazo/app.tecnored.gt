@@ -19,31 +19,31 @@ import ClientRow from "./ClientRow";
 
 function ClientsTable() {
   const [clients, setClients] = useState<Client[] | null>(null);
-
+  const [isLoading, setIsLoading] = useState(true);
   const api = useApiClient();
 
-  useEffect(() => {
-    const clientsResponse = async () => {
-      return new Promise<Client[]>((resolve, reject) => {
-        const timeout = Math.floor(Math.random() * 1) + 500; // Random wait time between 1-3 seconds
-        setTimeout(() => {
-          api
-            .get<ApiResponse<Client[]>>("/clients")
-            .then((response) => {
-              if (response.status === 204) {
-                resolve([]);
-              } else {
-                resolve(response.data);
-              }
-            })
-            .catch((reason: AxiosError) => {
-              //addtoast
-              reject(reason);
-            });
-        }, timeout);
-      });
-    };
+  const clientsResponse = async () => {
+    return new Promise<Client[]>((resolve, reject) => {
+      const timeout = Math.floor(Math.random() * 1) + 500; // Random wait time between 1-3 seconds
+      setTimeout(() => {
+        api
+          .get<ApiResponse<Client[]>>("/clients")
+          .then((response) => {
+            if (response.status === 204) {
+              resolve([]);
+            } else {
+              resolve(response.data);
+            }
+          })
+          .catch((reason: AxiosError) => {
+            //addtoast
+            reject(reason);
+          });
+      }, timeout);
+    });
+  };
 
+  useEffect(() => {
     clientsResponse()
       .then((clients) => {
         if (clients) {
@@ -54,21 +54,11 @@ function ClientsTable() {
       })
       .catch((error: AxiosError) => {
         console.log(error.code);
+      })
+      .finally(() => {
+        setIsLoading(false); // Set loading to false after data fetching
       });
   }, []);
-
-  if (!clients) {
-    return (
-      <Flex
-        flexGrow={1}
-        justifyContent={"center"}
-        alignItems={"center"}
-        minH={"68vh"}
-      >
-        <Spinner size={"xl"} />
-      </Flex>
-    );
-  }
 
   return (
     <TableContainer>
@@ -82,8 +72,20 @@ function ClientsTable() {
           </Tr>
         </Thead>
         <Tbody>
-          {clients.length > 0 ? (
-            clients?.map((client, index) => {
+          {isLoading ? ( // Show spinner while loading
+            <Tr>
+              <Td colSpan={4}>
+                <Flex
+                  flexGrow={1}
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                >
+                  <Spinner size={"md"} />
+                </Flex>
+              </Td>
+            </Tr>
+          ) : clients && clients.length > 0 ? (
+            clients.map((client, index) => {
               return (
                 <ClientRow
                   key={index}
