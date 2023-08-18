@@ -480,7 +480,7 @@ function CreateEmployee() {
                 {positions?.map((position) => {
                   return <option value={position.id}>{position.name}</option>;
                 })}
-              </Select>{" "}
+              </Select>
               <FormErrorMessage>
                 {formState.errors.position?.message}
               </FormErrorMessage>
