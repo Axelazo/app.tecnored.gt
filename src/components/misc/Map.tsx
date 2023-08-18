@@ -14,9 +14,10 @@ interface MapProps {
     SetStateAction<google.maps.LatLng | google.maps.LatLngLiteral | null>
   >;
   formSubmited: boolean;
+  disabled?: boolean;
 }
 
-function Map({ location, setLocation, formSubmited }: MapProps) {
+function Map({ location, setLocation, formSubmited, disabled }: MapProps) {
   const [center, setCenter] = useState({
     lat: 16.509673990914745,
     lng: -89.41893294734292,
@@ -42,8 +43,12 @@ function Map({ location, setLocation, formSubmited }: MapProps) {
 
   return (
     <Stack w={"full"}>
-      <FormControl isRequired isInvalid={formSubmited && location === null}>
-        {formSubmited && location === null ? (
+      <FormControl
+        isRequired
+        isInvalid={formSubmited && location === null}
+        isDisabled={disabled}
+      >
+        {location === null ? (
           ""
         ) : (
           <Button
