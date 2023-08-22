@@ -50,7 +50,7 @@ export function ServiceRow({
       <Td>{planName}</Td>
       <Td>{`Q.${planPrice}.00`}</Td>
       <Td>{`${planSpeed} mbps`}</Td>
-
+      <Td>{establishmentName}</Td>
       <Td>{planStatus}</Td>
       <Td>
         <OnlineServiceIndicator />
