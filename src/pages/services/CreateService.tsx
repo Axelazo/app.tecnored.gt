@@ -8,10 +8,6 @@ import {
   Spinner,
   VStack,
   Box,
-  List,
-  ListItem,
-  Tag,
-  TagCloseButton,
   Text,
   useToast,
   FormErrorMessage,
@@ -32,7 +28,6 @@ import { Router } from "../../interfaces/app/Router";
 import { ServicesFormValues } from "../../formValues/ServicesFormValues";
 import { ServicesFormResolver } from "../../resolvers/ServicesFormResolver";
 import { useForm } from "react-hook-form";
-import { resolve } from "chart.js/helpers";
 import { Service } from "../../interfaces/app/Service";
 import { ErrorResponseData } from "../../interfaces/app/ErrorResponseData";
 
@@ -209,8 +204,6 @@ function CreateService() {
     );
   }
 
-  const markers: string[] = [];
-
   return (
     <>
       <Stack flexGrow={1}>
@@ -235,42 +228,12 @@ function CreateService() {
             >
               <Flex flex={1} flexDirection={"column"} w={"full"}>
                 <VStack w={"full"}>
-                  {/*                   <FormControl
-                    isRequired
-                    isInvalid={!!formState.errors.clientId?.message}
-                  >
-                    <FormLabel>Cliente seleccionado</FormLabel>
-                    <Select
-                      //value={id}
-                      placeholder="Selecciona un cliente"
-                      {...register("clientId")}
-                    >
-                      {clients?.map((client, index) => {
-                        return (
-                          <option
-                            key={index}
-                            value={client.id}
-                          >{`${client.person.firstNames} ${client.person.lastNames}`}</option>
-                        );
-                      })}
-                    </Select>
-                    <FormErrorMessage>
-                      {formState.errors.clientId?.message}
-                    </FormErrorMessage>
-                  </FormControl> */}
                   <FormControl
                     isInvalid={!!formState.errors.clientId?.message}
                     isRequired
                   >
                     <FormLabel>Puesto</FormLabel>
-                    <Select
-                      {...register("clientId")}
-                      /*                 onChange={(ev) => {
-                  setPosition(parseInt(ev.target.value));
-                  console.log(ev.target.value);
-                }} */
-                      defaultValue={"null"}
-                    >
+                    <Select {...register("clientId")} defaultValue={"null"}>
                       {clients?.map((client) => {
                         return (
                           <option value={client.id}>
@@ -364,9 +327,6 @@ function CreateService() {
                     "Pega las coordenadas aquí o marca una ubicación en el mapa"
                   }
                   required={true}
-                  /*                   onChange={(locationString) => {
-
-                  }} */
                   register={register("latlng")}
                   value={`${
                     location ? location.toString() : "latitud, longitud"
@@ -395,7 +355,6 @@ function CreateService() {
               type={"submit"}
               onClick={() => {
                 console.log(formState.errors);
-                //console.log(getValues());
                 setTimeout(() => {
                   clearErrors();
                   reset({});
