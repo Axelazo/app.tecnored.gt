@@ -32,7 +32,6 @@ function Map({ location, setLocation, formSubmited, disabled }: MapProps) {
 
   useEffect(() => {
     if (mapInstance && location) {
-      console.log("Map instance and location set, panning!");
       const timeoutId = setTimeout(() => {
         mapInstance.panTo(location);
       }, 500);
@@ -91,9 +90,6 @@ function Map({ location, setLocation, formSubmited, disabled }: MapProps) {
               if (setLocation) {
                 setLocation(e.latLng);
               }
-            console.log(
-              `Clicked on map at: ${e.latLng?.lat()} and ${e.latLng?.lng()}`
-            );
           }}
         >
           {location && <Marker position={location} />}
