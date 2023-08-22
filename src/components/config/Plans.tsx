@@ -25,6 +25,7 @@ import { ApiResponse } from "../../interfaces/misc/ApiResponse";
 import { Plan } from "../../interfaces/app/Plan";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { FaEye, FaPencilAlt, FaPowerOff } from "react-icons/fa";
+import { ErrorResponseData } from "../../interfaces/app/ErrorResponseData";
 
 export function Plans() {
   const [plans, setPlans] = useState<Plan[] | null>(null);
@@ -62,15 +63,20 @@ export function Plans() {
             });
             fetchPlans();
           })
-          .catch((reason: AxiosError) => {
-            toast({
-              title: "Error",
-              description: "El plan solicitado no ha sido encontrado",
-              status: "error",
-              duration: 5000,
-              isClosable: true,
-            });
-            reject(reason);
+          .catch((error: AxiosError) => {
+            if (error.response && error.response.data) {
+              console.log(error.response.data);
+              const message = (error.response.data as ErrorResponseData)
+                .message;
+              toast({
+                title: "Error",
+                description: message,
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+              });
+            }
+            reject(error);
           });
       }, timeout);
     });
