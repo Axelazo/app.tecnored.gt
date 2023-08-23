@@ -57,7 +57,12 @@ const LinkItems: Array<LinkItemProps> = [
   },
   { name: "Dashboard", icon: FaHome, path: "/dashboard", role: "operator" },
   { name: "Clientes", icon: FaUserTag, path: "/clients", role: "operator" },
-  { name: "Soporte Técnico", icon: FaToolbox, role: "operator" },
+  {
+    name: "Soporte Técnico",
+    icon: FaToolbox,
+    path: "/support",
+    role: "operator",
+  },
   /*   { name: "Seguimiento Soporte Técnico", icon: FaToolbox, role: "technician" },
    */ {
     name: "Empleados",
@@ -193,6 +198,7 @@ const NavItem = ({ icon, path, children, ...rest }: NavItemProps) => {
         align="center"
         p="4"
         mx="4"
+        mt={2}
         borderRadius="lg"
         role="group"
         cursor="pointer"

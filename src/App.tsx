@@ -34,6 +34,9 @@ import Dashboard from "./pages/dashboard/Dashboard";
 import Configuration from "./pages/config/Configuration";
 import { Plans } from "./components/config/Plans";
 import UpdateEmployee from "./components/employees/UpdateEmployee";
+import { Support } from "./pages/support/Support";
+import TicketsList from "./components/support/TicketsList";
+import CreateTicket from "./components/support/CreateTicket";
 
 function App() {
   const { user } = useAuth();
@@ -95,6 +98,10 @@ function App() {
                 </>
               )}
               <Route path="/monitoring" element={<Monitoring />} />
+              <Route path="/support" element={<Support />}>
+                <Route path="" element={<TicketsList />} />
+                <Route path="create" element={<CreateTicket />} />
+              </Route>
 
               <Route path="*" element={<Navigate to="/dashboard" />} />
             </Route>
