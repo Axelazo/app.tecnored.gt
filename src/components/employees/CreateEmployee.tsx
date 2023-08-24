@@ -500,7 +500,7 @@ function CreateEmployee() {
               }, 3000);
             }}
           >
-            Crear cliente
+            Crear Empleado
           </Button>
         </Flex>
       </form>
