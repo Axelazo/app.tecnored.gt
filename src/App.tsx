@@ -37,6 +37,7 @@ import UpdateEmployee from "./components/employees/UpdateEmployee";
 import { Support } from "./pages/support/Support";
 import TicketsList from "./components/support/TicketsList";
 import CreateTicket from "./components/support/CreateTicket";
+import { EstablishmentsManagement } from "./components/config/Establishments";
 
 function App() {
   const { user } = useAuth();
@@ -68,6 +69,10 @@ function App() {
                   <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/configuration" element={<Configuration />}>
                     <Route path="plans" element={<Plans />} />
+                    <Route
+                      path="establishments"
+                      element={<EstablishmentsManagement />}
+                    />
                   </Route>
                 </>
               ) : (
