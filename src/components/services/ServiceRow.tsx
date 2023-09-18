@@ -22,6 +22,7 @@ import { OnlineServiceIndicator } from "./OnlineServiceIndicator";
 
 export interface ServiceRow {
   index: number;
+  id: number;
   serviceNumber: string;
   ipAddress: string;
   planName: string;

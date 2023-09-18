@@ -1,12 +1,7 @@
 import { useEffect, useState } from "react";
 import useApiClient from "../../hooks/useApiClient";
-import { ApiResponse } from "../../interfaces/misc/ApiResponse";
-import {
-  CheckCircleIcon,
-  WarningIcon,
-  ChevronRightIcon,
-} from "@chakra-ui/icons";
-import { Text, Spinner, HStack, Badge } from "@chakra-ui/react";
+import { CheckCircleIcon, WarningIcon } from "@chakra-ui/icons";
+import { Spinner, HStack } from "@chakra-ui/react";
 
 export const OnlineServiceIndicator = () => {
   const [isLoading, setIsLoading] = useState(true);
