@@ -228,9 +228,9 @@ function UpdateEmployee() {
           }
         });
         setBank(employee.account.bank.id);
-        setEstablishment(employee.position.area.establishment.id);
-        setArea(employee.position.area.id);
-        setPosition(employee.position.id);
+        setEstablishment(employee.employeePositionMapping[0].establishment.id);
+        setArea(employee.employeePositionMapping[0].area.id);
+        setPosition(employee.employeePositionMapping[0].position.id);
       })
       .catch((error) => {
         setLoadError(true);
@@ -261,11 +261,13 @@ function UpdateEmployee() {
         let positionsResponse;
         if (area !== 0) {
           positionsResponse = await api.get<ApiResponse<Position[]>>(
-            `/establishment/area/${area}/positions`
+            `establishments/${establishment}/areas/${area}/positions`
           );
         }
 
         if (positionsResponse) setPositions(positionsResponse.data);
+
+        console.log(areasResponse, positionsResponse, establishmentsResponse);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -520,7 +522,10 @@ function UpdateEmployee() {
                 onChange={(ev) => {
                   setEstablishment(parseInt(ev.target.value));
                 }}
-                defaultValue={employee.position.area.establishment.id}
+                value={establishment}
+                defaultValue={
+                  employee.employeePositionMapping[0].establishment.id
+                }
                 variant={"filled"}
               >
                 {establishments?.map((establishment) => {
@@ -529,7 +534,7 @@ function UpdateEmployee() {
                       value={establishment.id}
                       selected={
                         establishment.id ===
-                        employee.position.area.establishment.id
+                        employee.employeePositionMapping[0].establishment.id
                       }
                     >
                       {establishment.name}
@@ -565,7 +570,8 @@ function UpdateEmployee() {
                   setArea(parseInt(ev.target.value));
                   console.log(ev.target.value);
                 }}
-                defaultValue={employee.position.area.id}
+                value={area}
+                defaultValue={employee.employeePositionMapping[0].area.id}
                 required={true}
                 variant={"filled"}
               >
@@ -573,7 +579,9 @@ function UpdateEmployee() {
                   return (
                     <option
                       value={area.id}
-                      selected={area.id === employee.position.area.id}
+                      selected={
+                        area.id === employee.employeePositionMapping[0].area.id
+                      }
                     >
                       {area.name}
                     </option>
@@ -596,7 +604,8 @@ function UpdateEmployee() {
                   setPosition(parseInt(ev.target.value));
                   console.log(ev.target.value);
                 }}
-                value={employee.position.id}
+                value={position}
+                defaultValue={employee.employeePositionMapping[0].position.id}
                 variant={"filled"}
               >
                 {positions?.map((position) => {

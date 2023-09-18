@@ -205,9 +205,12 @@ function CreateEmployee() {
   }, [establishment]);
 
   useEffect(() => {
+    console.log(`/establishments/${establishment}/area/${area}/positions`);
     if (area !== 0) {
       api
-        .get<ApiResponse<Position[]>>(`/establishment/area/${area}/positions`)
+        .get<ApiResponse<Position[]>>(
+          `establishments/${establishment}/areas/${area}/positions`
+        )
         .then((response) => {
           setPositions(response.data);
         });

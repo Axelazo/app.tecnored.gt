@@ -13,21 +13,14 @@ import {
   Tag,
   Box,
   Image,
-  VStack,
   SimpleGrid,
   List,
   ListItem,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
   Table,
   TableCaption,
   TableContainer,
   Tbody,
   Td,
-  Tfoot,
   Th,
   Thead,
   Tr,
@@ -41,13 +34,10 @@ import useApiClient from "../../hooks/useApiClient";
 import PageHeader from "../common/PageHeader";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import {
-  MdAdd,
   MdAddCircle,
-  MdAttachMoney,
   MdEdit,
   MdMonetizationOn,
   MdPrint,
-  MdRemove,
   MdRemoveCircle,
 } from "react-icons/md";
 import { FaFilePdf, FaFileExcel } from "react-icons/fa";
@@ -55,7 +45,7 @@ import { AddIcon, ChevronDownIcon, MinusIcon } from "@chakra-ui/icons";
 import { ApiResponse } from "../../interfaces/misc/ApiResponse";
 import { Employee } from "../../interfaces/app/Employee";
 import { ageAtDate } from "../../helpers/time";
-import { Bar, Line } from "react-chartjs-2";
+import { Line } from "react-chartjs-2";
 
 function ViewEmployee() {
   const [employee, setEmployee] = useState<Employee | null>(null);
@@ -64,27 +54,28 @@ function ViewEmployee() {
   const api = useApiClient();
   const employeeId = id ? parseInt(id) : undefined;
 
-  useEffect(() => {
-    const employeeResponse = async () => {
-      return new Promise<Employee>((resolve, reject) => {
-        const timeout = Math.floor(Math.random() * 1); // Random wait time between 1-3 seconds
-        setTimeout(() => {
-          api
-            .get<ApiResponse<Employee>>(`/employees/${employeeId}`)
-            .then((response) => {
-              resolve(response.data);
-            })
-            .catch((reason: AxiosError) => {
-              //addtoast
-              reject(reason);
-            });
-        }, timeout);
-      });
-    };
+  const employeeResponse = async () => {
+    return new Promise<Employee>((resolve, reject) => {
+      const timeout = Math.floor(Math.random() * 1); // Random wait time between 1-3 seconds
+      setTimeout(() => {
+        api
+          .get<ApiResponse<Employee>>(`/employees/${employeeId}`)
+          .then((response) => {
+            resolve(response.data);
+          })
+          .catch((reason: AxiosError) => {
+            //addtoast
+            reject(reason);
+          });
+      }, timeout);
+    });
+  };
 
+  useEffect(() => {
     employeeResponse()
       .then((employee) => {
         setEmployee(employee);
+        console.log(employee);
       })
       .catch((error) => {
         console.log(error);
@@ -188,7 +179,7 @@ function ViewEmployee() {
                     }`}
                   </Text>
                   <Text fontSize={"xl"} fontWeight={"light"}>
-                    {`${employee.position.name}`}
+                    {`${employee.employeePositionMapping[0].position.name}`}
                   </Text>
                 </Box>
               </Stack>
