@@ -38,6 +38,7 @@ import { Support } from "./pages/support/Support";
 import TicketsList from "./components/support/TicketsList";
 import CreateTicket from "./components/support/CreateTicket";
 import { EstablishmentsManagement } from "./components/config/Establishments";
+import ViewTicket from "./components/support/ViewTicket";
 
 function App() {
   const { user } = useAuth();
@@ -105,7 +106,11 @@ function App() {
               <Route path="/monitoring" element={<Monitoring />} />
               <Route path="/support" element={<Support />}>
                 <Route path="" element={<TicketsList />} />
-                <Route path="create" element={<CreateTicket />} />
+                <Route
+                  path="create/:clientId?/:serviceId?"
+                  element={<CreateTicket />}
+                />
+                <Route path="view/:ticketId" element={<ViewTicket />} />
               </Route>
 
               <Route path="*" element={<Navigate to="/dashboard" />} />
