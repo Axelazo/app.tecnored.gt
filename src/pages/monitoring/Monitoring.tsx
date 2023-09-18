@@ -106,7 +106,7 @@ function Monitoring() {
   }, [bounds]);
 
   const servicesResponse = async () => {
-    if (bounds instanceof google.maps.LatLngBounds) {
+    if (bounds && bounds instanceof google.maps.LatLngBounds) {
       const northEast = bounds.getNorthEast();
       const southWest = bounds.getSouthWest();
 
