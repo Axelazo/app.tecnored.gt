@@ -5,25 +5,38 @@ import {
   Tr,
   Th,
   Tbody,
+  Flex,
+  Spinner,
   Td,
-  Badge,
-  Button,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
+  Text,
 } from "@chakra-ui/react";
-import { ChevronDownIcon } from "@chakra-ui/icons";
-import {
-  FaEye,
-  FaPencilAlt,
-  FaPowerOff,
-  FaPrint,
-  FaTrash,
-} from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import useApiClient from "../../hooks/useApiClient";
+import { ApiResponse } from "../../interfaces/misc/ApiResponse";
+import { Ticket } from "../../interfaces/app/Ticket";
+import TicketRow from "./TicketRow";
 
 function TicketsTable() {
+  const [tickets, setTickets] = useState<Ticket[] | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const api = useApiClient();
+
+  async function fetchTickets() {
+    setIsLoading(true);
+    try {
+      const response = await api.get<ApiResponse<Ticket[]>>("/tickets");
+      setTickets(response.data);
+    } catch (error) {
+      console.error("Error fetching ticket:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchTickets();
+  }, []);
+
   return (
     <TableContainer>
       <Table variant="simple">
@@ -40,46 +53,45 @@ function TicketsTable() {
           </Tr>
         </Thead>
         <Tbody>
-          <Tr>
-            <Td>000001</Td>
-            <Td>Julian Perez Poc</Td>
-            <Td>Corte de Internet</Td>
-            <Td>23234689</Td>
-            <Td>
-              <Badge size={"xl"} colorScheme={"green"} p={2}>
-                NUEVO
-              </Badge>
-            </Td>
-            <Td>Joselin</Td>
-            <Td>
-              <Badge size={"xl"} colorScheme={"red"} p={2}>
-                URGENTE
-              </Badge>
-            </Td>
-            <Td>
-              <Menu isLazy>
-                <MenuButton
-                  as={Button}
-                  rightIcon={<ChevronDownIcon />}
-                  w={"full"}
+          {isLoading ? ( // Show spinner while loading
+            <Tr>
+              <Td colSpan={8}>
+                <Flex
+                  flexGrow={1}
+                  justifyContent={"center"}
+                  alignItems={"center"}
                 >
-                  Acción
-                </MenuButton>
-                <MenuList>
-                  <MenuItem as={Link} to={`view/${1}`} icon={<FaEye />}>
-                    Ver más información del Ticket
-                  </MenuItem>
-                  <MenuItem as={Link} to={`update/${1}`} icon={<FaPencilAlt />}>
-                    Editar información del Ticket
-                  </MenuItem>
-                  <MenuItem as={Link} to={`update/${1}`} icon={<FaPrint />}>
-                    Imprimir información del Ticket
-                  </MenuItem>
-                  <MenuItem icon={<FaTrash />}>Eliminar Ticket</MenuItem>
-                </MenuList>
-              </Menu>
-            </Td>
-          </Tr>
+                  <Spinner size={"sm"} />
+                </Flex>
+              </Td>
+            </Tr>
+          ) : tickets && tickets.length > 0 ? (
+            tickets.map((ticket, index) => {
+              ticket.service;
+              return (
+                <TicketRow
+                  key={index}
+                  index={index}
+                  fullName={`${ticket.service?.clients[0]?.person.firstNames} ${ticket.service?.clients[0]?.person.lastNames}`}
+                  reason={ticket.reason.name}
+                  serviceNumber={ticket.service.serviceNumber}
+                  priority={ticket.priority}
+                  id={`${ticket.id}`}
+                  status={ticket.statuses[0].name}
+                  createdAt={ticket.createdAt}
+                  fetchTickets={fetchTickets}
+                />
+              );
+            })
+          ) : (
+            <Tr>
+              <Td colSpan={9} h={"64vh"}>
+                <Text w={"full"} textAlign={"center"}>
+                  No se han encontrado tickets
+                </Text>
+              </Td>
+            </Tr>
+          )}
         </Tbody>
       </Table>
     </TableContainer>

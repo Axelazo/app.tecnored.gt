@@ -7,5 +7,6 @@ export interface TicketFormValues {
   estimatedStart: Date;
   estimatedFinish: Date;
   comment?: string;
+  description?: string;
   priority: number;
 }

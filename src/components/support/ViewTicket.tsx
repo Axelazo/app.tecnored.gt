@@ -35,6 +35,7 @@ import { ErrorResponseData } from "../../interfaces/app/ErrorResponseData";
 
 interface TicketStatusProps {
   status: Status;
+  description?: string;
   index: number;
   date: string | Date;
   totalItems: number;
@@ -49,6 +50,7 @@ type StatusColorMapping = {
 
 function TicketStatus({
   status,
+  description,
   index,
   totalItems,
   date,
@@ -120,8 +122,12 @@ function TicketStatus({
             </Stack>
             <CardBody>
               <Stack spacing="3">
-                <Heading size="sm">Comentario</Heading>
-                <Text>{status.name}</Text>
+                <Heading size="sm">Comentario del Técnico:</Heading>
+                {description ? (
+                  <Text as="em">{description}</Text>
+                ) : (
+                  <Text as="em">Sin comentario adicional</Text>
+                )}
               </Stack>
             </CardBody>
           </Stack>
@@ -133,9 +139,13 @@ function TicketStatus({
 
 interface UpdateTicketStatusProps {
   ticketId: string | undefined;
+  fetchTicket: () => void;
 }
 
-function UpdateTicketStatus({ ticketId }: UpdateTicketStatusProps) {
+function UpdateTicketStatus({
+  ticketId,
+  fetchTicket,
+}: UpdateTicketStatusProps) {
   const { register, handleSubmit, formState, clearErrors, getValues, control } =
     useForm<UpdateTicketStatusFormValues>({
       resolver: UpdateTicketStatusFormResolver,
@@ -152,21 +162,18 @@ function UpdateTicketStatus({ ticketId }: UpdateTicketStatusProps) {
           .put<Ticket>(`/tickets/${ticketId}/update`, ticketData)
           .then((response) => {
             toast({
-              description: `Ticket creado exitosamente!`,
+              description: `Ticket actualizado exitosamente!`,
               status: "success",
               duration: 2000,
               isClosable: true,
             });
-
+            fetchTicket();
             resolve(response);
           })
           .catch((error: AxiosError) => {
-            console.log("catched error!");
             if (error.response && error.response.data) {
-              console.log(error.response.data);
               const message = (error.response.data as ErrorResponseData)
                 .message;
-              console.log(`error is ` + message);
               toast({
                 title: "Error",
                 description: `${message}`,
@@ -291,6 +298,8 @@ function ViewTicket() {
   };
 
   const colors = getStatusColors();
+
+  console.log(ticket.description);
 
   return (
     <>
@@ -455,6 +464,11 @@ function ViewTicket() {
                     totalItems={ticket.ticketStatuses.length}
                     color={colors[index].currentStatusColor}
                     previousColor={colors[index].nextStatusColor}
+                    description={
+                      index === ticket.ticketStatuses.length - 1
+                        ? ticket.description
+                        : ticketStatus.description
+                    }
                   />
                 );
               })}
@@ -462,7 +476,7 @@ function ViewTicket() {
           </Stack>
         </Stack>
         <Stack>
-          <UpdateTicketStatus ticketId={ticketId} />
+          <UpdateTicketStatus ticketId={ticketId} fetchTicket={fetchTicket} />
         </Stack>
       </Stack>
     </>

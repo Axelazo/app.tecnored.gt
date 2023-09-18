@@ -8,11 +8,16 @@ import {
   Button,
   MenuList,
   MenuItem,
+  useToast,
 } from "@chakra-ui/react";
 import { FaEye, FaPencilAlt, FaPrint, FaTrash } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { timeAgo } from "../../helpers/time";
-import parseISO from "date-fns/parseISO";
+import { AxiosError } from "axios";
+import useApiClient from "../../hooks/useApiClient";
+import { ErrorResponseData } from "../../interfaces/app/ErrorResponseData";
+import { Ticket } from "../../interfaces/app/Ticket";
+import { ApiResponse } from "../../interfaces/misc/ApiResponse";
 
 interface TicketRow {
   index: number;
@@ -23,6 +28,7 @@ interface TicketRow {
   status: string;
   createdAt: string;
   priority: number;
+  fetchTickets: () => void;
 }
 
 function TicketRow({
@@ -34,8 +40,49 @@ function TicketRow({
   status,
   createdAt,
   priority,
+  fetchTickets,
 }: TicketRow) {
   console.log(status);
+
+  const api = useApiClient();
+  const toast = useToast();
+
+  const deleteTicket = async (ticketId: string) => {
+    const timeout = Math.floor(Math.random() * 2000) + 1000; // Random wait time between 1-3 seconds
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        api
+          .remove<ApiResponse<Ticket>>(`/tickets/delete/${ticketId}`)
+          .then((response) => {
+            toast({
+              description: `Ticket eliminado exitosamente!`,
+              status: "success",
+              duration: 2000,
+              isClosable: true,
+            });
+            fetchTickets();
+            resolve(response);
+          })
+          .catch((error: AxiosError) => {
+            console.log("catched error!");
+            if (error.response && error.response.data) {
+              console.log(error.response.data);
+              const message = (error.response.data as ErrorResponseData)
+                .message;
+              console.log(`error is ` + message);
+              toast({
+                title: "Error",
+                description: `${message}`,
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+              });
+            }
+          });
+      }, timeout);
+    });
+  };
+
   return (
     <Tr>
       <Td>{`${id.padStart(6, "0")}`}</Td>
@@ -50,6 +97,10 @@ function TicketRow({
         ) : status === "En Proceso" ? (
           <Badge size={"xl"} colorScheme={"yellow"} p={2}>
             EN PROCESO
+          </Badge>
+        ) : status === "Cerrado" ? (
+          <Badge size={"xl"} colorScheme={"red"} p={2}>
+            CERRADO
           </Badge>
         ) : (
           ""
@@ -82,13 +133,15 @@ function TicketRow({
             <MenuItem as={Link} to={`view/${id}`} icon={<FaEye />}>
               Ver más información del Ticket
             </MenuItem>
-            <MenuItem as={Link} to={`update/${id}`} icon={<FaPencilAlt />}>
+            {/*             <MenuItem as={Link} to={`update/${id}`} icon={<FaPencilAlt />}>
               Editar información del Ticket
             </MenuItem>
             <MenuItem as={Link} to={`update/${id}`} icon={<FaPrint />}>
               Imprimir información del Ticket
+            </MenuItem> */}
+            <MenuItem icon={<FaTrash />} onClick={() => deleteTicket(id)}>
+              Eliminar Ticket
             </MenuItem>
-            <MenuItem icon={<FaTrash />}>Eliminar Ticket</MenuItem>
           </MenuList>
         </Menu>
       </Td>
