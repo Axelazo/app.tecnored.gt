@@ -20,9 +20,10 @@ import es from "date-fns/locale/es";
  * const result = timeAgo(date);
  * //Example output: "hace alrededor de 1 hora - (03/07/2023 a las 7:33 a.m.)"
  */
-export function timeAgo(date: Date): string {
+export function timeAgo(date: string): string {
   const formatedDate = parseISO(date.toString());
-  const timeAgo = formatDistanceToNow(formatedDate, {
+
+  const timeAgoText = formatDistanceToNow(formatedDate, {
     addSuffix: true,
     locale: es,
   });
@@ -30,7 +31,7 @@ export function timeAgo(date: Date): string {
   const formattedFullDate = format(formatedDate, "dd/MM/yyyy 'a las' h:mm a", {
     locale: es,
   });
-  return `${timeAgo} - (${formattedFullDate})`;
+  return `${timeAgoText}`;
 }
 
 /**
@@ -60,4 +61,21 @@ export function ageAtDate(birthday: Date): string {
   );
 
   return `${age} años - (${formattedBirthday})`;
+}
+
+/**
+ * Formats a date string in ISO 8601 format to the "MM/dd/yyyy" format.
+ *
+ * @param {string} date - The date string in ISO 8601 format (e.g., "1999-03-07T00:00:00.000Z").
+ * @returns {string} A formatted date string in "MM/dd/yyyy" format.
+ *
+ * @example
+ * const inputDateString = "1999-03-07T00:00:00.000Z";
+ * const formattedDate = formatDate(inputDateString);
+ * // Example output: "03/07/1999"
+ */
+export function formatDate(date: string) {
+  const parsedDate = parseISO(date);
+  const formattedDate = format(parsedDate, "MM/dd/yyyy hh:mm");
+  return formattedDate;
 }
