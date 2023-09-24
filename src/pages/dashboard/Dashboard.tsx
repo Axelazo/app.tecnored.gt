@@ -1,117 +1,188 @@
-import { Card, Flex, Grid, Skeleton, Stack } from "@chakra-ui/react";
-import { CategoryScale } from "chart.js";
-import { Chart as ChartJS } from "chart.js/auto";
-import { Bar } from "react-chartjs-2";
-import { DashboardDataCard } from "../../components/common/DashboardDataCard";
+import { Stack } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { HiUserGroup, HiUsers, HiUserAdd } from "react-icons/hi";
-
 import useApiClient from "../../hooks/useApiClient";
-import { useAuth } from "../../hooks/useAuth";
+import DashboardCard from "./DashboardCard";
+import { FaCalendar, FaCalendarDay, FaUsers } from "react-icons/fa";
+import { GiPayMoney, GiReceiveMoney } from "react-icons/gi";
 
-interface DashboardData {
-  clients: {
-    totalClients: number;
-    totalOfNewClientsCreatedThisMonth: number;
-    totalOfNewClientsCreatedToday: number;
-  };
-}
+// Get the current date
+const currentDate = new Date();
 
-ChartJS.register(CategoryScale);
+const startOfDay = new Date(
+  currentDate.getFullYear(),
+  currentDate.getMonth(),
+  currentDate.getDay()
+);
+
+const endOfDay = new Date(
+  currentDate.getFullYear(),
+  currentDate.getMonth(),
+  currentDate.getDay() + 1
+);
+
+endOfDay.setMilliseconds(endOfDay.getMilliseconds() - 1);
+
+// Calculate the first day of the current month
+const firstDayOfMonth = new Date(
+  currentDate.getFullYear(),
+  currentDate.getMonth(),
+  1
+);
+
+// Calculate the last day of the current month
+const lastDayOfMonth = new Date(
+  currentDate.getFullYear(),
+  currentDate.getMonth() + 1,
+  0
+);
+
+lastDayOfMonth.setMilliseconds(lastDayOfMonth.getMilliseconds() - 1);
+
+const dayInterval = {
+  from: startOfDay.toISOString(),
+  to: endOfDay.toISOString(),
+};
+
+const monthInterval = {
+  from: firstDayOfMonth.toISOString(),
+  to: lastDayOfMonth.toISOString(),
+};
 
 function Dashboard() {
-  const [loading, setLoading] = useState(true);
-  const [dashboardData, setDashboardData] = useState<DashboardData | null>(
-    null
-  );
-
-  const data = {
-    labels: [
-      "Enero",
-      "Febrero",
-      "Marzo",
-      "Abril",
-      "Mayo",
-      "Junio",
-      "Julio",
-      "Agosto",
-      "Septiembre",
-      "Octubre",
-      "Noviembre",
-      "Diciembre",
-    ],
-    datasets: [
-      {
-        label: "Pagos",
-        backgroundColor: "#3182CE",
-        borderColor: "#3182CE",
-        borderWidth: 1,
-        hoverBackgroundColor: "#63B3ED",
-        hoverBorderColor: "#63B3ED",
-        data: Array.from(
-          { length: 3 },
-          () => Math.floor(Math.random() * 5000) + 10000
-        ),
-      },
-    ],
-  };
+  const [allowancesAmount, setAllowancesAmount] = useState(0);
+  const [deductionsAmount, setDeductionsAmount] = useState(0);
+  // Clients
+  const [totalClientsCount, setTotalClientsCount] = useState(0);
+  const [newClientsDuringDay, setNewClientsDuringDay] = useState(0);
+  const [newClientsDuringMonth, setNewClientsDuringMonth] = useState(0);
 
   const api = useApiClient();
 
+  const fetchAllClientsCount = () => {
+    api
+      .get<{ count: number }>("/dashboard/clients/count")
+      .then((response) => {
+        setTotalClientsCount(response.count);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const fetchNewClientsCountDuringDay = () => {
+    api
+      .get<{ count: number }>("/dashboard/clients/count", {
+        params: dayInterval,
+      })
+      .then((response) => {
+        console.log(`response was ${JSON.stringify(response)}`);
+        setNewClientsDuringMonth(response.count);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const fetchNewClientsCountDuringMonth = () => {
+    api
+      .get<{ count: number }>("/dashboard/clients/count", {
+        params: monthInterval,
+      })
+      .then((response) => {
+        console.log(`response was ${JSON.stringify(response)}`);
+        setNewClientsDuringMonth(response.count);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const fetchAllowancesAmount = () => {
+    api
+      .get<{ amount: number }>("/dashboard/employees/allowances/amount", {
+        params: monthInterval,
+      })
+      .then((response) => {
+        setAllowancesAmount(response.amount);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const fetchDeductionsAmount = () => {
+    api
+      .get<{ amount: number }>("/dashboard/employees/deductions/amount", {
+        params: monthInterval,
+      })
+      .then((response) => {
+        setDeductionsAmount(response.amount);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const clientsData: StatData[] = [
+    {
+      id: 1,
+      label: "Total de Clientes ",
+      value: totalClientsCount,
+      icon: FaUsers,
+      percentage: "10%",
+    },
+    {
+      id: 2,
+      label: "Total de Clientes Nuevos (hoy)",
+      value: newClientsDuringDay,
+      icon: FaCalendarDay,
+      percentage: "30%",
+    },
+    {
+      id: 3,
+      label: "Total de Clientes Nuevos (mes)",
+      value: newClientsDuringMonth,
+      icon: FaCalendar,
+      percentage: "30%",
+    },
+  ];
+
+  const employeeAllowancesDeductionsData: StatData[] = [
+    {
+      id: 1,
+      label: "Total de Bonificaciones por Pagar (mes) ",
+      value: allowancesAmount,
+      prefix: "Q",
+      icon: GiPayMoney,
+    },
+    {
+      id: 2,
+      label: "Total de Penalizaciones por Cobrar (mes)",
+      value: deductionsAmount,
+      prefix: "Q",
+      icon: GiReceiveMoney,
+    },
+  ];
+
   useEffect(() => {
-    api.get<DashboardData>("/dashboard").then((data) => {
-      setDashboardData(data);
-      setLoading(false);
-    });
+    try {
+      fetchAllClientsCount();
+      fetchNewClientsCountDuringDay();
+      fetchNewClientsCountDuringMonth();
+      fetchAllowancesAmount();
+      fetchDeductionsAmount();
+    } catch (error) {
+      console.log(error);
+    }
   }, []);
 
   return (
-    <Stack flexDir={"column"} alignContent={"center"}>
-      <Grid
-        templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }}
-        gap={{ base: 4, md: 4 }}
-      >
-        <Skeleton isLoaded={!loading}>
-          <DashboardDataCard
-            heading="Clientes"
-            property1={{
-              label: "Total de clientes",
-              total: dashboardData?.clients.totalClients
-                ? dashboardData?.clients.totalClients
-                : 0,
-              icon: HiUserGroup,
-            }}
-            property2={{
-              label: "Total de clientes agregados en el mes",
-              total: dashboardData?.clients.totalOfNewClientsCreatedThisMonth
-                ? dashboardData?.clients.totalOfNewClientsCreatedThisMonth
-                : 0,
-              icon: HiUsers,
-            }}
-            property3={{
-              label: "Total de clientes agregados hoy",
-              total: dashboardData?.clients.totalOfNewClientsCreatedToday
-                ? dashboardData?.clients.totalOfNewClientsCreatedToday
-                : 0,
-              icon: HiUserAdd,
-            }}
-          />
-        </Skeleton>
-      </Grid>
-
-      <Stack pt={4}>
-        <Card>
-          <Flex p={6} height={"35rem"}>
-            <Bar
-              data={data}
-              options={{
-                responsive: true,
-                maintainAspectRatio: false,
-              }}
-            />
-          </Flex>
-        </Card>
-      </Stack>
+    <Stack flexDir={{ base: "column", lg: "row" }} alignContent={"center"}>
+      <DashboardCard title="Clientes" stats={clientsData} />
+      <DashboardCard
+        title="Bonos / Cobros"
+        stats={employeeAllowancesDeductionsData}
+      />
     </Stack>
   );
 }
