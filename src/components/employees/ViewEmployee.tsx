@@ -46,6 +46,10 @@ import { ApiResponse } from "../../interfaces/misc/ApiResponse";
 import { Employee } from "../../interfaces/app/Employee";
 import { ageAtDate } from "../../helpers/time";
 import { Line } from "react-chartjs-2";
+import { Chart as ChartJS } from "chart.js/auto";
+import { CategoryScale } from "chart.js";
+
+ChartJS.register(CategoryScale);
 
 function ViewEmployee() {
   const [employee, setEmployee] = useState<Employee | null>(null);
