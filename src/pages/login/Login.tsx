@@ -94,10 +94,6 @@ export function Login() {
         <Stack align={"center"}>
           <Logo />
           <Heading fontSize={"4xl"}>Sistema Administrativo</Heading>
-          <Text fontSize={"lg"} color={"gray.600"}>
-            Inicia sesión en tu cuenta, si no tienes una
-            <Link color={"blue.400"}> haz click aquí!</Link>
-          </Text>
         </Stack>
         <Box
           rounded={"lg"}
@@ -123,7 +119,7 @@ export function Login() {
                 error={formState.errors.password as FieldError}
               />
               <Stack spacing={10}>
-                <Stack
+                {/*                 <Stack
                   direction={{ base: "column", sm: "row" }}
                   align={"start"}
                   justify={"space-between"}
@@ -131,8 +127,9 @@ export function Login() {
                 >
                   <Checkbox>Recordarme</Checkbox>
                   <Link color={"blue.400"}>Olvidaste tu contraseña?</Link>
-                </Stack>
+                </Stack> */}
                 <Button
+                  mt={4}
                   isLoading={formState.isSubmitting}
                   type="submit"
                   bg={"blue.400"}
