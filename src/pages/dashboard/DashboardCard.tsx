@@ -17,6 +17,7 @@ import { IconType } from "react-icons";
 interface StatData {
   id: number;
   label: string;
+  valueColor?: string;
   value: number;
   icon: IconType;
   percentage: string;
@@ -62,23 +63,25 @@ function Stat({ data }: { data: StatData }) {
           <Icon as={data.icon} w={8} h={8} color="white" />
         </Flex>
         <VStack spacing={0} align="start" maxW="lg" h="100%">
-          <Text as="h3" fontSize="md" noOfLines={2} color="gray.400">
+          <Text as="h3" fontSize="md" noOfLines={2} color={"grey.600"}>
             {data.label}
           </Text>
           <HStack spacing={2}>
-            <Text as="h2" fontSize="lg" fontWeight="extrabold">
+            <Text
+              as="h2"
+              fontSize="lg"
+              fontWeight="extrabold"
+              color={
+                data.valueColor
+                  ? useColorModeValue(
+                      `${data.valueColor}`,
+                      `${data.valueColor}.400`
+                    )
+                  : "grey.600"
+              }
+            >
               {data.prefix ? `${data.prefix}${data.value}` : `${data.value}`}
             </Text>
-            {/*             <Flex>
-              {Number(data.score) > 100 ? (
-                <Icon as={BsArrowUpShort} w={6} h={6} color="green.400" />
-              ) : (
-                <Icon as={BsArrowDownShort} w={6} h={6} color="red.400" />
-              )}
-              <Text as="h2" fontSize="md">
-                {data.percentage}
-              </Text>
-            </Flex> */}
           </HStack>
         </VStack>
       </HStack>

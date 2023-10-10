@@ -151,6 +151,7 @@ function Dashboard() {
     {
       id: 1,
       label: "Total de Bonificaciones por Pagar (mes) ",
+      valueColor: "green",
       value: allowancesAmount,
       prefix: "Q",
       icon: GiPayMoney,
@@ -158,6 +159,7 @@ function Dashboard() {
     {
       id: 2,
       label: "Total de Penalizaciones por Cobrar (mes)",
+      valueColor: "red",
       value: deductionsAmount,
       prefix: "Q",
       icon: GiReceiveMoney,
