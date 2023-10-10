@@ -48,13 +48,142 @@ import { ageAtDate } from "../../helpers/time";
 import { Line } from "react-chartjs-2";
 import { Chart as ChartJS } from "chart.js/auto";
 import { CategoryScale } from "chart.js";
+import { Timestamps } from "../../interfaces/misc/Timestamps";
 
 ChartJS.register(CategoryScale);
+
+interface EmployeeAllowancesAndDeductions extends Timestamps {
+  id: number;
+  amount: number;
+  description: string;
+  type: "allowance" | "deduction";
+}
+
+interface EmployeeAllowancesAndDeductionsTableProps {
+  id: string;
+}
+
+function EmployeeAllowancesAndDeductionsTable({
+  id,
+}: EmployeeAllowancesAndDeductionsTableProps) {
+  const api = useApiClient();
+  const [employeeAllowancesAndDeductions, setEmployeeAllowancesAndDeductions] =
+    useState<EmployeeAllowancesAndDeductions[]>([]);
+
+  const fetchAllowances = () => {
+    api
+      .get<ApiResponse<EmployeeAllowancesAndDeductions[]>>(
+        `/allowances/employees/${id}`
+      )
+      .then((response) => {
+        if (response.data.length > 0) {
+          updateEmployeeAllowancesAndDeductions(response.data);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const fetchDeductions = () => {
+    api
+      .get<ApiResponse<EmployeeAllowancesAndDeductions[]>>(
+        `/deductions/employees/${id}`
+      )
+      .then((response) => {
+        if (response.data.length > 0) {
+          updateEmployeeAllowancesAndDeductions(response.data);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const updateEmployeeAllowancesAndDeductions = (
+    newDeductions: EmployeeAllowancesAndDeductions[]
+  ) => {
+    // Merge the new deductions with existing allowances and sort by creation date
+
+    setEmployeeAllowancesAndDeductions((previousState) => {
+      const updatedData = [...previousState, ...newDeductions];
+      return updatedData;
+    });
+  };
+
+  useEffect(() => {
+    try {
+      fetchAllowances();
+    } catch (error) {
+      console.log(error);
+    }
+
+    try {
+      fetchDeductions();
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
+
+  return (
+    <TableContainer maxH={"350px"} overflowY={"scroll"}>
+      <Table variant="simple">
+        <TableCaption>
+          Bonificaciones consignadas durante el mes actual, para ver más elabore
+          un reporte
+        </TableCaption>
+        <Thead
+          style={{
+            position: "sticky",
+            top: 0,
+            zIndex: 1,
+            background: "white",
+          }}
+        >
+          <Tr>
+            <Th>Descripción</Th>
+            <Th isNumeric>Monto</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
+          {employeeAllowancesAndDeductions?.map(
+            (employeeAllowancesAndDeduction) => {
+              return (
+                <Tr key={employeeAllowancesAndDeduction.id}>
+                  <Td>{employeeAllowancesAndDeduction.description}</Td>
+                  <Td isNumeric>
+                    <Tag
+                      size={"md"}
+                      colorScheme={
+                        employeeAllowancesAndDeduction.type === "allowance"
+                          ? "green"
+                          : "red"
+                      }
+                    >
+                      <TagLeftIcon
+                        boxSize="12px"
+                        as={
+                          employeeAllowancesAndDeduction.type === "allowance"
+                            ? AddIcon
+                            : MinusIcon
+                        }
+                      />
+                      <TagLabel>{`Q.${employeeAllowancesAndDeduction.amount}.00`}</TagLabel>
+                    </Tag>
+                  </Td>
+                </Tr>
+              );
+            }
+          )}
+        </Tbody>
+      </Table>
+    </TableContainer>
+  );
+}
 
 function ViewEmployee() {
   const [employee, setEmployee] = useState<Employee | null>(null);
   const { id } = useParams();
-
   const api = useApiClient();
   const employeeId = id ? parseInt(id) : undefined;
 
@@ -367,66 +496,7 @@ function ViewEmployee() {
                 </Portal>
               </Menu>
             </HStack>
-
-            <TableContainer maxH={"350px"} overflowY={"scroll"}>
-              <Table variant="simple">
-                <TableCaption>
-                  Bonificaciones consignadas durante el mes actual, para ver más
-                  elabore un reporte
-                </TableCaption>
-                <Thead
-                  style={{
-                    position: "sticky",
-                    top: 0,
-                    zIndex: 1,
-                    background: "white",
-                  }}
-                >
-                  <Tr>
-                    <Th>Descripción</Th>
-                    <Th isNumeric>Monto</Th>
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  <Tr>
-                    <Td>Instalación</Td>
-                    <Td isNumeric>
-                      <Tag size={"md"} colorScheme="red">
-                        <TagLeftIcon boxSize="12px" as={MinusIcon} />
-                        <TagLabel>Q 25.00</TagLabel>
-                      </Tag>
-                    </Td>
-                  </Tr>
-                  <Tr>
-                    <Td>Instalación</Td>
-                    <Td isNumeric>
-                      <Tag size={"md"} colorScheme="green">
-                        <TagLeftIcon boxSize="12px" as={AddIcon} />
-                        <TagLabel>Q 25.00</TagLabel>
-                      </Tag>
-                    </Td>
-                  </Tr>
-                  <Tr>
-                    <Td>Instalación</Td>
-                    <Td isNumeric>
-                      <Tag size={"md"} colorScheme="green">
-                        <TagLeftIcon boxSize="12px" as={AddIcon} />
-                        <TagLabel>Q 25.00</TagLabel>
-                      </Tag>
-                    </Td>
-                  </Tr>
-                  <Tr>
-                    <Td>Instalación</Td>
-                    <Td isNumeric>
-                      <Tag size={"md"} colorScheme="green">
-                        <TagLeftIcon boxSize="12px" as={AddIcon} />
-                        <TagLabel>Q 25.00</TagLabel>
-                      </Tag>
-                    </Td>
-                  </Tr>
-                </Tbody>
-              </Table>
-            </TableContainer>
+            <EmployeeAllowancesAndDeductionsTable id={id} />
           </Stack>
         </Stack>
       </Stack>
