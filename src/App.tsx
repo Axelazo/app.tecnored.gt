@@ -39,6 +39,8 @@ import TicketsList from "./components/support/TicketsList";
 import CreateTicket from "./components/support/CreateTicket";
 import { EstablishmentsManagement } from "./components/config/Establishments";
 import ViewTicket from "./components/support/ViewTicket";
+import { Payroll } from "./pages/payroll/Payroll";
+import PayrollList from "./components/payroll/PayrollList";
 
 function App() {
   const { user } = useAuth();
@@ -111,6 +113,9 @@ function App() {
                   element={<CreateTicket />}
                 />
                 <Route path="view/:ticketId" element={<ViewTicket />} />
+              </Route>
+              <Route path="/payroll" element={<Payroll />}>
+                <Route path="" element={<PayrollList />} />
               </Route>
 
               <Route path="*" element={<Navigate to="/dashboard" />} />

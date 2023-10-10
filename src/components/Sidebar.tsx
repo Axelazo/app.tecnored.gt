@@ -70,7 +70,12 @@ const LinkItems: Array<LinkItemProps> = [
     path: "/employees",
     role: "operator",
   },
-  { name: "Planilla", icon: FaMoneyBillWave, role: "operator" },
+  {
+    name: "Planilla",
+    icon: FaMoneyBillWave,
+    role: "operator",
+    path: "/payroll",
+  },
   {
     name: "Monitoreo",
     icon: TbHeartRateMonitor,
