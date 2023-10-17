@@ -131,7 +131,7 @@ function Monitoring() {
   return (
     <Card w={"full"} p={6}>
       <Stack overflowY={"hidden"}>
-        <HStack>
+        {/*         <HStack>
           <FormControl>
             <FormLabel>Buscar cliente o servicio...</FormLabel>
             <Input type="text" placeholder="Nombres, apellidos..." />
@@ -144,7 +144,7 @@ function Monitoring() {
               <option>San Francisco</option>
             </Select>
           </FormControl>
-        </HStack>
+        </HStack> */}
         {isLoaded ? (
           <GoogleMap
             onLoad={handleMapLoad}

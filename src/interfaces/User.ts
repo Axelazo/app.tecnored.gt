@@ -7,6 +7,7 @@ export interface User {
   email: string;
   roles: Role[];
   token: string;
+  employeeId?: number;
 }
 
 export interface UserLoginFormValues {

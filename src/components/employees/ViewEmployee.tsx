@@ -26,6 +26,7 @@ import {
   Tr,
   TagLabel,
   TagLeftIcon,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
@@ -44,11 +45,12 @@ import { FaFilePdf, FaFileExcel } from "react-icons/fa";
 import { AddIcon, ChevronDownIcon, MinusIcon } from "@chakra-ui/icons";
 import { ApiResponse } from "../../interfaces/misc/ApiResponse";
 import { Employee } from "../../interfaces/app/Employee";
-import { ageAtDate } from "../../helpers/time";
+import { ageAtDate, formatDate, timeAgo } from "../../helpers/time";
 import { Line } from "react-chartjs-2";
 import { Chart as ChartJS } from "chart.js/auto";
 import { CategoryScale } from "chart.js";
 import { Timestamps } from "../../interfaces/misc/Timestamps";
+import { AddAllowanceModal, AddDeductionModal } from "./Modals";
 
 ChartJS.register(CategoryScale);
 
@@ -59,12 +61,14 @@ interface EmployeeAllowancesAndDeductions extends Timestamps {
   type: "allowance" | "deduction";
 }
 
-interface EmployeeAllowancesAndDeductionsTableProps {
+export interface EmployeeAllowancesAndDeductionsTableProps {
   id: string;
+  random: number;
 }
 
-function EmployeeAllowancesAndDeductionsTable({
+export function EmployeeAllowancesAndDeductionsTable({
   id,
+  random,
 }: EmployeeAllowancesAndDeductionsTableProps) {
   const api = useApiClient();
   const [employeeAllowancesAndDeductions, setEmployeeAllowancesAndDeductions] =
@@ -77,6 +81,7 @@ function EmployeeAllowancesAndDeductionsTable({
       )
       .then((response) => {
         if (response.data.length > 0) {
+          updateEmployeeAllowancesAndDeductions([]);
           updateEmployeeAllowancesAndDeductions(response.data);
         }
       })
@@ -92,6 +97,7 @@ function EmployeeAllowancesAndDeductionsTable({
       )
       .then((response) => {
         if (response.data.length > 0) {
+          updateEmployeeAllowancesAndDeductions([]);
           updateEmployeeAllowancesAndDeductions(response.data);
         }
       })
@@ -112,6 +118,9 @@ function EmployeeAllowancesAndDeductionsTable({
   };
 
   useEffect(() => {
+    const empty: EmployeeAllowancesAndDeductions[] = [];
+    setEmployeeAllowancesAndDeductions(empty);
+
     try {
       fetchAllowances();
     } catch (error) {
@@ -123,7 +132,7 @@ function EmployeeAllowancesAndDeductionsTable({
     } catch (error) {
       console.log(error);
     }
-  }, []);
+  }, [random]);
 
   return (
     <TableContainer maxH={"350px"} overflowY={"scroll"}>
@@ -142,6 +151,7 @@ function EmployeeAllowancesAndDeductionsTable({
         >
           <Tr>
             <Th>Descripción</Th>
+            <Th>Fecha</Th>
             <Th isNumeric>Monto</Th>
           </Tr>
         </Thead>
@@ -151,6 +161,9 @@ function EmployeeAllowancesAndDeductionsTable({
               return (
                 <Tr key={employeeAllowancesAndDeduction.id}>
                   <Td>{employeeAllowancesAndDeduction.description}</Td>
+                  <Td>
+                    {formatDate(employeeAllowancesAndDeduction.createdAt)}
+                  </Td>
                   <Td isNumeric>
                     <Tag
                       size={"md"}
@@ -182,8 +195,15 @@ function EmployeeAllowancesAndDeductionsTable({
 }
 
 function ViewEmployee() {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isDeductionOpen,
+    onOpen: onDeductionOpen,
+    onClose: onDeductionClose,
+  } = useDisclosure();
   const [employee, setEmployee] = useState<Employee | null>(null);
   const { id } = useParams();
+  const [random, setRandom] = useState(0);
   const api = useApiClient();
   const employeeId = id ? parseInt(id) : undefined;
 
@@ -254,13 +274,13 @@ function ViewEmployee() {
     <Stack w={"full"}>
       <PageHeader title="Ver información del empleado" size={"2xl"}>
         <Menu>
-          <MenuButton
+          {/*           <MenuButton
             as={Button}
             leftIcon={<MdPrint />}
             rightIcon={<ChevronDownIcon />}
           >
             Imprimir información
-          </MenuButton>
+          </MenuButton> */}
           <Portal>
             <MenuList w={"full"}>
               <MenuItem icon={<FaFilePdf />}>Formato PDF (.pdf)</MenuItem>
@@ -486,20 +506,44 @@ function ViewEmployee() {
                 </MenuButton>
                 <Portal>
                   <MenuList w={"full"}>
-                    <MenuItem icon={<MdAddCircle />}>
+                    <MenuItem
+                      icon={<MdAddCircle />}
+                      onClick={() => {
+                        onOpen();
+                      }}
+                    >
                       Agregar bonificación
                     </MenuItem>
-                    <MenuItem icon={<MdRemoveCircle />}>
+                    <MenuItem
+                      icon={<MdRemoveCircle />}
+                      onClick={onDeductionOpen}
+                    >
                       Agregar penalización
                     </MenuItem>
                   </MenuList>
                 </Portal>
               </Menu>
             </HStack>
-            <EmployeeAllowancesAndDeductionsTable id={id} />
+            <EmployeeAllowancesAndDeductionsTable id={id} random={random} />
           </Stack>
         </Stack>
       </Stack>
+      <AddAllowanceModal
+        isOpen={isOpen}
+        onClose={onClose}
+        employeeId={employeeId}
+        fetchAllowancesAndDeductions={() => {
+          setRandom(Math.random());
+        }}
+      />
+      <AddDeductionModal
+        isOpen={isDeductionOpen}
+        onClose={onDeductionClose}
+        employeeId={employeeId}
+        fetchAllowancesAndDeductions={() => {
+          setRandom(Math.random());
+        }}
+      />
     </Stack>
   );
 }

@@ -251,6 +251,7 @@ function ViewTicket() {
         `/tickets/${ticketId}`
       );
       setTicket(response.data);
+      console.log(response.data);
     } catch (error) {
       console.error("Error fetching ticket:", error);
     }
@@ -402,7 +403,7 @@ function ViewTicket() {
               >
                 <Stack flexDirection={{ base: "row" }}>
                   <Text fontWeight={"bold"}>Nombre:</Text>
-                  <Text>{`${ticket.service.clients[0].person.firstNames} ${ticket.service.clients[0].person.lastNames}`}</Text>
+                  <Text>{`${ticket.service.owners[0].client.person.firstNames} ${ticket.service.owners[0].client.person.lastNames}`}</Text>
                 </Stack>
                 <Stack flexDirection={{ base: "row" }}>
                   <Text fontWeight={"bold"}>No. Servicio:</Text>
@@ -420,7 +421,7 @@ function ViewTicket() {
               >
                 <Stack flexDirection={{ base: "row" }}>
                   <Text fontWeight={"bold"}>Teléfonos:</Text>
-                  {ticket.service.clients[0].person.phones.map(
+                  {ticket.service.owners[0].client.person.phones.map(
                     (phone, index) => {
                       return <Text key={index}>{phone.number}</Text>;
                     }

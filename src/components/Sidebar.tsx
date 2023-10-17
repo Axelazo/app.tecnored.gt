@@ -84,12 +84,12 @@ const LinkItems: Array<LinkItemProps> = [
   },
   //   { name: "Establecimientos", icon: FaBuilding, role: "operator" },
   // { name: "Inventario", icon: MdInventory, role: "operator" },
-  {
+  /*   {
     name: "Configuracion",
     icon: FaCog,
     path: "/configuration",
     role: "admin",
-  },
+  }, */
 ];
 
 export default function Sidebar(/* { children }: { children: ReactNode } */) {

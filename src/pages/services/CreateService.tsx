@@ -67,7 +67,7 @@ function CreateService() {
           .post<Service>("/services/create", serviceData)
           .then((response) => {
             toast({
-              description: `Empleado agregado exitosamente!`,
+              description: `Servicio agregado exitosamente!`,
               status: "success",
               duration: 2000,
               isClosable: true,

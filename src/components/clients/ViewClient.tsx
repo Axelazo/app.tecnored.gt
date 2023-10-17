@@ -80,13 +80,13 @@ function ViewClient() {
     <Stack w={"full"}>
       <PageHeader title="Ver información del cliente" size={"2xl"}>
         <Menu>
-          <MenuButton
+          {/*           <MenuButton
             as={Button}
             leftIcon={<MdPrint />}
             rightIcon={<ChevronDownIcon />}
           >
             Imprimir información
-          </MenuButton>
+          </MenuButton> */}
           <Portal>
             <MenuList w={"full"}>
               <MenuItem icon={<FaFilePdf />}>Formato PDF (.pdf)</MenuItem>
@@ -123,10 +123,6 @@ function ViewClient() {
               <HStack>
                 <Text fontWeight={"bold"}>Número de Cliente: </Text>
                 <Tag colorScheme={"blue"}>{client.clientNumber}</Tag>
-              </HStack>
-              <HStack>
-                <Text fontWeight={"bold"}>Servicios: </Text>
-                <Tag colorScheme={"blue"}>2</Tag>
               </HStack>
               <HStack>
                 <Text fontWeight={"bold"}>Cliente desde: </Text>

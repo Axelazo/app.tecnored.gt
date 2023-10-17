@@ -4,49 +4,28 @@ import useApiClient from "../../hooks/useApiClient";
 import DashboardCard from "./DashboardCard";
 import { FaCalendar, FaCalendarDay, FaUsers } from "react-icons/fa";
 import { GiPayMoney, GiReceiveMoney } from "react-icons/gi";
+import {
+  startOfDay,
+  endOfDay,
+  startOfMonth,
+  endOfMonth,
+  addDays,
+} from "date-fns";
 
 // Get the current date
 const currentDate = new Date();
 
-const startOfDay = new Date(
-  currentDate.getFullYear(),
-  currentDate.getMonth(),
-  currentDate.getDay()
-);
-
-const endOfDay = new Date(
-  currentDate.getFullYear(),
-  currentDate.getMonth(),
-  currentDate.getDay() + 1
-);
-
-endOfDay.setMilliseconds(endOfDay.getMilliseconds() - 1);
-
-// Calculate the first day of the current month
-const firstDayOfMonth = new Date(
-  currentDate.getFullYear(),
-  currentDate.getMonth(),
-  1
-);
-
-// Calculate the last day of the current month
-const lastDayOfMonth = new Date(
-  currentDate.getFullYear(),
-  currentDate.getMonth() + 1,
-  0
-);
-
-lastDayOfMonth.setMilliseconds(lastDayOfMonth.getMilliseconds() - 1);
-
 const dayInterval = {
-  from: startOfDay.toISOString(),
-  to: endOfDay.toISOString(),
+  from: startOfDay(currentDate),
+  to: addDays(endOfDay(currentDate), 1),
 };
 
 const monthInterval = {
-  from: firstDayOfMonth.toISOString(),
-  to: lastDayOfMonth.toISOString(),
+  from: startOfMonth(currentDate),
+  to: endOfMonth(currentDate),
 };
+
+console.log(dayInterval, monthInterval);
 
 function Dashboard() {
   const [allowancesAmount, setAllowancesAmount] = useState(0);
@@ -76,7 +55,7 @@ function Dashboard() {
       })
       .then((response) => {
         console.log(`response was ${JSON.stringify(response)}`);
-        setNewClientsDuringMonth(response.count);
+        setNewClientsDuringDay(response.count);
       })
       .catch((error) => {
         console.log(error);

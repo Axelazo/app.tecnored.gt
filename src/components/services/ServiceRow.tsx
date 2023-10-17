@@ -19,6 +19,7 @@ import {
 } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
 import { OnlineServiceIndicator } from "./OnlineServiceIndicator";
+import { NavLink } from "react-router-dom";
 
 export interface ServiceRow {
   index: number;
@@ -62,17 +63,21 @@ export function ServiceRow({
             Acción
           </MenuButton>
           <MenuList>
-            <MenuItem icon={<FaInfoCircle />}>Ver más información</MenuItem>
-            <MenuItem icon={<MdEdit />}>Modificar servicio </MenuItem>
+            {/* <MenuItem icon={<FaInfoCircle />}>Ver más información</MenuItem>
+                         <MenuItem icon={<MdEdit />}>Modificar servicio </MenuItem>
             <MenuItem icon={<FaPowerOff />}>Desactivar servicio</MenuItem>
             <MenuDivider />
             <MenuItem icon={<FaFileInvoiceDollar />}>Generar factura</MenuItem>
             <MenuItem icon={<FaFileInvoiceDollar />}>
               Historial de pagos
             </MenuItem>
-            <MenuDivider />
+            <MenuDivider /> */}
 
-            <MenuItem icon={<FaTicketAlt />}>
+            <MenuItem
+              icon={<FaTicketAlt />}
+              as={NavLink}
+              to={"/support/create"}
+            >
               Crear un nuevo ticket de soporte
             </MenuItem>
             <MenuItem icon={<FaMap />}>Ver en el mapa</MenuItem>

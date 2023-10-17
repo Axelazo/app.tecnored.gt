@@ -67,12 +67,13 @@ function TicketsTable() {
             </Tr>
           ) : tickets && tickets.length > 0 ? (
             tickets.map((ticket, index) => {
-              ticket.service;
+              console.log(ticket);
+
               return (
                 <TicketRow
                   key={index}
                   index={index}
-                  fullName={`${ticket.service?.clients[0]?.person.firstNames} ${ticket.service?.clients[0]?.person.lastNames}`}
+                  fullName={`${ticket.service?.owners[0].client.person.firstNames} ${ticket.service?.owners[0].client.person.lastNames}`}
                   reason={ticket.reason.name}
                   serviceNumber={ticket.service.serviceNumber}
                   priority={ticket.priority}

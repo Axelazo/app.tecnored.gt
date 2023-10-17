@@ -31,11 +31,21 @@ import { ServiceRow } from "../services/ServiceRow";
 import SearchableSelect from "../common/SearchableSelect";
 import { ErrorResponseData } from "../../interfaces/app/ErrorResponseData";
 import { Ticket } from "../../interfaces/app/Ticket";
+import { startOfDay, addBusinessDays, format } from "date-fns";
 
 interface Option {
   label: string;
   value: number;
 }
+
+const currentDate = new Date();
+const chakraUiDateFormat = "yyyy-MM-dd";
+
+const estimatedStartDate = format(currentDate, chakraUiDateFormat);
+const estimatedFinishDate = format(
+  addBusinessDays(currentDate, 3),
+  chakraUiDateFormat
+);
 
 function CreateTicket() {
   const toast = useToast();
@@ -316,7 +326,11 @@ function CreateTicket() {
               isInvalid={!!formState.errors.estimatedStart}
             >
               <FormLabel>Fecha estimada de inicio</FormLabel>
-              <Input type={"date"} {...register("estimatedStart")}></Input>
+              <Input
+                type={"date"}
+                {...register("estimatedStart")}
+                defaultValue={estimatedStartDate}
+              ></Input>
               <FormErrorMessage>
                 {formState.errors.estimatedStart?.message}
               </FormErrorMessage>
@@ -329,6 +343,7 @@ function CreateTicket() {
               <Input
                 type={"date"}
                 {...register("estimatedFinish")}
+                defaultValue={estimatedFinishDate}
               ></Input>{" "}
               <FormErrorMessage>
                 {formState.errors.estimatedFinish?.message}

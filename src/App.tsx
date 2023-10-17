@@ -41,6 +41,7 @@ import { EstablishmentsManagement } from "./components/config/Establishments";
 import ViewTicket from "./components/support/ViewTicket";
 import { Payroll } from "./pages/payroll/Payroll";
 import PayrollList from "./components/payroll/PayrollList";
+import MyPortal from "./pages/my-portal/MyPortal";
 
 function App() {
   const { user } = useAuth();
@@ -57,6 +58,9 @@ function App() {
 
   const isOperator = operatorRoutes.some((role) => userRoles.includes(role));
   const isAdmin = adminRoutes.some((role) => userRoles.includes(role));
+  const isWorker = workerRoutes.some((role) => userRoles.includes(role));
+
+  console.log(user?.employeeId);
 
   return (
     <Router>
@@ -64,8 +68,19 @@ function App() {
         {user ? (
           <Route element={<Sidebar />}>
             <Route element={<PrivateRoute />}>
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/reports" element={<Reports />} />
+              {isWorker ? (
+                <>
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/my-portal/:id" element={<MyPortal />} />
+
+                  <Route
+                    path="*"
+                    element={<Navigate to={`/my-portal/${user.employeeId}`} />}
+                  />
+                </>
+              ) : (
+                <Route path={`/my-portal/${user.id}`} element={<MyPortal />} />
+              )}
 
               {isAdmin ? (
                 <>
@@ -79,10 +94,7 @@ function App() {
                   </Route>
                 </>
               ) : (
-                <Route
-                  path="/dashboard"
-                  element={<Dummy data={"Portal Usuario"} />}
-                />
+                <Route path={`/my-portal/${user.id}`} element={<MyPortal />} />
               )}
               {/*! Operator routes*/}
               {isOperator && (
@@ -103,21 +115,20 @@ function App() {
                     <Route path="view/:id" element={<ViewEmployee />} />
                     <Route path="update/:id" element={<UpdateEmployee />} />
                   </Route>
+                  <Route path="/monitoring" element={<Monitoring />} />
+                  <Route path="/support" element={<Support />}>
+                    <Route path="" element={<TicketsList />} />
+                    <Route
+                      path="create/:clientId?/:serviceId?"
+                      element={<CreateTicket />}
+                    />
+                    <Route path="view/:ticketId" element={<ViewTicket />} />
+                  </Route>
+                  <Route path="/payroll" element={<Payroll />}>
+                    <Route path="" element={<PayrollList />} />
+                  </Route>
                 </>
               )}
-              <Route path="/monitoring" element={<Monitoring />} />
-              <Route path="/support" element={<Support />}>
-                <Route path="" element={<TicketsList />} />
-                <Route
-                  path="create/:clientId?/:serviceId?"
-                  element={<CreateTicket />}
-                />
-                <Route path="view/:ticketId" element={<ViewTicket />} />
-              </Route>
-              <Route path="/payroll" element={<Payroll />}>
-                <Route path="" element={<PayrollList />} />
-              </Route>
-
               <Route path="*" element={<Navigate to="/dashboard" />} />
             </Route>
           </Route>
