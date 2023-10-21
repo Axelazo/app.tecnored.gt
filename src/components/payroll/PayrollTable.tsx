@@ -11,6 +11,7 @@ import {
   Text,
   Badge,
   Button,
+  Box,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import useApiClient from "../../hooks/useApiClient";
@@ -70,63 +71,65 @@ function PayrollsTable() {
   }, []);
 
   return (
-    <TableContainer>
-      <Table variant="simple">
-        <Thead>
-          <Tr>
-            <Th>Periodo</Th>
-            <Th>Estado</Th>
-            <Th>Neto</Th>
-            <Th>Bonificaciones</Th>
-            <Th>Penalizaciones</Th>
-            <Th>Administrar</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {isLoading ? ( // Show spinner while loading
+    <Box overflowX={"auto"}>
+      <TableContainer>
+        <Table variant="simple">
+          <Thead>
             <Tr>
-              <Td colSpan={8}>
-                <Flex
-                  flexGrow={1}
-                  justifyContent={"center"}
-                  alignItems={"center"}
-                >
-                  <Spinner size={"sm"} />
-                </Flex>
-              </Td>
+              <Th>Periodo</Th>
+              <Th>Estado</Th>
+              <Th>Neto</Th>
+              <Th>Bonificaciones</Th>
+              <Th>Penalizaciones</Th>
+              <Th>Administrar</Th>
             </Tr>
-          ) : payrolls && payrolls.length > 0 ? (
-            payrolls.map((payroll, index) => {
-              return (
-                <Tr>
-                  <Td>{`${format(new Date(payroll.from), "dd MMMM", {
-                    locale: es,
-                  })} al ${format(new Date(payroll.to), "dd MMMM", {
-                    locale: es,
-                  })}`}</Td>
-                  <Td>{<PayrollStatus status={payroll.status} />}</Td>
-                  <Td>{`Q${payroll.net}`}</Td>
-                  <Td>{`Q${payroll.allowances}`}</Td>
-                  <Td>{`Q${payroll.deductions}`}</Td>
-                  <Td>
-                    <Button
-                      leftIcon={<MdDownload />}
-                      onClick={() => {
-                        fetchPDF(
-                          payroll.id,
-                          `TecnoRed - Planilla Mensual - ${format(
-                            new Date(payroll.from),
-                            "MMMM",
-                            {
-                              locale: es,
-                            }
-                          )} - ${getYear(new Date(payroll.from))}`
-                        );
-                      }}
-                    >
-                      Descargar PDF
-                    </Button>
-                    {/*                     <Button
+          </Thead>
+          <Tbody overflowX={"auto"}>
+            {isLoading ? ( // Show spinner while loading
+              <Tr>
+                <Td colSpan={8}>
+                  <Flex
+                    flexGrow={1}
+                    justifyContent={"center"}
+                    alignItems={"center"}
+                  >
+                    <Spinner size={"sm"} />
+                  </Flex>
+                </Td>
+              </Tr>
+            ) : payrolls && payrolls.length > 0 ? (
+              payrolls.map((payroll, index) => {
+                console.log(payroll);
+                return (
+                  <Tr>
+                    <Td>{`${format(new Date(payroll.from), "dd MMMM", {
+                      locale: es,
+                    })} al ${format(new Date(payroll.to), "dd MMMM", {
+                      locale: es,
+                    })}`}</Td>
+                    <Td>{<PayrollStatus status={payroll.status} />}</Td>
+                    <Td>{`Q${payroll.net}`}</Td>
+                    <Td>{`Q${payroll.allowances}`}</Td>
+                    <Td>{`Q${payroll.deductions}`}</Td>
+                    <Td>
+                      <Button
+                        leftIcon={<MdDownload />}
+                        onClick={() => {
+                          fetchPDF(
+                            payroll.id,
+                            `TecnoRed - Planilla Mensual - ${format(
+                              new Date(payroll.from),
+                              "MMMM",
+                              {
+                                locale: es,
+                              }
+                            )} - ${getYear(new Date(payroll.from))}`
+                          );
+                        }}
+                      >
+                        Descargar PDF
+                      </Button>
+                      {/*                     <Button
                       leftIcon={<MdAttachEmail />}
                       ml="2"
                       colorScheme="green"
@@ -145,22 +148,23 @@ function PayrollsTable() {
                     >
                       Enviar PDF al correo
                     </Button> */}
-                  </Td>
-                </Tr>
-              );
-            })
-          ) : (
-            <Tr>
-              <Td colSpan={9} h={"64vh"}>
-                <Text w={"full"} textAlign={"center"}>
-                  No se han encontrado planillas
-                </Text>
-              </Td>
-            </Tr>
-          )}
-        </Tbody>
-      </Table>
-    </TableContainer>
+                    </Td>
+                  </Tr>
+                );
+              })
+            ) : (
+              <Tr>
+                <Td colSpan={9} h={"64vh"}>
+                  <Text w={"full"} textAlign={"center"}>
+                    No se han encontrado planillas
+                  </Text>
+                </Td>
+              </Tr>
+            )}
+          </Tbody>
+        </Table>
+      </TableContainer>
+    </Box>
   );
 }
 

@@ -9,6 +9,8 @@ import {
   Text,
   useColorModeValue,
   useToast,
+  Alert,
+  AlertIcon,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { Logo } from "../../components/Logo";
@@ -89,7 +91,18 @@ export function Login() {
       align={"center"}
       justify={"center"}
       bg={useColorModeValue("gray.50", "gray.800")}
+      direction={"column"}
     >
+      <Alert
+        status="warning"
+        justifyContent={"center"}
+        position={"absolute"}
+        top={0}
+      >
+        <AlertIcon />
+        Esta es una aplicación actualmente en desarrollo, la estabilidad de la
+        misma no está garantizada.
+      </Alert>
       <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
         <Stack align={"center"}>
           <Logo />

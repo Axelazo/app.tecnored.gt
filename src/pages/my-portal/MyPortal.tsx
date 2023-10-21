@@ -65,27 +65,8 @@ export default function MyPortal() {
               alignItems={{ base: "center", md: "start" }}
               direction={{ base: "row" }}
               alignContent={"center"}
+              p={8}
             >
-              <Stack>
-                <Image
-                  src={employee.profileUrl}
-                  objectFit={"contain"}
-                  maxW={256}
-                  p={4}
-                />
-                <Stack justifyContent={"center"} w={"full"}>
-                  <Box textAlign={"center"}>
-                    <Text fontSize={"xl"} fontWeight={"bold"}>
-                      {`${employee.person.firstNames.split(" ")[0]} ${
-                        employee.person.lastNames.split(" ")[0]
-                      }`}
-                    </Text>
-                    <Text fontSize={"xl"} fontWeight={"light"}>
-                      {`${employee.employeePositionMapping[0].position.name}`}
-                    </Text>
-                  </Box>
-                </Stack>
-              </Stack>
               <Stack w={"full"} pt={4}>
                 <SimpleGrid columns={{ base: 1, md: 1, lg: 1 }}>
                   <List spacing={4}>

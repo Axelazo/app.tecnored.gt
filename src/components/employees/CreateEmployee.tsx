@@ -39,6 +39,7 @@ import { AxiosError } from "axios";
 
 function CreateEmployee() {
   const api = useApiClient();
+  const [disabled, setDisabled] = useState(false);
 
   //Establishments, areas and positions
   const [establishment, setEstablishment] = useState(0);
@@ -150,6 +151,7 @@ function CreateEmployee() {
               headers: { "Content-Type": "multipart/form-data" },
             })
             .then((response) => {
+              setDisabled(true);
               toast({
                 description: `Empleado agregado exitosamente!`,
                 status: "success",
@@ -493,6 +495,7 @@ function CreateEmployee() {
         <Flex pt={4}>
           <Box flexGrow={1} />
           <Button
+            isDisabled={disabled}
             isLoading={formState.isSubmitting}
             colorScheme={"green"}
             type={"submit"}

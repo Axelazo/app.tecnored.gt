@@ -16,7 +16,6 @@ import { ApiResponse } from "../../interfaces/misc/ApiResponse";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ServiceRow } from "./ServiceRow";
-
 function ServicesTable() {
   const [services, setServices] = useState<ServiceRow[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -45,8 +44,8 @@ function ServicesTable() {
     });
   };
 
-  useEffect(() => {
-    servicesResponse()
+  const fetchServices = async () => {
+    await servicesResponse()
       .then((services) => {
         if (services) {
           setServices(services);
@@ -60,6 +59,10 @@ function ServicesTable() {
       .finally(() => {
         setIsLoading(false); // Set loading to false after data fetching
       });
+  };
+
+  useEffect(() => {
+    fetchServices();
   }, []);
 
   return (
@@ -95,6 +98,7 @@ function ServicesTable() {
             services.map((service, index) => {
               return (
                 <ServiceRow
+                  id={service.id}
                   key={index}
                   index={service.index}
                   serviceNumber={service.serviceNumber}
@@ -105,6 +109,7 @@ function ServicesTable() {
                   planStatus="ACTIVO"
                   establishmentName={service.establishmentName}
                   serviceStatus={service.serviceStatus}
+                  fetchServices={fetchServices}
                 />
               );
             })

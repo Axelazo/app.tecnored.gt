@@ -32,6 +32,8 @@ import { Service } from "../../interfaces/app/Service";
 import { ErrorResponseData } from "../../interfaces/app/ErrorResponseData";
 
 function CreateService() {
+  const [disabled, setDisabled] = useState(false);
+
   // Form Validation
   const { register, handleSubmit, formState, getValues, clearErrors, reset } =
     useForm<ServicesFormValues>({
@@ -66,6 +68,7 @@ function CreateService() {
         api
           .post<Service>("/services/create", serviceData)
           .then((response) => {
+            setDisabled(true);
             toast({
               description: `Servicio agregado exitosamente!`,
               status: "success",
@@ -232,7 +235,7 @@ function CreateService() {
                     isInvalid={!!formState.errors.clientId?.message}
                     isRequired
                   >
-                    <FormLabel>Puesto</FormLabel>
+                    <FormLabel>Cliente</FormLabel>
                     <Select {...register("clientId")} defaultValue={"null"}>
                       {clients?.map((client) => {
                         return (
@@ -350,6 +353,7 @@ function CreateService() {
           <Flex pt={4}>
             <Box flexGrow={1} />
             <Button
+              isDisabled={disabled}
               isLoading={formState.isSubmitting}
               colorScheme={"green"}
               type={"submit"}

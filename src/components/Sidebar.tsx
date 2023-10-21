@@ -20,18 +20,18 @@ import {
   MenuDivider,
   MenuItem,
   MenuList,
+  AlertIcon,
+  Alert,
+  Spacer,
 } from "@chakra-ui/react";
 import {
   FaBell,
   FaHome,
   FaUserTag,
   FaToolbox,
-  FaBuilding,
   FaUserTie,
   FaMoneyBillWave,
-  FaCog,
 } from "react-icons/fa";
-import { MdInventory } from "react-icons/md";
 import { TbHeartRateMonitor } from "react-icons/tb";
 import { FiChevronDown } from "react-icons/fi";
 import { TfiMenu } from "react-icons/tfi";
@@ -48,7 +48,6 @@ interface LinkItemProps {
   role: string;
 }
 const LinkItems: Array<LinkItemProps> = [
-  { name: "Portal de Usuario", icon: FaHome, path: "/portal", role: "user" },
   {
     name: "Portal de Trabajador",
     icon: FaHome,
@@ -63,8 +62,7 @@ const LinkItems: Array<LinkItemProps> = [
     path: "/support",
     role: "operator",
   },
-  /*   { name: "Seguimiento Soporte Técnico", icon: FaToolbox, role: "technician" },
-   */ {
+  {
     name: "Empleados",
     icon: FaUserTie,
     path: "/employees",
@@ -82,20 +80,23 @@ const LinkItems: Array<LinkItemProps> = [
     path: "/monitoring",
     role: "operator",
   },
-  //   { name: "Establecimientos", icon: FaBuilding, role: "operator" },
-  // { name: "Inventario", icon: MdInventory, role: "operator" },
-  /*   {
-    name: "Configuracion",
-    icon: FaCog,
-    path: "/configuration",
-    role: "admin",
-  }, */
 ];
 
 export default function Sidebar(/* { children }: { children: ReactNode } */) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
+      <Alert
+        status="warning"
+        justifyContent={"center"}
+        position={"sticky"}
+        zIndex={10}
+        top={0}
+      >
+        <AlertIcon />
+        Esta es una aplicación actualmente en desarrollo, la estabilidad de la
+        misma no está garantizada.
+      </Alert>
       <SidebarContent
         onClose={() => onClose}
         display={{ base: "none", md: "block" }}
@@ -146,7 +147,10 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 
   if (userRoles.includes("admin")) {
     // If user is an admin, return the entire LinkItems array
-    filteredLinkItems = LinkItems;
+    const removeWorkPortal = LinkItems.filter(
+      (link) => link.name !== "Portal de Trabajador"
+    );
+    filteredLinkItems = removeWorkPortal;
   } else {
     // Otherwise, filter the LinkItems array based on the user's roles
     filteredLinkItems = LinkItems.filter((link) =>
@@ -155,7 +159,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
   }
 
   return (
-    <Box
+    <Flex
       zIndex={6}
       bg={useColorModeValue("#24344b", "#2d3748")}
       borderRight="2px"
@@ -180,7 +184,19 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
           {link.name}
         </NavItem>
       ))}
-    </Box>
+      <Box alignSelf={"end"}>
+        <Text
+          textAlign={"center"}
+          position={"absolute"}
+          bottom={0}
+          ml={8}
+          mb={14}
+          color={useColorModeValue("white", "black")}
+        >
+          TecnoRedMS - v0.7.1
+        </Text>
+      </Box>
+    </Flex>
   );
 };
 
@@ -337,7 +353,6 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
                 <MenuItem as={NavLink} to={"/profile"}>
                   Perfil
                 </MenuItem>
-                <MenuItem>Configuración</MenuItem>
                 <MenuItem closeOnSelect={false}>
                   <DarkModeSwitcher />
                 </MenuItem>

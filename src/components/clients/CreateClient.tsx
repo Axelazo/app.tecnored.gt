@@ -30,6 +30,7 @@ import DepartmentMunicipalitySelect from "../misc/DepartmentMunicipalitySelect";
 import ImageDropzone from "../misc/ImageDropzone";
 
 function CreateClient() {
+  const [disabled, setDisabled] = useState(false);
   const [dpiImageFront, setdpiImageFront] = useState<File | null>(null);
   const [dpiImageBack, setdpiImageBack] = useState<File | null>(null);
   const { register, handleSubmit, formState, clearErrors, reset } =
@@ -108,6 +109,7 @@ function CreateClient() {
               headers: { "Content-Type": "multipart/form-data" },
             })
             .then((response) => {
+              setDisabled(true);
               toast({
                 description: `Cliente agregado exitosamente!`,
                 status: "success",
@@ -281,6 +283,7 @@ function CreateClient() {
         <Flex pt={4}>
           <Box flexGrow={1} />
           <Button
+            isDisabled={disabled}
             isLoading={formState.isSubmitting}
             colorScheme={"green"}
             type={"submit"}

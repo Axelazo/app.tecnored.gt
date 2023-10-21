@@ -43,8 +43,8 @@ function ClientsTable() {
     });
   };
 
-  useEffect(() => {
-    clientsResponse()
+  const fetchClients = async () => {
+    await clientsResponse()
       .then((clients) => {
         if (clients) {
           setClients(clients);
@@ -58,6 +58,10 @@ function ClientsTable() {
       .finally(() => {
         setIsLoading(false); // Set loading to false after data fetching
       });
+  };
+
+  useEffect(() => {
+    fetchClients();
   }, []);
 
   return (
@@ -88,10 +92,12 @@ function ClientsTable() {
             clients.map((client, index) => {
               return (
                 <ClientRow
+                  id={client.id}
                   key={index}
                   index={client.id}
                   firstNames={client.person.firstNames}
                   lastNames={client.person.lastNames}
+                  fetchClients={fetchClients}
                 />
               );
             })

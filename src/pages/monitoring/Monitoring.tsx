@@ -23,8 +23,8 @@ function Monitoring() {
     //libraries: ["geometry"],
   });
   const [center, setCenter] = useState({
-    lat: 16.509673990914745,
-    lng: -89.41893294734292,
+    lat: 16.797948256374617,
+    lng: -89.93191334282228,
   });
   const [zoom, setZoom] = useState(15);
   const [bounds, setBounds] = useState<

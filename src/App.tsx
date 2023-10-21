@@ -42,6 +42,7 @@ import ViewTicket from "./components/support/ViewTicket";
 import { Payroll } from "./pages/payroll/Payroll";
 import PayrollList from "./components/payroll/PayrollList";
 import MyPortal from "./pages/my-portal/MyPortal";
+import { Alert, AlertIcon } from "@chakra-ui/react";
 
 function App() {
   const { user } = useAuth();

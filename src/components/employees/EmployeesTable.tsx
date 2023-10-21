@@ -22,29 +22,29 @@ function EmployeesTable() {
   const [isLoading, setIsLoading] = useState(true);
   const api = useApiClient();
 
-  useEffect(() => {
-    const clientsResponse = async () => {
-      return new Promise<Employee[]>((resolve, reject) => {
-        const timeout = Math.floor(Math.random() * 1) + 500; // Random wait time between 1-3 seconds
-        setTimeout(() => {
-          api
-            .get<ApiResponse<Employee[]>>("/employees")
-            .then((response) => {
-              if (response.status === 204) {
-                resolve([]);
-              } else {
-                resolve(response.data);
-              }
-            })
-            .catch((reason: AxiosError) => {
-              //addtoast
-              reject(reason);
-            });
-        }, timeout);
-      });
-    };
+  const clientsResponse = async () => {
+    return new Promise<Employee[]>((resolve, reject) => {
+      const timeout = Math.floor(Math.random() * 1) + 500; // Random wait time between 1-3 seconds
+      setTimeout(() => {
+        api
+          .get<ApiResponse<Employee[]>>("/employees")
+          .then((response) => {
+            if (response.status === 204) {
+              resolve([]);
+            } else {
+              resolve(response.data);
+            }
+          })
+          .catch((reason: AxiosError) => {
+            //addtoast
+            reject(reason);
+          });
+      }, timeout);
+    });
+  };
 
-    clientsResponse()
+  const fetchEmployees = async () => {
+    await clientsResponse()
       .then((clients) => {
         if (clients) {
           setEmployees(clients);
@@ -58,6 +58,10 @@ function EmployeesTable() {
       .finally(() => {
         setIsLoading(false); // Set loading to false after data fetching
       });
+  };
+
+  useEffect(() => {
+    fetchEmployees();
   }, []);
 
   return (
@@ -89,11 +93,13 @@ function EmployeesTable() {
             employees.map((employee, index) => {
               return (
                 <EmployeesRow
+                  id={employee.id}
                   key={index}
                   index={employee.id}
                   image={employee.profileUrl}
                   firstNames={employee.person.firstNames}
                   lastNames={employee.person.lastNames}
+                  fetchEmployees={fetchEmployees}
                 />
               );
             })

@@ -137,6 +137,45 @@ const useApiClient = () => {
     });
   };
 
+  const getImage = (url: string, imageName: string): Promise<Blob> => {
+    return new Promise((resolve, reject) => {
+      axiosInstance
+        .request({
+          method: "get",
+          url,
+          responseType: "blob", // Set the responseType to "blob" for image downloads
+        })
+        .then((response: AxiosResponse<Blob>) => {
+          resolve(response.data);
+        })
+        .catch((error: AxiosError) => {
+          console.error(error.message);
+          if (
+            error.code === "ERR_NETWORK" ||
+            error.code === "ERR_CONNECTION_REFUSED"
+          ) {
+            // Check if a toast is already showing, if not, show one
+            if (!isToastShowing) {
+              isToastShowing = true;
+
+              toast({
+                title: "Conexión rechazada",
+                description:
+                  "No se ha podido contactar al servidor, por favor intente de nuevo más tarde",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                onCloseComplete: () => {
+                  isToastShowing = false; // Reset the flag when toast is closed
+                },
+              });
+            }
+          }
+          reject(error);
+        });
+    });
+  };
+
   const post = <T>(
     url: string,
     data?: any,
@@ -171,7 +210,7 @@ const useApiClient = () => {
     });
   };
 
-  return { get, getFile, post, put, remove };
+  return { get, getFile, getImage, post, put, remove };
 };
 
 export default useApiClient;

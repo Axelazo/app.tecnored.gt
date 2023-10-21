@@ -317,7 +317,7 @@ function ViewEmployee() {
             direction={{ base: "column", md: "row" }}
             alignContent={"center"}
           >
-            <Stack>
+            {/*             <Stack>
               <Image
                 src={employee.profileUrl}
                 objectFit={"contain"}
@@ -336,7 +336,7 @@ function ViewEmployee() {
                   </Text>
                 </Box>
               </Stack>
-            </Stack>
+            </Stack> */}
             <Stack w={"full"} pt={4}>
               <SimpleGrid columns={{ base: 1, md: 1, lg: 3 }}>
                 <List spacing={4}>
@@ -454,7 +454,7 @@ function ViewEmployee() {
               <Text fontWeight={"bold"} fontSize={"xl"}>
                 Historial de Sueldos
               </Text>
-              <Menu>
+              {/*               <Menu>
                 <MenuButton
                   as={Button}
                   leftIcon={<MdMonetizationOn />}
@@ -470,7 +470,7 @@ function ViewEmployee() {
                     </MenuItem>
                   </MenuList>
                 </Portal>
-              </Menu>
+              </Menu> */}
             </HStack>
 
             <Line

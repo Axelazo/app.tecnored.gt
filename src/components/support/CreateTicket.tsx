@@ -49,6 +49,8 @@ const estimatedFinishDate = format(
 
 function CreateTicket() {
   const toast = useToast();
+  const [disabled, setDisabled] = useState(false);
+
   const navigate = useNavigate();
   const [showCustomSubject, setShowCustomSubject] = useState<boolean>(false);
   const { register, handleSubmit, formState, clearErrors, getValues, control } =
@@ -133,6 +135,7 @@ function CreateTicket() {
         api
           .post<Ticket>("/tickets/create", ticketData)
           .then((response) => {
+            setDisabled(true);
             toast({
               description: `Ticket creado exitosamente!`,
               status: "success",
@@ -165,7 +168,7 @@ function CreateTicket() {
   });
 
   useEffect(() => {
-    getEmployeesWithPosition("Asesor")
+    getEmployeesWithPosition("Técnico")
       .then((employees) => {
         if (employees) {
           const formattedEmployees = employees.map((employee) => {
@@ -373,6 +376,7 @@ function CreateTicket() {
             </FormControl>
             <Box>
               <Button
+                isDisabled={disabled}
                 isLoading={formState.isSubmitting}
                 colorScheme={"green"}
                 type={"submit"}

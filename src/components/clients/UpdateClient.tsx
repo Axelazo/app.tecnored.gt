@@ -37,6 +37,8 @@ import { ErrorResponseData } from "../../interfaces/app/ErrorResponseData";
 const departments = getDepartments();
 
 function UpdateClient() {
+  const [disabled, setDisabled] = useState(false);
+
   // TODO: Replace with Department and Municipalities input
   const [municipalities, setMunicipalities] = useState(
     getMunicipalitiesFromDepartment(12)
@@ -118,6 +120,7 @@ function UpdateClient() {
           headers: { "Content-Type": "multipart/form-data" },
         })
         .then(() => {
+          setDisabled(true);
           toast({
             description: `Cliente actualizado exitosamente!`,
             status: "success",
@@ -164,22 +167,39 @@ function UpdateClient() {
       .then((client) => {
         //Set images on the DPI
         setClient(client);
-        DownloadImageAsFile(client.person.dpi.dpiFrontUrl).then((file) => {
-          if (file) {
-            setdpiImageFront(file);
-          }
-        });
-        DownloadImageAsFile(client.person.dpi.dpiBackUrl).then((file) => {
-          if (file) {
-            setdpiImageBack(file);
-          }
-        });
       })
       .catch((error) => {
         setLoadError(true);
         console.error(`Query failed ${error.message}`);
       });
   }, []);
+
+  useEffect(() => {
+    if (!client) {
+      return; // Client is not defined, so exit early
+    }
+
+    const loadDpiImages = async () => {
+      const imageFront = await api.getImage(
+        client.person.dpi.dpiFrontUrl,
+        "front.png"
+      );
+      const imageBack = await api.getImage(
+        client.person.dpi.dpiBackUrl,
+        "back.png"
+      );
+
+      // Convert the Blobs to File objects
+      const frontImageFile = new File([imageFront], "image" + imageFront.type);
+      const backImageFile = new File([imageBack], "image" + imageBack.type);
+
+      // Set the File objects in your state
+      setdpiImageFront(frontImageFile);
+      setdpiImageBack(backImageFile);
+    };
+
+    loadDpiImages();
+  }, [client]);
 
   if (!client) {
     return (
@@ -413,6 +433,7 @@ function UpdateClient() {
         <Flex pt={4}>
           <Box flexGrow={1} />
           <Button
+            isDisabled={disabled}
             isLoading={formState.isSubmitting}
             colorScheme={"green"}
             type={"submit"}

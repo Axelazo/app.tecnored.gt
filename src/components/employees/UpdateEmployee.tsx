@@ -22,7 +22,6 @@ import ImageDropzone from "../misc/ImageDropzone";
 import PageHeader from "../common/PageHeader";
 import ValidatableInput from "../ValidatableInput";
 import { useEffect } from "react";
-import { DownloadImageAsFile, loadFile } from "../../helpers/files";
 import { formDataToJson } from "../../helpers/conversion";
 import { Establishment } from "../../interfaces/app/Establishment";
 import { Area } from "../../interfaces/app/Area";
@@ -37,9 +36,12 @@ import DepartmentMunicipalitySelect from "../misc/DepartmentMunicipalitySelect";
 import useApiClient from "../../hooks/useApiClient";
 import { ErrorResponseData } from "../../interfaces/app/ErrorResponseData";
 import { AxiosError } from "axios";
+import { loadFile } from "../../helpers/files";
 
 function UpdateEmployee() {
   const api = useApiClient();
+  const [disabled, setDisabled] = useState(false);
+
   const { register, handleSubmit, formState, clearErrors, reset, getValues } =
     useForm<EmployeeFormValues>({
       resolver: EmployeFormResolver,
@@ -159,6 +161,7 @@ function UpdateEmployee() {
               headers: { "Content-Type": "multipart/form-data" },
             })
             .then((response) => {
+              setDisabled(true);
               toast({
                 description: `Empleado actualizado exitosamente!`,
                 status: "success",
@@ -212,21 +215,6 @@ function UpdateEmployee() {
       .then((employee) => {
         //Set images on the DPI
         setEmployee(employee);
-        DownloadImageAsFile(employee.person.dpi.dpiFrontUrl).then((file) => {
-          if (file) {
-            setdpiImageFront(file);
-          }
-        });
-        DownloadImageAsFile(employee.person.dpi.dpiBackUrl).then((file) => {
-          if (file) {
-            setdpiImageBack(file);
-          }
-        });
-        DownloadImageAsFile(employee.profileUrl).then((file) => {
-          if (file) {
-            setPicture(file);
-          }
-        });
         setBank(employee.account.bank.id);
         setEstablishment(employee.employeePositionMapping[0].establishment.id);
         setArea(employee.employeePositionMapping[0].area.id);
@@ -275,6 +263,43 @@ function UpdateEmployee() {
 
     fetchData();
   }, [establishment, area]);
+
+  useEffect(() => {
+    if (!employee) {
+      return; // Client is not defined, so exit early
+    }
+
+    const loadDpiImages = async () => {
+      console.log(employee.person.dpi);
+      const imageFront = await api.getImage(
+        employee.person.dpi.dpiFrontUrl,
+        "front.png"
+      );
+      const imageBack = await api.getImage(
+        employee.person.dpi.dpiBackUrl,
+        "back.png"
+      );
+
+      const profilePic = await api.getImage(employee.profileUrl, "profile.png");
+
+      console.log(imageFront, imageBack);
+
+      // Convert the Blobs to File objects
+      const frontImageFile = new File([imageFront], "image" + imageFront.type);
+      const backImageFile = new File([imageBack], "image" + imageBack.type);
+      const profileImageFile = new File(
+        [profilePic],
+        "image" + profilePic.type
+      );
+
+      // Set the File objects in your state
+      setdpiImageFront(frontImageFile);
+      setdpiImageBack(backImageFile);
+      setPicture(profileImageFile);
+    };
+
+    loadDpiImages();
+  }, [employee]);
 
   if (!employee) {
     return (
@@ -621,6 +646,7 @@ function UpdateEmployee() {
         <Flex pt={4}>
           <Box flexGrow={1} />
           <Button
+            isDisabled={disabled}
             isLoading={formState.isSubmitting}
             colorScheme={"green"}
             type={"submit"}

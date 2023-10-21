@@ -153,6 +153,7 @@ function UpdateTicketStatus({
 
   const api = useApiClient();
   const toast = useToast();
+  const [disabled, setDisabled] = useState(false);
 
   const onSubmit = handleSubmit(async (ticketData) => {
     const timeout = Math.floor(Math.random() * 2000) + 1000; // Random wait time between 1-3 seconds
@@ -161,6 +162,7 @@ function UpdateTicketStatus({
         api
           .put<Ticket>(`/tickets/${ticketId}/update`, ticketData)
           .then((response) => {
+            setDisabled(true);
             toast({
               description: `Ticket actualizado exitosamente!`,
               status: "success",
@@ -182,6 +184,9 @@ function UpdateTicketStatus({
                 isClosable: true,
               });
             }
+          })
+          .finally(() => {
+            setDisabled(false);
           });
       }, timeout);
     });
@@ -216,6 +221,7 @@ function UpdateTicketStatus({
             </FormErrorMessage>
           </FormControl>
           <Button
+            isDisabled={disabled}
             colorScheme={"green"}
             type={"submit"}
             size={"md"}

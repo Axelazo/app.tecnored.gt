@@ -16,11 +16,10 @@ interface MapProps {
   formSubmited: boolean;
   disabled?: boolean;
 }
-
 function Map({ location, setLocation, formSubmited, disabled }: MapProps) {
   const [center, setCenter] = useState({
-    lat: 16.509673990914745,
-    lng: -89.41893294734292,
+    lat: 16.797948256374617,
+    lng: -89.93191334282228,
   });
   const [zoom, setZoom] = useState(15);
   const [showError, setShowError] = useState(true);

@@ -33,6 +33,9 @@ function ViewClient() {
   const [client, setClient] = useState<Client | null>(null);
   const { id } = useParams();
 
+  const [front, setFront] = useState<Blob | null>(null);
+  const [back, setBack] = useState<Blob | null>(null);
+
   const api = useApiClient();
   const clientId = id ? parseInt(id) : undefined;
 
@@ -62,6 +65,32 @@ function ViewClient() {
         console.error(error);
       });
   }, []);
+
+  useEffect(() => {
+    api
+      .getImage(`${client?.person.dpi.dpiFrontUrl}`, "front.png")
+      .then((response) => {
+        setFront(response);
+        console.log(response);
+      })
+      .catch((reason: AxiosError) => {
+        //addtoast
+        // reject(reason);
+      });
+  }, [client]);
+
+  useEffect(() => {
+    api
+      .getImage(`${client?.person.dpi.dpiBackUrl}`, "back.png")
+      .then((response) => {
+        setBack(response);
+        console.log(response);
+      })
+      .catch((reason: AxiosError) => {
+        //addtoast
+        // reject(reason);
+      });
+  }, [client]);
 
   if (!client) {
     return (
@@ -195,12 +224,15 @@ function ViewClient() {
           <HStack w={"full"}>
             <Flex w={"full"} maxH={"15rem"}>
               <Image
-                src={client.person.dpi.dpiFrontUrl}
+                src={front ? URL.createObjectURL(front) : ""}
                 objectFit={"contain"}
               />
             </Flex>
             <Flex w={"full"} maxH={"15rem"}>
-              <Image src={client.person.dpi.dpiBackUrl} objectFit={"contain"} />
+              <Image
+                src={back ? URL.createObjectURL(back) : ""}
+                objectFit={"contain"}
+              />
             </Flex>
           </HStack>
         </Flex>

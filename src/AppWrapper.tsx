@@ -1,13 +1,15 @@
 import {
   useToast,
   ColorModeScript,
-  theme,
   ChakraProvider,
+  Alert,
+  AlertIcon,
 } from "@chakra-ui/react";
 import { useEffect } from "react";
 import App from "./App";
 import { isTokenExpired } from "./helpers/encryption";
 import { useAuth } from "./hooks/useAuth";
+import theme from "./theme/theme";
 
 export function AppWrapper() {
   const { logout } = useAuth();
