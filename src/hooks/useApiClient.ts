@@ -14,7 +14,7 @@ const useApiClient = () => {
   // Add a flag to track whether a toast is already shown
   let isToastShowing = false;
 
-  const baseUrl = "http://localhost:4000/";
+  const baseUrl = "https://api.tecnored.gt.dev.axelaguilar.com/";
   const axiosInstance: AxiosInstance = axios.create({
     baseURL: baseUrl,
     headers: {
@@ -138,11 +138,13 @@ const useApiClient = () => {
   };
 
   const getImage = (url: string, imageName: string): Promise<Blob> => {
+    const httpsUrl = url.replace("http://", "https://");
+
     return new Promise((resolve, reject) => {
       axiosInstance
         .request({
           method: "get",
-          url,
+          url: httpsUrl,
           responseType: "blob", // Set the responseType to "blob" for image downloads
         })
         .then((response: AxiosResponse<Blob>) => {
