@@ -24,7 +24,7 @@ import { useForm } from "react-hook-form";
 import { ErrorResponseData } from "../../interfaces/app/ErrorResponseData";
 
 interface ModalProps {
-  employeeId: string | undefined;
+  employeeId: number;
   isOpen: boolean;
   onClose: () => void;
   fetchAllowancesAndDeductions: () => void;
@@ -69,53 +69,58 @@ function AddAllowanceModal({
     fetchAllowancesReasons();
   }, []);
 
-  const onSubmit = handleSubmit(async (employeeAllowanceData) => {
-    const timeout = Math.floor(Math.random() * 2000) + 1000; // Random wait time between 1-3 seconds
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        api
-          .post<{
-            allowanceId: number;
-            employeeId: number;
-            amount: number;
-          }>(`/allowances/employees/create`, {
-            employeeId,
-            allowanceId: employeeAllowanceData.reasonId,
-            amount: employeeAllowanceData.amount,
-          })
-          .then((response) => {
-            toast({
-              description: `Bonificación agregada exitosamente!`,
-              status: "success",
-              duration: 2000,
-              isClosable: true,
-            });
-            fetchAllowancesAndDeductions();
-            onClose();
-            resolve(response);
-          })
-          .catch((error: AxiosError) => {
-            console.log({
+  const onSubmit = handleSubmit(
+    async (employeeAllowanceData: AllowanceDeductionFormValues) => {
+      if (!employeeAllowanceData) {
+        return;
+      }
+      const timeout = Math.floor(Math.random() * 2000) + 1000; // Random wait time between 1-3 seconds
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          api
+            .post<{
+              allowanceId: number;
+              employeeId: number;
+              amount: number;
+            }>(`/allowances/employees/create`, {
               employeeId,
               allowanceId: employeeAllowanceData.reasonId,
               amount: employeeAllowanceData.amount,
-            });
-            if (error.response && error.response.data) {
-              const message = (error.response.data as ErrorResponseData)
-                .message;
+            })
+            .then((response) => {
               toast({
-                title: "Error",
-                description: `${message}`,
-                status: "error",
-                duration: 5000,
+                description: `Bonificación agregada exitosamente!`,
+                status: "success",
+                duration: 2000,
                 isClosable: true,
               });
-              reset();
-            }
-          });
-      }, timeout);
-    });
-  });
+              fetchAllowancesAndDeductions();
+              onClose();
+              resolve(response);
+            })
+            .catch((error: AxiosError) => {
+              console.log({
+                employeeId,
+                allowanceId: employeeAllowanceData.reasonId,
+                amount: employeeAllowanceData.amount,
+              });
+              if (error.response && error.response.data) {
+                const message = (error.response.data as ErrorResponseData)
+                  .message;
+                toast({
+                  title: "Error",
+                  description: `${message}`,
+                  status: "error",
+                  duration: 5000,
+                  isClosable: true,
+                });
+                reset();
+              }
+            });
+        }, timeout);
+      });
+    }
+  );
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -211,53 +216,59 @@ function AddDeductionModal({
     fetchDeductionsReasons();
   }, []);
 
-  const onSubmit = handleSubmit(async (employeeDeductionData) => {
-    const timeout = Math.floor(Math.random() * 2000) + 1000; // Random wait time between 1-3 seconds
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        api
-          .post<{
-            deductionId: number;
-            employeeId: number;
-            amount: number;
-          }>(`/deductions/employees/create`, {
-            employeeId,
-            deductionId: employeeDeductionData.reasonId,
-            amount: employeeDeductionData.amount,
-          })
-          .then((response) => {
-            toast({
-              description: `Penalización agregada exitosamente!`,
-              status: "success",
-              duration: 2000,
-              isClosable: true,
-            });
-            fetchAllowancesAndDeductions();
-            onClose();
-            resolve(response);
-          })
-          .catch((error: AxiosError) => {
-            console.log({
+  const onSubmit = handleSubmit(
+    async (employeeDeductionData: AllowanceDeductionFormValues) => {
+      if (!employeeDeductionData) {
+        return;
+      }
+
+      const timeout = Math.floor(Math.random() * 2000) + 1000; // Random wait time between 1-3 seconds
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          api
+            .post<{
+              deductionId: number;
+              employeeId: number;
+              amount: number;
+            }>(`/deductions/employees/create`, {
               employeeId,
               deductionId: employeeDeductionData.reasonId,
               amount: employeeDeductionData.amount,
-            });
-            if (error.response && error.response.data) {
-              const message = (error.response.data as ErrorResponseData)
-                .message;
+            })
+            .then((response) => {
               toast({
-                title: "Error",
-                description: `${message}`,
-                status: "error",
-                duration: 5000,
+                description: `Penalización agregada exitosamente!`,
+                status: "success",
+                duration: 2000,
                 isClosable: true,
               });
-              reset();
-            }
-          });
-      }, timeout);
-    });
-  });
+              fetchAllowancesAndDeductions();
+              onClose();
+              resolve(response);
+            })
+            .catch((error: AxiosError) => {
+              console.log({
+                employeeId,
+                deductionId: employeeDeductionData.reasonId,
+                amount: employeeDeductionData.amount,
+              });
+              if (error.response && error.response.data) {
+                const message = (error.response.data as ErrorResponseData)
+                  .message;
+                toast({
+                  title: "Error",
+                  description: `${message}`,
+                  status: "error",
+                  duration: 5000,
+                  isClosable: true,
+                });
+                reset();
+              }
+            });
+        }, timeout);
+      });
+    }
+  );
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>

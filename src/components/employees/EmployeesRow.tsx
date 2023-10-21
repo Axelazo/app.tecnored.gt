@@ -39,7 +39,7 @@ interface ClientRow {
 }
 
 interface DeleteEmployeeModalProps {
-  employeeId: string | undefined;
+  employeeId: number;
   isOpen: boolean;
   onClose: () => void;
   fetchEmployees: () => void;

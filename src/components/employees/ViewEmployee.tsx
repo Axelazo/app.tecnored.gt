@@ -11,8 +11,6 @@ import {
   Portal,
   HStack,
   Tag,
-  Box,
-  Image,
   SimpleGrid,
   List,
   ListItem,
@@ -34,13 +32,7 @@ import { NavLink, useParams } from "react-router-dom";
 import useApiClient from "../../hooks/useApiClient";
 import PageHeader from "../common/PageHeader";
 import { IoMdArrowRoundBack } from "react-icons/io";
-import {
-  MdAddCircle,
-  MdEdit,
-  MdMonetizationOn,
-  MdPrint,
-  MdRemoveCircle,
-} from "react-icons/md";
+import { MdAddCircle, MdEdit, MdRemoveCircle } from "react-icons/md";
 import { FaFilePdf, FaFileExcel } from "react-icons/fa";
 import { AddIcon, ChevronDownIcon, MinusIcon } from "@chakra-ui/icons";
 import { ApiResponse } from "../../interfaces/misc/ApiResponse";
@@ -62,7 +54,7 @@ interface EmployeeAllowancesAndDeductions extends Timestamps {
 }
 
 export interface EmployeeAllowancesAndDeductionsTableProps {
-  id: string;
+  id: number;
   random: number;
 }
 
@@ -524,7 +516,10 @@ function ViewEmployee() {
                 </Portal>
               </Menu>
             </HStack>
-            <EmployeeAllowancesAndDeductionsTable id={id} random={random} />
+            <EmployeeAllowancesAndDeductionsTable
+              id={parseInt(id)}
+              random={random}
+            />
           </Stack>
         </Stack>
       </Stack>

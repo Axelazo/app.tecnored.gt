@@ -69,7 +69,7 @@ function CreateEmployee() {
   const toast = useToast();
   const navigate = useNavigate();
 
-  const onSubmit = handleSubmit(async (employeeData) => {
+  const onSubmit = handleSubmit(async (employeeData: EmployeeFormValues) => {
     const timeout = Math.floor(Math.random() * 2000) + 1000; // Random wait time between 1-3 seconds
     return new Promise((resolve, reject) => {
       setTimeout(async () => {

@@ -26,9 +26,10 @@ import useApiClient from "../../hooks/useApiClient";
 import { Client } from "../../interfaces/app/Client";
 import { ApiResponse } from "../../interfaces/misc/ApiResponse";
 import { ErrorResponseData } from "../../interfaces/app/ErrorResponseData";
+import { AxiosError } from "axios";
 
 interface DeleteClientModalProps {
-  clientId: string | undefined;
+  clientId: number;
   isOpen: boolean;
   onClose: () => void;
   fetchClients: () => void;

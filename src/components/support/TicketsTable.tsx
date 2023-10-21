@@ -79,7 +79,7 @@ function TicketsTable() {
                   priority={ticket.priority}
                   id={`${ticket.id}`}
                   status={ticket.statuses[0].name}
-                  createdAt={ticket.createdAt}
+                  createdAt={ticket.createdAt.toISOString()}
                   fetchTickets={fetchTickets}
                 />
               );

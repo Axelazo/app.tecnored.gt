@@ -76,7 +76,7 @@ function UpdateEmployee() {
   const [dpiImageFront, setdpiImageFront] = useState<File | null>(null);
   const [dpiImageBack, setdpiImageBack] = useState<File | null>(null);
 
-  const onSubmit = handleSubmit(async (employeeData) => {
+  const onSubmit = handleSubmit(async (employeeData: EmployeeFormValues) => {
     const timeout = Math.floor(Math.random() * 2000) + 1000; // Random wait time between 1-3 seconds
 
     console.log("Employee Data:", employeeData); // Add this line to log the employeeData

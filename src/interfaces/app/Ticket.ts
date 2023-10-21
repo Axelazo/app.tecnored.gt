@@ -23,4 +23,5 @@ export interface Ticket extends Timestamps {
   clients: Client[];
   assignees: Employee[];
   router: Router;
+  statuses: TicketsStatuses[];
 }

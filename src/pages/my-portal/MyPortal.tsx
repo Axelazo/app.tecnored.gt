@@ -160,9 +160,13 @@ export default function MyPortal() {
           <Heading ml={4} size={"md"}>
             Tus bonificaciones y penalizaciones del mes
           </Heading>
-          <EmployeeAllowancesAndDeductionsTable id={user?.employeeId} />
+          <EmployeeAllowancesAndDeductionsTable
+            id={user?.employeeId}
+            random={Math.random()}
+          />
         </Box>
       </Stack>
+      x
     </Card>
   );
 }

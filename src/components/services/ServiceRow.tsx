@@ -43,7 +43,7 @@ export interface ServiceRow {
 }
 
 interface DeleteServiceModalProps {
-  serviceId: string | undefined;
+  serviceId: number;
   isOpen: boolean;
   onClose: () => void;
   fetchServices: () => void;

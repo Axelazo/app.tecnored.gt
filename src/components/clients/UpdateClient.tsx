@@ -19,7 +19,7 @@ import PageHeader from "../common/PageHeader";
 import DualSideDivider from "../common/DualSideDivider";
 import ValidatableInput from "../ValidatableInput";
 import ImageDropzone from "../misc/ImageDropzone";
-import { DownloadImageAsFile, loadFile } from "../../helpers/files";
+import { loadFile } from "../../helpers/files";
 import { Client } from "../../interfaces/app/Client";
 import { ClientFormValues } from "../../formValues/ClientFormValues";
 import { ApiResponse } from "../../interfaces/misc/ApiResponse";
@@ -60,7 +60,7 @@ function UpdateClient() {
 
   const [client, setClient] = useState<Client | null>(null);
 
-  const onSubmit = handleSubmit(async (clientData) => {
+  const onSubmit = handleSubmit(async (clientData: ClientFormValues) => {
     const formData = new FormData();
     const [dpiFront, dpiBack] = await Promise.all([
       loadFile(dpiImageFront),

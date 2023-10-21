@@ -1,7 +1,7 @@
 import { Stack } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import useApiClient from "../../hooks/useApiClient";
-import DashboardCard from "./DashboardCard";
+import DashboardCard, { StatData } from "./DashboardCard";
 import { FaCalendar, FaCalendarDay, FaUsers } from "react-icons/fa";
 import { GiPayMoney, GiReceiveMoney } from "react-icons/gi";
 import {
@@ -108,21 +108,18 @@ function Dashboard() {
       label: "Total de Clientes ",
       value: totalClientsCount,
       icon: FaUsers,
-      percentage: "10%",
     },
     {
       id: 2,
       label: "Total de Clientes Nuevos (hoy)",
       value: newClientsDuringDay,
       icon: FaCalendarDay,
-      percentage: "30%",
     },
     {
       id: 3,
       label: "Total de Clientes Nuevos (mes)",
       value: newClientsDuringMonth,
       icon: FaCalendar,
-      percentage: "30%",
     },
   ];
 

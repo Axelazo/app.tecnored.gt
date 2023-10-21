@@ -58,7 +58,7 @@ function CreateTicket() {
       resolver: TicketFormResolver,
     });
 
-  const [client, setClient] = useState<string | null | undefined>("");
+  const [client, setClient] = useState<number>(0);
   const [employee, setEmployee] = useState<number | null | undefined>(0);
   const [clients, setClients] = useState<Option[] | null>(null);
   const [employees, setEmployees] = useState<Option[] | null>(null);
@@ -107,7 +107,7 @@ function CreateTicket() {
     });
   };
 
-  const servicesResponse = async (clientId: number | null | undefined) => {
+  const servicesResponse = async (clientId: number | null) => {
     return new Promise<ServiceRow[]>((resolve, reject) => {
       const timeout = Math.floor(Math.random() * 1) + 500; // Random wait time between 1-3 seconds
       setTimeout(() => {
@@ -247,6 +247,7 @@ function CreateTicket() {
           <HStack spacing={8} w={"full"}>
             <SearchableSelect
               label="Cliente"
+              // @ts-ignore
               control={control}
               options={clients}
               name="clientId"
@@ -303,6 +304,7 @@ function CreateTicket() {
             </FormControl>
             <SearchableSelect
               label="Técnico"
+              // @ts-ignore
               control={control}
               options={employees}
               name="employeeId"

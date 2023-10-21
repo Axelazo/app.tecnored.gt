@@ -20,8 +20,18 @@ import es from "date-fns/locale/es";
  * const result = timeAgo(date);
  * //Example output: "hace alrededor de 1 hora - (03/07/2023 a las 7:33 a.m.)"
  */
-export function timeAgo(date: string): string {
-  const formatedDate = parseISO(date.toString());
+export function timeAgo(date: string | Date): string {
+  let formatedDate: Date;
+
+  if (typeof date === "string") {
+    formatedDate = parseISO(date);
+  } else if (date instanceof Date) {
+    formatedDate = date;
+  } else {
+    throw new Error(
+      "Invalid date format. Please provide a valid string or Date object."
+    );
+  }
 
   const timeAgoText = formatDistanceToNow(formatedDate, {
     addSuffix: true,
@@ -31,6 +41,7 @@ export function timeAgo(date: string): string {
   const formattedFullDate = format(formatedDate, "dd/MM/yyyy 'a las' h:mm a", {
     locale: es,
   });
+
   return `${timeAgoText}`;
 }
 
@@ -74,8 +85,14 @@ export function ageAtDate(birthday: Date): string {
  * const formattedDate = formatDate(inputDateString);
  * // Example output: "03/07/1999"
  */
-export function formatDate(date: string) {
-  const parsedDate = parseISO(date);
+export function formatDate(date: string | Date) {
+  let parsedDate;
+  if (date instanceof Date) {
+    parsedDate = date;
+  } else {
+    parsedDate = parseISO(date);
+  }
+
   const formattedDate = format(parsedDate, "MM/dd/yyyy hh:mm");
   return formattedDate;
 }

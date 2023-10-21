@@ -14,17 +14,20 @@ import {
 } from "@chakra-ui/react";
 import { IconType } from "react-icons";
 
-interface StatData {
+export interface StatData {
   id: number;
   label: string;
   valueColor?: string;
   value: number;
   icon: IconType;
-  percentage: string;
   prefix?: string;
 }
 
 function Stat({ data }: { data: StatData }) {
+  const color = useColorModeValue(
+    `${data.valueColor}`,
+    `${data.valueColor}.400`
+  );
   return (
     <Stack
       direction="column"
@@ -71,14 +74,7 @@ function Stat({ data }: { data: StatData }) {
               as="h2"
               fontSize="lg"
               fontWeight="extrabold"
-              color={
-                data.valueColor
-                  ? useColorModeValue(
-                      `${data.valueColor}`,
-                      `${data.valueColor}.400`
-                    )
-                  : "grey.600"
-              }
+              color={data.valueColor ? color : "grey.600"}
             >
               {data.prefix ? `${data.prefix}${data.value}` : `${data.value}`}
             </Text>
