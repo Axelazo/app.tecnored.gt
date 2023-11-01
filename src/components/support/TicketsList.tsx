@@ -7,7 +7,7 @@ import TicketsTable from "./TicketsTable";
 function TicketsList() {
   return (
     <>
-      <Stack flexGrow={1}>
+      <Stack flexGrow={1} maxW={"full"}>
         <PageHeader title="Soporte Técnico">
           <Button
             leftIcon={<FaPlus />}

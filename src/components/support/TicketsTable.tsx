@@ -15,6 +15,7 @@ import useApiClient from "../../hooks/useApiClient";
 import { ApiResponse } from "../../interfaces/misc/ApiResponse";
 import { Ticket } from "../../interfaces/app/Ticket";
 import TicketRow from "./TicketRow";
+import { formatDate } from "../../helpers/time";
 
 function TicketsTable() {
   const [tickets, setTickets] = useState<Ticket[] | null>(null);
@@ -79,7 +80,7 @@ function TicketsTable() {
                   priority={ticket.priority}
                   id={`${ticket.id}`}
                   status={ticket.statuses[0].name}
-                  createdAt={ticket.createdAt.toISOString()}
+                  createdAt={ticket.createdAt}
                   fetchTickets={fetchTickets}
                 />
               );
