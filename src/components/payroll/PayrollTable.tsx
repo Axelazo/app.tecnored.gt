@@ -17,7 +17,7 @@ import { useState, useEffect } from "react";
 import useApiClient from "../../hooks/useApiClient";
 import { ApiResponse } from "../../interfaces/misc/ApiResponse";
 import { Payroll } from "../../interfaces/app/Payroll";
-import { format, getMonth, getYear } from "date-fns";
+import { format, getMonth, getYear, isSameMonth } from "date-fns";
 import { es } from "date-fns/locale";
 import { MdAttachEmail, MdDownload } from "react-icons/md";
 
@@ -78,9 +78,9 @@ function PayrollsTable() {
             <Tr>
               <Th>Periodo</Th>
               <Th>Estado</Th>
-              <Th>Neto</Th>
+              {/*               <Th>Neto</Th>
               <Th>Bonificaciones</Th>
-              <Th>Penalizaciones</Th>
+              <Th>Penalizaciones</Th> */}
               <Th>Administrar</Th>
             </Tr>
           </Thead>
@@ -108,9 +108,9 @@ function PayrollsTable() {
                       locale: es,
                     })}`}</Td>
                     <Td>{<PayrollStatus status={payroll.status} />}</Td>
-                    <Td>{`Q${payroll.net}`}</Td>
+                    {/*                     <Td>{`Q${payroll.net}`}</Td>
                     <Td>{`Q${payroll.allowances}`}</Td>
-                    <Td>{`Q${payroll.deductions}`}</Td>
+                    <Td>{`Q${payroll.deductions}`}</Td> */}
                     <Td>
                       <Button
                         leftIcon={<MdDownload />}
