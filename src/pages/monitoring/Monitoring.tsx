@@ -19,7 +19,7 @@ import { ServiceLocation } from "../../interfaces/tables/ServiceLocation";
 function Monitoring() {
   //Google maps
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: "AIzaSyCTLAIUGQcxfCfTIB3ax80mMMT_YuHRQLc",
+    googleMapsApiKey: "AIzaSyCTce88Bt7xXzLECnuxUWTZd6NHDsDsg5Y",
     //libraries: ["geometry"],
   });
   const [center, setCenter] = useState({
@@ -66,12 +66,6 @@ function Monitoring() {
 
   const handleMapLoad = (map: google.maps.Map) => {
     setMapInstance(map);
-    /*     const nearbyLocations = getNearbyLocations(
-      16.509673990914745,
-      -89.41893294734292,
-      10,
-      100
-    ); */
   };
 
   const handleBoundsChange = () => {

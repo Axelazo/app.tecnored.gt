@@ -50,12 +50,15 @@ function CreateService() {
   const [selectedRouter, setSelectedRouter] = useState<Router | null>(null);
   const [location, setLocation] = useState<
     google.maps.LatLng | google.maps.LatLngLiteral | null
-  >(null);
+  >({
+    lat: 16.797948256374617,
+    lng: -89.93191334282228,
+  });
 
   // API
   const api = useApiClient();
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: "AIzaSyCTLAIUGQcxfCfTIB3ax80mMMT_YuHRQLc",
+    googleMapsApiKey: "AIzaSyCTce88Bt7xXzLECnuxUWTZd6NHDsDsg5Y",
   });
 
   // Form submission
