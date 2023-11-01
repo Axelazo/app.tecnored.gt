@@ -7,7 +7,7 @@ import EmployeesTable from "./EmployeesTable";
 function EmployeesList() {
   return (
     <>
-      <Stack flexGrow={1}>
+      <Stack flexGrow={1} maxW={"full"}>
         <PageHeader title="Lista de empleados">
           <Button
             leftIcon={<FaPlus />}

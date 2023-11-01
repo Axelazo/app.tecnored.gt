@@ -69,7 +69,6 @@ function EmployeesTable() {
       <Table variant="simple">
         <Thead>
           <Tr>
-            <Th>Foto</Th>
             <Th>Nombres</Th>
             <Th>Apellidos</Th>
             <Th>Estado</Th>

@@ -140,9 +140,6 @@ function EmployeeRow({
 
   return (
     <Tr>
-      <Td>
-        <Avatar src={image} />
-      </Td>
       <Td>{firstNames}</Td>
       <Td>{lastNames}</Td>
       <Td>

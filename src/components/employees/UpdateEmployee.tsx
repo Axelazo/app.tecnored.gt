@@ -211,22 +211,9 @@ function UpdateEmployee() {
   };
 
   useEffect(() => {
-    employeeResponse()
-      .then((employee) => {
-        //Set images on the DPI
-        setEmployee(employee);
-        setBank(employee.account.bank.id);
-        setEstablishment(employee.employeePositionMapping[0].establishment.id);
-        setArea(employee.employeePositionMapping[0].area.id);
-        setPosition(employee.employeePositionMapping[0].position.id);
-      })
-      .catch((error) => {
-        setLoadError(true);
-        console.error(`Query failed ${error.message}`);
-      });
-  }, []);
-
-  useEffect(() => {
+    if (!area) {
+      return;
+    }
     const fetchData = async () => {
       try {
         const banksResponse = await api.get<ApiResponse<Bank[]>>("/banks");
@@ -265,32 +252,53 @@ function UpdateEmployee() {
   }, [establishment, area]);
 
   useEffect(() => {
+    employeeResponse()
+      .then((employee) => {
+        //Set images on the DPI
+        setEmployee(employee);
+        setBank(employee.account.bank.id);
+        console.log(`bank ${employee.account.bank.id}`);
+        setEstablishment(employee.employeePositionMapping[0].establishment.id); // review this in depth
+        setArea(employee.employeePositionMapping[0].area.id); // review this in depth
+        setPosition(employee.employeePositionMapping[0].position.id); // review this in depth
+        console.log(employee.employeePositionMapping);
+      })
+      .catch((error) => {
+        setLoadError(true);
+      });
+  }, []);
+
+  useEffect(() => {
     if (!employee) {
       return; // Client is not defined, so exit early
     }
 
     const loadDpiImages = async () => {
-      console.log(employee.person.dpi);
-      const imageFront = await api.getImage(
-        employee.person.dpi.dpiFrontUrl,
-        "front.png"
-      );
-      const imageBack = await api.getImage(
-        employee.person.dpi.dpiBackUrl,
-        "back.png"
-      );
+      const frontUrl = employee.person.dpi.dpiFrontUrl;
+      const backUrl = employee.person.dpi.dpiBackUrl;
+      const profileUrl = employee.profileUrl;
 
-      const profilePic = await api.getImage(employee.profileUrl, "profile.png");
+      const imageFront = await api.getImage(frontUrl, "front.png");
+      const imageBack = await api.getImage(backUrl, "back.png");
+      const profilePic = await api.getImage(profileUrl, "profile.png");
 
-      console.log(imageFront, imageBack);
+      const frontFileName = frontUrl.substring(frontUrl.lastIndexOf("/") + 1);
+      const backFileName = backUrl.substring(backUrl.lastIndexOf("/") + 1);
+      const profileFileName = profileUrl.substring(
+        profileUrl.lastIndexOf("/") + 1
+      );
 
       // Convert the Blobs to File objects
-      const frontImageFile = new File([imageFront], "image" + imageFront.type);
-      const backImageFile = new File([imageBack], "image" + imageBack.type);
-      const profileImageFile = new File(
-        [profilePic],
-        "image" + profilePic.type
-      );
+      const frontImageFile = new File([imageFront], frontFileName, {
+        type: imageFront.type,
+      });
+      const backImageFile = new File([imageBack], backFileName, {
+        type: imageBack.type,
+      });
+
+      const profileImageFile = new File([profilePic], profileFileName, {
+        type: profilePic.type,
+      });
 
       // Set the File objects in your state
       setdpiImageFront(frontImageFile);
@@ -417,17 +425,21 @@ function UpdateEmployee() {
                 onChange={(ev) => {
                   setBank(parseInt(ev.target.value));
                 }}
-                value={bank}
                 defaultValue={employee.account.bank.id}
-                variant={"filled"}
               >
                 {banks?.map((bankOption) => {
-                  return bankOption.id === bank ? (
-                    <option key={bankOption.id} value={bankOption.id}>
+                  return (
+                    <option
+                      key={bankOption.id}
+                      value={bankOption.id}
+                      defaultValue={
+                        employee.account.bank.id === bankOption.id
+                          ? bankOption.id
+                          : null
+                      }
+                    >
                       {bankOption.name}
                     </option>
-                  ) : (
-                    ""
                   );
                 })}
               </Select>
@@ -442,7 +454,6 @@ function UpdateEmployee() {
               error={formState.errors.accountNumber}
               required={true}
               value={employee.account.number}
-              variant={"filled"}
             />
           </HStack>
           <>Para cambiar los datos de pago, contacte al administrador</>
@@ -593,7 +604,6 @@ function UpdateEmployee() {
                 {...register("area")}
                 onChange={(ev) => {
                   setArea(parseInt(ev.target.value));
-                  console.log(ev.target.value);
                 }}
                 value={area}
                 defaultValue={employee.employeePositionMapping[0].area.id}

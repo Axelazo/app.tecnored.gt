@@ -43,8 +43,28 @@ import { Chart as ChartJS } from "chart.js/auto";
 import { CategoryScale } from "chart.js";
 import { Timestamps } from "../../interfaces/misc/Timestamps";
 import { AddAllowanceModal, AddDeductionModal } from "./Modals";
+import {
+  startOfDay,
+  addDays,
+  endOfDay,
+  startOfMonth,
+  endOfMonth,
+} from "date-fns";
 
 ChartJS.register(CategoryScale);
+
+// Get the current date
+const currentDate = new Date();
+
+const dayInterval = {
+  from: startOfDay(currentDate),
+  to: addDays(endOfDay(currentDate), 1),
+};
+
+const monthInterval = {
+  from: startOfMonth(currentDate),
+  to: endOfMonth(currentDate),
+};
 
 interface EmployeeAllowancesAndDeductions extends Timestamps {
   id: number;
@@ -69,7 +89,10 @@ export function EmployeeAllowancesAndDeductionsTable({
   const fetchAllowances = () => {
     api
       .get<ApiResponse<EmployeeAllowancesAndDeductions[]>>(
-        `/allowances/employees/${id}`
+        `/allowances/employees/${id}`,
+        {
+          params: monthInterval,
+        }
       )
       .then((response) => {
         if (response.data.length > 0) {
@@ -85,7 +108,10 @@ export function EmployeeAllowancesAndDeductionsTable({
   const fetchDeductions = () => {
     api
       .get<ApiResponse<EmployeeAllowancesAndDeductions[]>>(
-        `/deductions/employees/${id}`
+        `/deductions/employees/${id}`,
+        {
+          params: monthInterval,
+        }
       )
       .then((response) => {
         if (response.data.length > 0) {
