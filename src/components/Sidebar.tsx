@@ -23,6 +23,7 @@ import {
   AlertIcon,
   Alert,
   Spacer,
+  Stack,
 } from "@chakra-ui/react";
 import {
   FaBell,
@@ -168,6 +169,8 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
       pos="fixed"
       h="full"
       {...rest}
+      className="testtst"
+      direction={"column"}
     >
       <Flex
         h="20"
@@ -175,12 +178,18 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
         mx="8"
         my={{ base: "8", md: "0" }}
         justifyContent="space-between"
+        direction={"row"}
       >
         <Logo />
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
       {filteredLinkItems.map((link) => (
-        <NavItem key={link.name} icon={link.icon} path={link.path}>
+        <NavItem
+          key={link.name}
+          icon={link.icon}
+          path={link.path}
+          onClick={onClose}
+        >
           {link.name}
         </NavItem>
       ))}
@@ -350,9 +359,9 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
                 </HStack>
               </MenuButton>
               <MenuList>
-                <MenuItem as={NavLink} to={"/profile"}>
+                {/*                 <MenuItem as={NavLink} to={"/profile"}>
                   Perfil
-                </MenuItem>
+                </MenuItem> */}
                 <MenuItem closeOnSelect={false}>
                   <DarkModeSwitcher />
                 </MenuItem>
