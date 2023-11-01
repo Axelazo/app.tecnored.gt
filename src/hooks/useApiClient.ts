@@ -14,7 +14,8 @@ const useApiClient = () => {
   // Add a flag to track whether a toast is already shown
   let isToastShowing = false;
 
-  const baseUrl = "https://api.tecnored.gt.dev.axelaguilar.com/";
+  //const baseUrl = "https://api.tecnored.gt.dev.axelaguilar.com/";
+  const baseUrl = "http://localhost:4000/";
   const axiosInstance: AxiosInstance = axios.create({
     baseURL: baseUrl,
     headers: {
@@ -138,16 +139,36 @@ const useApiClient = () => {
   };
 
   const getImage = (url: string, imageName: string): Promise<Blob> => {
-    const httpsUrl = url.replace("http://", "https://");
+    //const httpsUrl = url.replace("http://", "https://");
+    const imageType = url.match(/\.(png|jpeg|jpg)$/i);
+
+    if (!imageType) {
+      return Promise.reject(new Error("Invalid image URL"));
+    }
+
+    // Map the image type to the correct MIME type
+    const imageMimeTypes = {
+      png: "image/png",
+      jpeg: "image/jpeg",
+      jpg: "image/jpeg",
+    };
+
+    const mimeType = imageMimeTypes[imageType[1].toLowerCase()];
+
+    if (!mimeType) {
+      return Promise.reject(new Error("Unsupported image format"));
+    }
 
     return new Promise((resolve, reject) => {
       axiosInstance
         .request({
           method: "get",
-          url: httpsUrl,
+          url: url,
           responseType: "blob", // Set the responseType to "blob" for image downloads
         })
         .then((response: AxiosResponse<Blob>) => {
+          const modifiedBlob = new Blob([response.data], { type: mimeType });
+          resolve(modifiedBlob);
           resolve(response.data);
         })
         .catch((error: AxiosError) => {
