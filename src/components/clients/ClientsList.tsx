@@ -7,7 +7,7 @@ import ClientsTable from "./ClientsTable";
 function ClientList() {
   return (
     <>
-      <Stack flexGrow={1}>
+      <Stack flexGrow={1} maxW={"full"}>
         <PageHeader title="Lista de clientes">
           <Button
             leftIcon={<FaPlus />}

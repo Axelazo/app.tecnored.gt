@@ -14,6 +14,7 @@ import {
   Heading,
   Text,
   Image,
+  useToast,
 } from "@chakra-ui/react";
 import { AxiosError } from "axios";
 import { useState, useEffect } from "react";
@@ -30,6 +31,7 @@ import { ChevronDownIcon } from "@chakra-ui/icons";
 import ServicesTable from "../services/ServicesTable";
 
 function ViewClient() {
+  const toast = useToast();
   const [client, setClient] = useState<Client | null>(null);
   const { id } = useParams();
 
@@ -67,6 +69,9 @@ function ViewClient() {
   }, []);
 
   useEffect(() => {
+    if (!client) {
+      return;
+    }
     api
       .getImage(`${client?.person.dpi.dpiFrontUrl}`, "front.png")
       .then((response) => {
@@ -74,12 +79,16 @@ function ViewClient() {
         console.log(response);
       })
       .catch((reason: AxiosError) => {
-        //addtoast
-        // reject(reason);
+        toast({
+          description: reason.message,
+        });
       });
   }, [client]);
 
   useEffect(() => {
+    if (!client) {
+      return;
+    }
     api
       .getImage(`${client?.person.dpi.dpiBackUrl}`, "back.png")
       .then((response) => {

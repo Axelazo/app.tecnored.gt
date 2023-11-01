@@ -67,7 +67,7 @@ function UpdateClient() {
       loadFile(dpiImageBack),
     ]);
 
-    if (dpiFront && dpiBack) {
+    if (dpiImageFront && dpiImageBack && dpiFront && dpiBack) {
       formData.append("dpiFront", dpiFront, dpiImageFront?.name);
       formData.append("dpiBack", dpiBack, dpiImageBack?.name);
       formData.append("person[firstNames]", clientData.firstNames);
@@ -113,6 +113,11 @@ function UpdateClient() {
 
       if (clientData.addressType) {
         formData.append(`address[type]`, clientData.addressType);
+      }
+
+      for (const entry of formData.entries()) {
+        const [key, value] = entry;
+        console.log(key, value);
       }
 
       api
@@ -180,18 +185,22 @@ function UpdateClient() {
     }
 
     const loadDpiImages = async () => {
-      const imageFront = await api.getImage(
-        client.person.dpi.dpiFrontUrl,
-        "front.png"
-      );
-      const imageBack = await api.getImage(
-        client.person.dpi.dpiBackUrl,
-        "back.png"
-      );
+      const frontUrl = client.person.dpi.dpiFrontUrl;
+      const backUrl = client.person.dpi.dpiBackUrl;
+
+      const imageFront = await api.getImage(frontUrl, "front.png");
+      const imageBack = await api.getImage(backUrl, "back.png");
+
+      const frontFileName = frontUrl.substring(frontUrl.lastIndexOf("/") + 1);
+      const backFileName = backUrl.substring(backUrl.lastIndexOf("/") + 1);
 
       // Convert the Blobs to File objects
-      const frontImageFile = new File([imageFront], "image" + imageFront.type);
-      const backImageFile = new File([imageBack], "image" + imageBack.type);
+      const frontImageFile = new File([imageFront], frontFileName, {
+        type: imageFront.type,
+      });
+      const backImageFile = new File([imageBack], backFileName, {
+        type: imageBack.type,
+      });
 
       // Set the File objects in your state
       setdpiImageFront(frontImageFile);
