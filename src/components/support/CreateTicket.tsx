@@ -64,6 +64,8 @@ function CreateTicket() {
   const [employees, setEmployees] = useState<Option[] | null>(null);
   const [services, setServices] = useState<ServiceRow[] | null>(null);
 
+  const { clientId, serviceId } = useParams();
+
   const api = useApiClient();
 
   const getEmployeesWithPosition = async (positionName: string) => {
@@ -129,6 +131,7 @@ function CreateTicket() {
   };
 
   const onSubmit = handleSubmit(async (ticketData) => {
+    console.log(ticketData);
     const timeout = Math.floor(Math.random() * 2000) + 1000; // Random wait time between 1-3 seconds
     return new Promise((resolve, reject) => {
       setTimeout(() => {
@@ -199,6 +202,16 @@ function CreateTicket() {
           });
 
           setClients(formattedClients);
+
+          if (clientId) {
+            const filteredClient = formattedClients.filter(
+              (option) => option.value === parseInt(clientId)
+            );
+
+            setClient(filteredClient[0].value);
+          } else {
+            setClient(formattedClients[0].value);
+          }
         } else {
           setClients([]);
         }
@@ -206,6 +219,23 @@ function CreateTicket() {
       .catch((error: AxiosError) => {
         console.log(error.code);
       });
+  }, []);
+
+  useEffect(() => {
+    if (client !== 0 || client === null) {
+      const id = clientId ? parseInt(clientId) : client;
+      servicesResponse(id)
+        .then((services) => {
+          if (services) {
+            setServices(services);
+          } else {
+            setServices([]);
+          }
+        })
+        .catch((error: AxiosError) => {
+          console.log(error.code);
+        });
+    }
   }, []);
 
   useEffect(() => {
@@ -221,6 +251,12 @@ function CreateTicket() {
         .catch((error: AxiosError) => {
           console.log(error.code);
         });
+    }
+  }, [client]);
+
+  useEffect(() => {
+    if (!clientId) {
+      //setClient(clients[0].value);
     }
   }, [client]);
 
@@ -259,11 +295,12 @@ function CreateTicket() {
               <Select
                 placeholder="Seleccionar Servicio"
                 {...register("serviceId")}
+                defaultValue={parseInt(serviceId)}
               >
                 {services?.map((service, index) => {
                   return (
                     <option
-                      key={index}
+                      key={service.id}
                       value={service.id}
                     >{`#${service.serviceNumber} - ${service.ipAddress} - ${service.planName} - ${service.planSpeed} mbps - Q.${service.planPrice}`}</option>
                   );
@@ -308,6 +345,7 @@ function CreateTicket() {
               control={control}
               options={employees}
               name="employeeId"
+              selectedValue={1}
               setSelectedValue={setEmployee}
             />
           </HStack>
@@ -370,7 +408,7 @@ function CreateTicket() {
               >
                 <option value={1}>Baja</option>
                 <option value={2}>Media</option>
-                <option value={2}>Alta</option>
+                <option value={3}>Alta</option>
               </Select>
               <FormErrorMessage>
                 {formState.errors.priority?.message}
