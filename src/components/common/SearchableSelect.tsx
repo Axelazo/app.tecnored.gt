@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { FormControl, FormLabel, FormErrorMessage } from "@chakra-ui/react";
 import { GroupBase, OptionsOrGroups, Select } from "chakra-react-select";
 import { Control, Controller, FieldValues } from "react-hook-form";
@@ -31,8 +32,32 @@ function SearchableSelect({
     return `No se han encontrado resultados para "${inputValue}"`;
   };
 
-  return (
+  const [selectedOption, setSelectedOption] = useState<{
+    label: string;
+    value: number;
+  }>({ label: "", value: selectedValue });
+
+  useEffect(() => {
+    if (!options || options.length === 0) {
+      return;
+    }
+
+    const filteredOptions = options.filter(
+      (option) => option.value === selectedValue
+    );
+
+    if (filteredOptions.length > 0) {
+      setSelectedOption({
+        label: filteredOptions[0].label,
+        value: selectedValue,
+      });
+      setSelectedValue(selectedValue);
+    }
+  }, [options, selectedValue]);
+
+  return selectedOption.label !== "" ? (
     <Controller
+      defaultValue={selectedValue}
       control={control}
       name={name}
       render={({
@@ -54,8 +79,8 @@ function SearchableSelect({
                 setSelectedValue(selectedOption.value);
               }
             }}
-            defaultValue={selectedValue}
-            onBlur={onBlur}
+            defaultValue={{ label: selectedOption.label, value: selectedValue }}
+            //onBlur={onBlur}
             options={options}
             placeholder={placeholder}
             isClearable={true}
@@ -67,7 +92,7 @@ function SearchableSelect({
         </FormControl>
       )}
     />
-  );
+  ) : null;
 }
 
 export default SearchableSelect;
