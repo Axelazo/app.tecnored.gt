@@ -202,7 +202,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
           mb={14}
           color={useColorModeValue("white", "black")}
         >
-          TecnoRedMS - v0.7.1
+          TecnoRedMS - v0.7.6
         </Text>
       </Box>
     </Flex>
