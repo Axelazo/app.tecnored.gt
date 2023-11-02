@@ -5,6 +5,7 @@ import {
   BsPersonCircle,
   BsFillHddNetworkFill,
 } from "react-icons/bs";
+import { FaLocationArrow, FaPhone } from "react-icons/fa";
 import { OnlineServiceIndicator } from "../OnlineServiceIndicator";
 import { NavLink } from "react-router-dom";
 import { Service } from "../../../interfaces/app/Service";
@@ -16,11 +17,33 @@ import { MdLocationCity } from "react-icons/md";
 
 export interface ClientServiceOverlayProps {
   id: number;
-  position: {
-    lat: number;
-    lng: number;
-  };
+  position: Position;
 }
+
+interface Position {
+  lat: number;
+  lng: number;
+}
+
+export const RouteToClientButton = ({ lat, lng }: Position) => {
+  const openRouteToClient = () => {
+    const mapsURL = `https://www.google.com/maps/dir//${lat},${lng}/`;
+
+    window.open(mapsURL, "_blank");
+  };
+
+  return (
+    <Button
+      leftIcon={<FaLocationArrow />}
+      colorScheme="red"
+      variant="solid"
+      onClick={openRouteToClient}
+      w={"full"}
+    >
+      Ruta hacia el cliente
+    </Button>
+  );
+};
 
 export const ClientServiceOverlay = (data: ClientServiceOverlayProps) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -67,12 +90,20 @@ export const ClientServiceOverlay = (data: ClientServiceOverlayProps) => {
     }
   }, [id]);
 
+  const callClient = () => {
+    const number = service.owners[0].client.person.phones;
+
+    console.log(number);
+
+    window.location.href = `tel:${number[0].number}`;
+  };
+
   return (
     <OverlayViewF mapPaneName={"overlayMouseTarget"} position={position}>
-      <Card p={4} style={{ transform: "translate(-50%,-150%)" }}>
-        <Stack direction={"row"} spacing={4} align={"center"}>
+      <Card p={4} style={{ transform: "translate(-50%,-125%)" }}>
+        <Stack direction={"row"} spacing={0} align={"center"}>
           {service && !isLoading ? (
-            <Stack direction={"column"} spacing={0} fontSize={"sm"}>
+            <Stack direction={"column"} spacing={2} fontSize={"sm"}>
               <Text
                 fontWeight={600}
               >{`Servicio #${service.serviceNumber}`}</Text>
@@ -115,6 +146,7 @@ export const ClientServiceOverlay = (data: ClientServiceOverlayProps) => {
                   variant="solid"
                   as={NavLink}
                   to={`/clients/view/${service.owners[0].client.id}`}
+                  w={"full"}
                 >
                   Ir al Cliente
                 </Button>
@@ -125,9 +157,13 @@ export const ClientServiceOverlay = (data: ClientServiceOverlayProps) => {
                   as={NavLink}
                   to={`/support/create/${service.owners[0].client.id}/${service.id}`}
                   relative="path"
+                  w={"full"}
                 >
                   Crear Ticket
                 </Button>
+              </Stack>
+              <Stack direction={"row"}>
+                <RouteToClientButton lat={position.lat} lng={position.lng} />
               </Stack>
             </Stack>
           ) : (
