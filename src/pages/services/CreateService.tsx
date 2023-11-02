@@ -239,7 +239,10 @@ function CreateService() {
                     isRequired
                   >
                     <FormLabel>Cliente</FormLabel>
-                    <Select {...register("clientId")} defaultValue={"null"}>
+                    <Select
+                      {...register("clientId")}
+                      defaultValue={parseInt(id)}
+                    >
                       {clients?.map((client) => {
                         return (
                           <option value={client.id}>
