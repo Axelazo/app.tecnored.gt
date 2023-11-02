@@ -79,7 +79,7 @@ function TicketsTable() {
                   serviceNumber={ticket.service.serviceNumber}
                   priority={ticket.priority}
                   id={`${ticket.id}`}
-                  status={ticket.statuses[0].name}
+                  status={ticket.ticketStatuses[0].status.name}
                   createdAt={ticket.createdAt}
                   fetchTickets={fetchTickets}
                 />

@@ -32,6 +32,7 @@ import { UpdateTicketStatusFormResolver } from "../../resolvers/UpdateTicketForm
 import { useForm } from "react-hook-form";
 import { AxiosError } from "axios";
 import { ErrorResponseData } from "../../interfaces/app/ErrorResponseData";
+import { RouteToClientButton } from "../services/monitoring/ClientServiceOverlay";
 
 interface TicketStatusProps {
   status: Status;
@@ -69,7 +70,7 @@ function TicketStatus({
   return (
     <Stack flexDirection={{ base: "row" }} alignItems={"center"} spacing={6}>
       {
-        <Box w={"25px"} h={"25px"} borderRadius={"100%"} bgColor={color}>
+        <Box minW={"25px"} h={"25px"} borderRadius={"100%"} bgColor={color}>
           {isLast ? (
             ""
           ) : (
@@ -122,7 +123,7 @@ function TicketStatus({
             </Stack>
             <CardBody>
               <Stack spacing="3">
-                <Heading size="sm">Comentario del Técnico:</Heading>
+                <Heading size="sm">Comentario:</Heading>
                 {description ? (
                   <Text as="em">{description}</Text>
                 ) : (
@@ -452,6 +453,10 @@ function ViewTicket() {
                 ) : (
                   <Spinner />
                 )}
+                <RouteToClientButton
+                  lat={parseFloat(ticket.service.address.location.latitude)}
+                  lng={parseFloat(ticket.service.address.location.longitude)}
+                />
               </Stack>
             </Card>
           </Stack>
