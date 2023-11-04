@@ -59,7 +59,7 @@ function CreateTicket() {
     });
 
   const [client, setClient] = useState<number>(0);
-  const [employee, setEmployee] = useState<number | null | undefined>(0);
+  const [employee, setEmployee] = useState<number>(0);
   const [clients, setClients] = useState<Option[] | null>(null);
   const [employees, setEmployees] = useState<Option[] | null>(null);
   const [services, setServices] = useState<ServiceRow[] | null>(null);
@@ -173,14 +173,17 @@ function CreateTicket() {
   useEffect(() => {
     getEmployeesWithPosition("Técnico")
       .then((employees) => {
+        console.log(employees);
         if (employees) {
           const formattedEmployees = employees.map((employee) => {
+            console.log(employee);
             return {
               label: `${employee.person.firstNames} ${employee.person.lastNames}`,
               value: employee.id,
             };
           });
           setEmployees(formattedEmployees);
+          setEmployee(formattedEmployees[0].value);
         } else {
           setEmployees([]);
         }
@@ -345,7 +348,7 @@ function CreateTicket() {
               control={control}
               options={employees}
               name="employeeId"
-              selectedValue={1}
+              selectedValue={employee}
               setSelectedValue={setEmployee}
             />
           </HStack>
