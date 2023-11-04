@@ -249,7 +249,7 @@ function ViewTicket() {
 
   // API
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: "AIzaSyCTce88Bt7xXzLECnuxUWTZd6NHDsDsg5Y",
+    googleMapsApiKey: "AIzaSyCTLAIUGQcxfCfTIB3ax80mMMT_YuHRQLc",
   });
 
   async function fetchTicket() {
