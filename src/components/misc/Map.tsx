@@ -90,7 +90,6 @@ function Map({ location, setLocation, formSubmited, disabled }: MapProps) {
           onClick={(e) => {
             if (e.latLng)
               if (setLocation) {
-                console.log({ lat: e.latLng.lat(), lng: e.latLng.lng() });
                 setLocation({ lat: e.latLng.lat(), lng: e.latLng.lng() });
               }
           }}
