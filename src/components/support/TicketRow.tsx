@@ -26,7 +26,7 @@ interface TicketRow {
   reason: string;
   serviceNumber: string;
   status: string;
-  createdAt: string;
+  createdAt: Date;
   priority: number;
   fetchTickets: () => void;
 }
