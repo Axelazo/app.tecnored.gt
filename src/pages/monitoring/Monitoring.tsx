@@ -19,7 +19,7 @@ import { ServiceLocation } from "../../interfaces/tables/ServiceLocation";
 function Monitoring() {
   //Google maps
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: "AIzaSyCTce88Bt7xXzLECnuxUWTZd6NHDsDsg5Y",
+    googleMapsApiKey: "AIzaSyCTLAIUGQcxfCfTIB3ax80mMMT_YuHRQLc",
     //libraries: ["geometry"],
   });
   const [center, setCenter] = useState({

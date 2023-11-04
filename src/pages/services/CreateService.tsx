@@ -30,6 +30,10 @@ import { ServicesFormResolver } from "../../resolvers/ServicesFormResolver";
 import { useForm } from "react-hook-form";
 import { Service } from "../../interfaces/app/Service";
 import { ErrorResponseData } from "../../interfaces/app/ErrorResponseData";
+type location = {
+  lat: number;
+  lng: number;
+};
 
 function CreateService() {
   const [disabled, setDisabled] = useState(false);
@@ -48,17 +52,17 @@ function CreateService() {
   const [plans, setPlans] = useState<Plan[] | null>(null);
   const [routers, setRouters] = useState<Router[] | null>(null);
   const [selectedRouter, setSelectedRouter] = useState<Router | null>(null);
-  const [location, setLocation] = useState<
-    google.maps.LatLng | google.maps.LatLngLiteral | null
-  >({
+  const [location, setLocation] = useState<location | null>({
     lat: 16.797948256374617,
     lng: -89.93191334282228,
   });
 
+  const googleMapsUnrestrictedKey = `AIzaSyCTLAIUGQcxfCfTIB3ax80mMMT_YuHRQLc`;
+
   // API
   const api = useApiClient();
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: "AIzaSyCTce88Bt7xXzLECnuxUWTZd6NHDsDsg5Y",
+    googleMapsApiKey: googleMapsUnrestrictedKey,
   });
 
   // Form submission
@@ -338,7 +342,9 @@ function CreateService() {
                   required={true}
                   register={register("latlng")}
                   value={`${
-                    location ? location.toString() : "latitud, longitud"
+                    location
+                      ? `${location.lat}, ${location.lng}`
+                      : "latitud, longitud"
                   }`}
                   error={
                     formState.errors.latitude || formState.errors.longitude
@@ -347,7 +353,9 @@ function CreateService() {
                 {isLoaded ? (
                   <Map
                     location={location}
-                    setLocation={setLocation}
+                    setLocation={(value) => {
+                      setLocation({ lat: value.lat, lng: value.lng });
+                    }}
                     formSubmited={formState.isSubmitted}
                   />
                 ) : (
