@@ -30,6 +30,7 @@ import { ServicesFormResolver } from "../../resolvers/ServicesFormResolver";
 import { useForm } from "react-hook-form";
 import { Service } from "../../interfaces/app/Service";
 import { ErrorResponseData } from "../../interfaces/app/ErrorResponseData";
+
 type location = {
   lat: number;
   lng: number;
@@ -38,10 +39,13 @@ type location = {
 function CreateService() {
   const [disabled, setDisabled] = useState(false);
 
+  // Create the form resolver function
+  const servicesFormResolver = ServicesFormResolver; // Use the original resolver
+
   // Form Validation
   const { register, handleSubmit, formState, getValues, clearErrors, reset } =
     useForm<ServicesFormValues>({
-      resolver: ServicesFormResolver,
+      resolver: servicesFormResolver,
     });
   const toast = useToast();
   const navigate = useNavigate();
@@ -205,6 +209,11 @@ function CreateService() {
         console.log(error.code);
       });
   }, []);
+
+  // Update the resolver function when 'location' changes
+  useEffect(() => {
+    reset({}, { keepErrors: false });
+  }, [location]);
 
   if (!clients) {
     return (
