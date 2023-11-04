@@ -317,12 +317,12 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
       </Box>
 
       <HStack spacing={{ base: "0", md: "6" }}>
-        <IconButton
+        {/*         <IconButton
           size="lg"
           variant="ghost"
           aria-label="open menu"
           icon={<FaBell />}
-        />
+        /> */}
         <Flex alignItems={"center"}>
           {user ? (
             <Menu>
