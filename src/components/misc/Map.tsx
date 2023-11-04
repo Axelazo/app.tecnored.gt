@@ -8,16 +8,19 @@ import {
 import { GoogleMap, Marker } from "@react-google-maps/api";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
+type location = {
+  lat: number;
+  lng: number;
+};
+
 interface MapProps {
-  location: google.maps.LatLng | google.maps.LatLngLiteral | null;
-  setLocation?: Dispatch<
-    SetStateAction<google.maps.LatLng | google.maps.LatLngLiteral | null>
-  >;
+  location: location | null;
+  setLocation?: (location: location) => void;
   formSubmited: boolean;
   disabled?: boolean;
 }
 function Map({ location, setLocation, formSubmited, disabled }: MapProps) {
-  const [center, setCenter] = useState({
+  const [center, setCenter] = useState<location>({
     lat: 16.797948256374617,
     lng: -89.93191334282228,
   });
@@ -32,7 +35,7 @@ function Map({ location, setLocation, formSubmited, disabled }: MapProps) {
   useEffect(() => {
     if (mapInstance && location) {
       const timeoutId = setTimeout(() => {
-        mapInstance.panTo(location);
+        mapInstance.panTo({ lat: location.lat, lng: location.lng });
       }, 500);
 
       return () => clearTimeout(timeoutId);
@@ -87,7 +90,8 @@ function Map({ location, setLocation, formSubmited, disabled }: MapProps) {
           onClick={(e) => {
             if (e.latLng)
               if (setLocation) {
-                setLocation(e.latLng);
+                console.log({ lat: e.latLng.lat(), lng: e.latLng.lng() });
+                setLocation({ lat: e.latLng.lat(), lng: e.latLng.lng() });
               }
           }}
         >
